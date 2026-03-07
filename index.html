@@ -4,356 +4,774 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Game Design Portfolio - Narrative RPGs, Open-World Systems, Combat Design">
-    <title>Game Design Portfolio</title>
+    <title>The Designer's Grimoire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes fadeInUp {
+        * {
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0a0a0a 100%);
+            background-attachment: fixed;
+        }
+
+        /* Medieval/RPG Paper Texture */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes unfold {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: scaleY(0);
+                transform-origin: top;
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scaleY(1);
             }
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50% { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
         }
 
-        @keyframes pulse-slow {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
+        @keyframes page-fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
+        /* Parchment Background */
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 105, 20, 0.3);
+            position: relative;
         }
 
-        .slide-in {
-            animation: slideIn 0.6s ease-out forwards;
+        .parchment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" /></filter><rect width="100" height="100" fill="%23000000" filter="url(%23noise)" opacity="0.03"/></svg>');
+            pointer-events: none;
         }
 
-        .pulse-slow {
-            animation: pulse-slow 3s ease-in-out infinite;
+        .parchment-text {
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
-        .card-hover {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
         }
 
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        /* Quest Log Style */
+        .quest-log {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border-left: 5px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: inset 0 0 15px rgba(139, 105, 20, 0.2);
+            position: relative;
+            animation: unfold 0.8s ease-out forwards;
         }
 
-        .gradient-text {
-            background: linear-gradient(to right, #fbbf24, #fb7185, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .quest-log::before {
+            content: '⚔';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: #8b6914;
         }
 
-        .glow-button {
+        .quest-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .quest-description {
+            color: #b8860b;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .quest-reward {
+            color: #90ee90;
+            font-size: 0.9em;
+            padding: 0.5rem;
+            background: rgba(144, 238, 144, 0.1);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+        }
+
+        /* Character Stats */
+        .character-sheet {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .glow-button::before {
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+            border-color: #d4af37;
+        }
+
+        .stat-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
             transition: left 0.5s;
         }
 
-        .glow-button:hover::before {
+        .stat-card:hover::before {
             left: 100%;
         }
 
-        .section-button {
+        .stat-number {
+            font-size: 2em;
+            color: #90ee90;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #d4af37;
+            font-size: 0.9em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #8b6914;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #90ee90, #32cd32);
+            transition: width 0.5s ease;
+        }
+
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+            cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.2);
+            transition: left 0.3s;
+        }
+
+        .tab-button:hover::before {
+            left: 100%;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Map/World Section */
+        .world-map {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .world-map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(139, 105, 20, 0.1) 35px, rgba(139, 105, 20, 0.1) 70px),
+                repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(139, 105, 20, 0.1) 35px, rgba(139, 105, 20, 0.1) 70px);
+            pointer-events: none;
+        }
+
+        /* Location Pin */
+        .location-pin {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .location-pin::before {
+            content: '📍';
+            margin-right: 0.5rem;
+        }
+
+        .location-pin:hover {
+            box-shadow: 0 0 15px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        /* Project Cards - Quest Style */
+        .project-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.2), 0 5px 15px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
             cursor: pointer;
         }
 
-        .section-button.active {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1), transparent);
+            transition: all 0.5s ease;
         }
 
-        .nav-blur {
-            backdrop-filter: blur(12px);
-            background-color: rgba(0, 0, 0, 0.3);
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: inset 0 0 20px rgba(139, 105, 20, 0.3), 0 10px 30px rgba(139, 105, 20, 0.4);
+            border-color: #d4af37;
+        }
+
+        .project-card:hover::before {
+            top: 50%;
+            left: 50%;
+        }
+
+        .project-rarity {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid;
+            margin-bottom: 0.5rem;
+            font-size: 0.8em;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .rarity-legendary {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .rarity-epic {
+            background: rgba(138, 43, 226, 0.1);
+            border-color: #8a2be2;
+            color: #8a2be2;
+        }
+
+        .rarity-rare {
+            background: rgba(0, 191, 255, 0.1);
+            border-color: #00bfff;
+            color: #00bfff;
+        }
+
+        .project-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: #b8860b;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(139, 105, 20, 0.3);
+            border: 1px solid #8b6914;
+            color: #d4af37;
+            font-size: 0.8em;
+            border-radius: 2px;
+        }
+
+        /* Header Title */
+        .grimoire-title {
+            font-size: 3em;
+            color: #d4af37;
+            text-align: center;
+            letter-spacing: 0.1em;
+            margin: 2rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 105, 20, 0.4);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8860b;
+            font-size: 1.2em;
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Chapter Divider */
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        /* Navigation Bar */
+        .grimoire-nav {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-bottom: 3px solid #8b6914;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #b8860b;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .nav-link:hover {
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(139, 105, 20, 0.6);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.4);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 0 40px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Flex Container */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .grimoire-title {
+                font-size: 2em;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        .max-w {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .container-section {
+            margin: 3rem auto;
         }
     </style>
 </head>
-<body class="bg-black text-white overflow-x-hidden">
-    <!-- Dynamic Background -->
-    <div class="fixed inset-0 z-0">
-        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-black to-slate-900"></div>
-        <div class="absolute top-0 right-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-amber-600/20 rounded-full blur-3xl"></div>
-        <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-600/20 rounded-full blur-3xl"></div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="relative z-40 border-b border-white/10 nav-blur sticky top-0">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="text-2xl font-black gradient-text">
-                GAME DESIGNER
-            </div>
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#portfolio" class="text-gray-300 hover:text-white transition-colors">Portfolio</a>
-                <a href="#contact" class="text-gray-300 hover:text-white transition-colors">Contact</a>
+<body>
+    <!-- Navigation Bar -->
+    <div class="grimoire-nav">
+        <div class="nav-content">
+            <div class="nav-title">THE DESIGNER'S GRIMOIRE</div>
+            <div class="nav-links">
+                <a href="#quests" class="nav-link">Quests</a>
+                <a href="#achievements" class="nav-link">Achievements</a>
+                <a href="#contact" class="nav-link">Contact</a>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="relative z-10 min-h-screen flex items-center justify-center px-6 pt-20">
-        <div class="text-center max-w-4xl fade-in-up">
-            <div class="mb-6">
-                <h1 class="text-6xl md:text-7xl font-black mb-4 leading-tight">
-                    <span class="gradient-text pulse-slow">SYSTEMS ARCHITECT</span>
-                </h1>
-                <p class="text-2xl md:text-3xl font-bold text-gray-300 mb-8">
-                    Crafting Immersive Worlds Through Design
-                </p>
+    <!-- Title Section -->
+    <div class="max-w container-section">
+        <div class="grimoire-title">⚔ THE DESIGNER'S GRIMOIRE ⚔</div>
+        <div class="subtitle">A Compendium of Game Design Systems and Narratives</div>
+    </div>
+
+    <!-- Character Stats Section -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« CHARACTER PROFILE »</div>
+        <div class="character-sheet">
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Systems Architected</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 95%"></div>
+                </div>
             </div>
-
-            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                Specializing in narrative-driven RPGs, open-world systems, and combat design. 
-                Building games that feel alive, where every system tells a story.
-            </p>
-
-            <button class="glow-button group relative inline-flex items-center gap-3 px-8 py-4 rounded-lg font-bold text-black bg-gradient-to-r from-amber-400 to-rose-400 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                Explore My Work
-            </button>
-
-            <div class="mt-20 flex justify-center">
-                <div class="animate-bounce text-gray-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                    </svg>
+            <div class="stat-card">
+                <div class="stat-number">300+</div>
+                <div class="stat-label">Narrative Nodes</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 90%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Combat Mechanics</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 88%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Passion</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 100%"></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="relative z-10 max-w-7xl mx-auto px-6 py-24">
-        <!-- Section Navigation -->
-        <div class="mb-16 flex justify-center gap-4 flex-wrap">
-            <button onclick="switchSection('system')" class="section-button active flex items-center gap-2 px-6 py-3 rounded-lg font-bold bg-white text-black transition-all duration-300" id="btn-system">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                System Design
-            </button>
-            <button onclick="switchSection('narrative')" class="section-button flex items-center gap-2 px-6 py-3 rounded-lg font-bold bg-white/10 text-white hover:bg-white/20 transition-all duration-300" id="btn-narrative">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17s4.5 10.747 10 10.747m0-13c5.5 0 10 4.745 10 10.747S17.5 28 12 28"></path>
-                </svg>
-                Narrative Design
-            </button>
-            <button onclick="switchSection('combat')" class="section-button flex items-center gap-2 px-6 py-3 rounded-lg font-bold bg-white/10 text-white hover:bg-white/20 transition-all duration-300" id="btn-combat">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                </svg>
-                Combat Design
-            </button>
+    <!-- Chapter 1: System Design -->
+    <div class="max-w container-section">
+        <div class="chapter-divider">⚔ CHAPTER I: SYSTEMS ARCHITECTURE ⚔</div>
+    </div>
+
+    <div class="max-w container-section" id="quests">
+        <div class="section-tabs">
+            <button class="tab-button active" onclick="filterProjects('all')">All Quests</button>
+            <button class="tab-button" onclick="filterProjects('system')">Systems</button>
+            <button class="tab-button" onclick="filterProjects('narrative')">Narratives</button>
+            <button class="tab-button" onclick="filterProjects('combat')">Combat</button>
         </div>
 
-        <!-- Projects Grid -->
-        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Projects will be inserted here by JavaScript -->
-        </div>
-    </section>
+        <div id="projects-container"></div>
+    </div>
 
-    <!-- Stats Section -->
-    <section class="relative z-10 max-w-7xl mx-auto px-6 py-24">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center p-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/30 transition-all card-hover">
-                <div class="text-5xl font-black gradient-text mb-2">50+</div>
-                <p class="text-gray-400 font-semibold">Game Systems Designed</p>
+    <!-- World Map Section -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« KNOWN REALMS »</div>
+        <div class="world-map">
+            <div style="text-align: center; color: #d4af37; margin-bottom: 1.5rem; font-size: 1.1em;">
+                Explore the Domains of Game Design
             </div>
-            <div class="text-center p-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/30 transition-all card-hover">
-                <div class="text-5xl font-black gradient-text mb-2">300+</div>
-                <p class="text-gray-400 font-semibold">Narrative Nodes Created</p>
-            </div>
-            <div class="text-center p-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/30 transition-all card-hover">
-                <div class="text-5xl font-black gradient-text mb-2">15+</div>
-                <p class="text-gray-400 font-semibold">Combat Mechanics</p>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                <div class="location-pin">Open-World Systems</div>
+                <div class="location-pin">Narrative Branches</div>
+                <div class="location-pin">Combat Loops</div>
+                <div class="location-pin">Player Progression</div>
+                <div class="location-pin">NPC Behaviors</div>
+                <div class="location-pin">Quest Chains</div>
+                <div class="location-pin">Dialogue Trees</div>
+                <div class="location-pin">Environmental Puzzles</div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CTA Section -->
-    <section id="contact" class="relative z-10 max-w-7xl mx-auto px-6 py-24">
-        <div class="relative rounded-xl overflow-hidden p-12 bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-cyan-500/20 border border-white/20">
-            <div class="relative z-10 text-center">
-                <h2 class="text-4xl font-black text-white mb-4">Ready to Build Something Epic?</h2>
-                <p class="text-gray-300 mb-8 max-w-xl mx-auto">
-                    Let's collaborate on a project that pushes the boundaries of interactive storytelling.
-                </p>
-                <a href="mailto:your-email@example.com" class="inline-block px-8 py-4 rounded-lg font-bold bg-white text-black hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                    Get In Touch
-                </a>
+    <!-- Call to Action -->
+    <div class="max-w container-section parchment" id="contact">
+        <div class="header-ornament">« SEEK AN ALLY? »</div>
+        <div style="text-align: center; padding: 2rem;">
+            <div style="color: #b8860b; font-size: 1.1em; margin-bottom: 1.5rem;">
+                I am seeking collaborators who share the passion for crafting immersive worlds where systems, narrative, and gameplay intertwine into unforgettable experiences.
             </div>
+            <a href="mailto:your-email@example.com" class="cta-button">
+                SEND RAVEN MESSAGE
+            </a>
         </div>
-    </section>
+    </div>
 
     <!-- Footer -->
-    <footer class="relative z-10 border-t border-white/10 bg-black/50 nav-blur py-12">
-        <div class="max-w-7xl mx-auto px-6 text-center text-gray-400">
-            <p>© 2024 Game Design Portfolio. Crafted with passion and pixels.</p>
-        </div>
-    </footer>
+    <div style="background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%); border-top: 3px solid #8b6914; padding: 2rem; margin-top: 3rem; text-align: center; color: #b8860b;">
+        <div class="header-ornament" style="margin: 0;">✦ FINIS ✦</div>
+        <div style="font-size: 0.9em; margin-top: 1rem;">© 2024 The Designer's Grimoire</div>
+        <div style="font-size: 0.8em; color: #8b6914; margin-top: 0.5rem;">Crafted with passion for the craft of game design</div>
+    </div>
 
     <script>
-        const projects = {
-            system: [
-                {
-                    title: "Adaptive Difficulty System",
-                    description: "Dynamic difficulty scaling based on player behavior, resource management, and combat performance. Seamlessly adjusts enemy AI patterns and resource availability.",
-                    details: ["Real-time behavior tracking", "Predictive scaling", "AI personality matrices"],
-                    color: "from-amber-400 to-orange-500"
-                },
-                {
-                    title: "Faction Reputation Web",
-                    description: "Multi-layered relationship system affecting NPC interactions, quest availability, and world state. 47 different faction interactions with cascading consequences.",
-                    details: ["Dynamic dialogue branches", "World state persistence", "Consequence mapping"],
-                    color: "from-purple-400 to-pink-500"
-                },
-                {
-                    title: "Resource Economy Framework",
-                    description: "Interconnected supply chains for crafting, trading, and exploration. Markets respond to player actions with realistic scarcity and abundance cycles.",
-                    details: ["Supply/demand tracking", "NPC trading AI", "Scarcity algorithms"],
-                    color: "from-emerald-400 to-teal-500"
-                }
-            ],
-            narrative: [
-                {
-                    title: "Branching Dialogue Tree",
-                    description: "Non-linear storytelling with 300+ dialogue nodes, character-driven personality systems, and meaningful consequences that reshape questlines.",
-                    details: ["Personality-locked dialogue", "Consequence tracking", "Voice-over integration"],
-                    color: "from-rose-400 to-red-500"
-                },
-                {
-                    title: "Environmental Storytelling",
-                    description: "Hidden lore through interactive objects, environmental clues, and dynamic world events that reward exploration and careful observation.",
-                    details: ["Object interaction trees", "Lore fragment system", "Dynamic event triggers"],
-                    color: "from-blue-400 to-cyan-500"
-                },
-                {
-                    title: "Character Arc System",
-                    description: "Deep companion relationships with evolving personalities, loyalty mechanics, and endings shaped by player choices and interaction frequency.",
-                    details: ["Relationship progression", "Dynamic personalities", "Multiple endings"],
-                    color: "from-indigo-400 to-purple-500"
-                }
-            ],
-            combat: [
-                {
-                    title: "Combo & Stance System",
-                    description: "14 combat stances with contextual transitions, environmental interactions, and enemy-responsive move sets. Every weapon feels distinct.",
-                    details: ["Stance switching", "Environmental combos", "AI counter-plays"],
-                    color: "from-red-400 to-orange-500"
-                },
-                {
-                    title: "Enemy AI Behavior Net",
-                    description: "Hierarchical AI with personality types, tactical decision-making, group dynamics, and adaptive learning from player patterns.",
-                    details: ["Personality archetypes", "Tactical awareness", "Learning algorithms"],
-                    color: "from-slate-400 to-gray-600"
-                },
-                {
-                    title: "Dynamic Difficulty Encounters",
-                    description: "Encounters that scale with reinforcement mechanics, battlefield manipulation, and tactical complexity based on player skill progression.",
-                    details: ["Reinforcement waves", "Terrain tactics", "Skill scaling"],
-                    color: "from-yellow-400 to-amber-500"
-                }
-            ]
-        };
+        const projects = [
+            // SYSTEM DESIGN
+            {
+                id: 1,
+                category: 'system',
+                rarity: 'legendary',
+                title: 'Adaptive Difficulty Tapestry',
+                description: 'A dynamic system that observes player behavior and adjusts world complexity, enemy patterns, and resource availability in real-time. Like a living ecosystem that breathes with your playstyle.',
+                tags: ['AI Scaling', 'Behavior Analysis', 'Difficulty Balancing'],
+                quest: 'Master the art of difficulty that feels natural, never artificial.'
+            },
+            {
+                id: 2,
+                category: 'system',
+                rarity: 'epic',
+                title: 'Faction Web of Influence',
+                description: 'A multi-layered reputation system affecting 47 different factions. Your actions ripple through the world, creating allies and enemies, opening and closing doors with consequences that echo throughout the story.',
+                tags: ['Reputation System', 'Consequence Tracking', 'World State'],
+                quest: 'Every choice should matter and reshape the world.'
+            },
+            {
+                id: 3,
+                category: 'system',
+                rarity: 'epic',
+                title: 'Economic Equilibrium Framework',
+                description: 'Interconnected supply chains where markets respond to scarcity, NPC trading behaviors, and player actions. Real economies that players can influence, exploit, or stabilize.',
+                tags: ['Economy Simulation', 'Supply Chain', 'Market Dynamics'],
+                quest: 'Build economies that feel alive and explorable.'
+            },
 
-        let currentSection = 'system';
+            // NARRATIVE DESIGN
+            {
+                id: 4,
+                category: 'narrative',
+                rarity: 'legendary',
+                title: 'The Branching Pathways',
+                description: '300+ dialogue nodes with personality-locked choices, consequence tracking, and dynamic quest restructuring. Every conversation a new thread in the tapestry of your story.',
+                tags: ['Dialogue Trees', 'Personality Systems', 'Consequence Maps'],
+                quest: 'Let dialogue be character; let choices echo through worlds.'
+            },
+            {
+                id: 5,
+                category: 'narrative',
+                rarity: 'rare',
+                title: 'Lore Woven in Stone & Soil',
+                description: 'Environmental storytelling through interactive objects, hidden lore fragments, and world events. Players discover history by exploring, reading, and observing. Rewards curiosity with narrative depth.',
+                tags: ['Environmental Narrative', 'Lore Systems', 'Discovery Mechanics'],
+                quest: 'Hide stories in plain sight for the curious to find.'
+            },
+            {
+                id: 6,
+                category: 'narrative',
+                rarity: 'epic',
+                title: 'Companion Evolution Engine',
+                description: 'Deep relationships that evolve based on frequency of interaction, player choices, and in-world events. Each companion has a personal arc that may diverge based on your path together.',
+                tags: ['Relationship Progression', 'Character Arcs', 'Loyalty System'],
+                quest: 'Make relationships feel earned through genuine interaction.'
+            },
 
-        function renderProjects(section) {
-            const grid = document.getElementById('projects-grid');
-            grid.innerHTML = '';
-            
-            projects[section].forEach((project, index) => {
+            // COMBAT DESIGN
+            {
+                id: 7,
+                category: 'combat',
+                rarity: 'epic',
+                title: 'The Stance Philosophy',
+                description: '14 combat stances with contextual transitions, environmental interactions, and weapon-specific move sets. Every weapon feels distinct. Every stance tells a story about how a warrior approaches battle.',
+                tags: ['Combat Stances', 'Weapon Design', 'Environmental Combat'],
+                quest: 'Make each weapon feel alive in the hands of the player.'
+            },
+            {
+                id: 8,
+                category: 'combat',
+                rarity: 'legendary',
+                title: 'Hierarchical Enemy Intelligence',
+                description: 'AI that learns, adapts, and coordinates. Enemies have personality archetypes that influence tactical decisions. Groups work together, flanking, retreating, and regrouping based on real tactical awareness.',
+                tags: ['AI Behavior', 'Personality Archetypes', 'Tactical Awareness'],
+                quest: 'Create enemies that feel intelligent without being unfair.'
+            },
+            {
+                id: 9,
+                category: 'combat',
+                rarity: 'rare',
+                title: 'Dynamic Encounter Scaling',
+                description: 'Encounters that evolve through reinforcement waves, terrain manipulation, and complexity scaling. Boss fights that feel epic through tactical depth rather than stat bloat.',
+                tags: ['Encounter Design', 'Wave Systems', 'Skill Scaling'],
+                quest: 'Challenge grows with mastery, never feels cheap.'
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        function renderProjects() {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === 'all' ? projects : projects.filter(p => p.category === currentFilter);
+
+            filtered.forEach(project => {
+                const rarityClass = `rarity-${project.rarity}`;
                 const card = document.createElement('div');
-                card.className = 'group relative overflow-hidden rounded-lg border-2 border-white/20 bg-black/40 backdrop-blur-sm card-hover';
-                card.style.animationDelay = `${index * 100}ms`;
-                
-                const detailsHTML = project.details.map(detail => 
-                    `<span class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r ${project.color} text-white/90 opacity-75 group-hover:opacity-100 transition-opacity">
-                        ${detail}
-                    </span>`
-                ).join('');
-                
+                card.className = 'project-card';
                 card.innerHTML = `
-                    <div class="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-20 bg-gradient-to-br ${project.color}"></div>
-                    <div class="relative z-10 p-6">
-                        <h3 class="mb-3 text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text" style="background-image: linear-gradient(to right, var(--tw-gradient-stops));">
-                            ${project.title}
-                        </h3>
-                        <p class="mb-4 text-sm text-gray-300 leading-relaxed">
-                            ${project.description}
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            ${detailsHTML}
-                        </div>
-                        <div class="flex items-center gap-2 text-sm font-semibold text-white opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                            <span>View Details</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
+                    <div class="project-rarity ${rarityClass}">${project.rarity.toUpperCase()}</div>
+                    <div class="project-title">⚔ ${project.title}</div>
+                    <div class="project-description">${project.description}</div>
+                    <div style="color: #90ee90; font-size: 0.9em; font-style: italic; margin-bottom: 1rem; padding: 0.75rem; background: rgba(144, 238, 144, 0.1); border-left: 2px solid #90ee90;">
+                        "Quest Wisdom: ${project.quest}"
+                    </div>
+                    <div class="project-tags">
+                        ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
                 `;
-                
-                grid.appendChild(card);
+                container.appendChild(card);
             });
         }
 
-        function switchSection(section) {
-            currentSection = section;
+        function filterProjects(category) {
+            currentFilter = category;
             
             // Update button states
-            document.querySelectorAll('.section-button').forEach(btn => {
-                btn.classList.remove('active', 'bg-white', 'text-black', 'scale-105');
-                btn.classList.add('bg-white/10', 'text-white', 'hover:bg-white/20');
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
             });
+            event.target.classList.add('active');
             
-            document.getElementById(`btn-${section}`).classList.add('active', 'bg-white', 'text-black');
-            document.getElementById(`btn-${section}`).classList.remove('bg-white/10', 'text-white', 'hover:bg-white/20');
-            
-            // Render new projects
-            renderProjects(section);
+            renderProjects();
         }
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            renderProjects('system');
-        });
+        // Initial render
+        renderProjects();
     </script>
 </body>
 </html>
