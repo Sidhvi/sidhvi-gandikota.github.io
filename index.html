@@ -733,6 +733,19 @@
 
         let currentFilter = 'all';
 
+        // Mapping project titles to their detail pages
+        const projectLinks = {
+            'Adaptive Difficulty Tapestry': 'project-adaptive-difficulty.html',
+            'Faction Web of Influence': 'project-faction-system.html',
+            'Economic Equilibrium Framework': 'project-economy-system.html',
+            'The Branching Pathways': 'project-a-foul-call.html',
+            'Lore Woven in Stone & Soil': 'project-environmental-lore.html',
+            'Companion Evolution Engine': 'project-companion-system.html',
+            'The Stance Philosophy': 'project-combat-stances.html',
+            'Hierarchical Enemy Intelligence': 'project-enemy-ai.html',
+            'Dynamic Encounter Scaling': 'project-encounter-design.html'
+        };
+
         function renderProjects() {
             const container = document.getElementById('projects-container');
             container.innerHTML = '';
@@ -743,17 +756,39 @@
                 const rarityClass = `rarity-${project.rarity}`;
                 const card = document.createElement('div');
                 card.className = 'project-card';
+
+                // Make card clickable
+                card.style.cursor = 'pointer';
+                card.onclick = () => {
+                    const link = projectLinks[project.title];
+                    if (link) {
+                        window.location.href = link;
+                    }
+                };
+
+                // Add hover effect for better UX
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+
                 card.innerHTML = `
-                    <div class="project-rarity ${rarityClass}">${project.rarity.toUpperCase()}</div>
-                    <div class="project-title">⚔ ${project.title}</div>
-                    <div class="project-description">${project.description}</div>
-                    <div style="color: #90ee90; font-size: 0.9em; font-style: italic; margin-bottom: 1rem; padding: 0.75rem; background: rgba(144, 238, 144, 0.1); border-left: 2px solid #90ee90;">
-                        "Quest Wisdom: ${project.quest}"
-                    </div>
-                    <div class="project-tags">
-                        ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                `;
+            <div class="project-rarity ${rarityClass}">${project.rarity.toUpperCase()}</div>
+            <div class="project-title">⚔ ${project.title}</div>
+            <div class="project-description">${project.description}</div>
+            <div style="color: #90ee90; font-size: 0.9em; font-style: italic; margin-bottom: 1rem; padding: 0.75rem; background: rgba(144, 238, 144, 0.1); border-left: 2px solid #90ee90;">
+                "Quest Wisdom: ${project.quest}"
+            </div>
+            <div class="project-tags">
+                ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            <div style="color: #d4af37; font-size: 0.85em; margin-top: 1rem; font-weight: bold;">
+                ➜ CLICK TO VIEW FULL QUEST
+            </div>
+        `;
+
                 container.appendChild(card);
             });
         }

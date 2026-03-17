@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project: A Foul Call - Quest Design with Multiple Investigation Paths">
+    <title>Project: A Foul Call - Sidhvi's Design Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0a0a0a 100%);
+            background-attachment: fixed;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50% { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 105, 20, 0.3);
+            position: relative;
+        }
+
+        .parchment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" /></filter><rect width="100" height="100" fill="%23000000" filter="url(%23noise)" opacity="0.03"/></svg>');
+            pointer-events: none;
+        }
+
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .grimoire-nav {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-bottom: 3px solid #8b6914;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #b8860b;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .nav-link:hover {
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(139, 105, 20, 0.6);
+        }
+
+        .breadcrumb {
+            color: #b8860b;
+            font-size: 0.9em;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-shadow: 0 0 10px rgba(139, 105, 20, 0.6);
+        }
+
+        .project-title {
+            font-size: 2.5em;
+            color: #d4af37;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 105, 20, 0.4);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+        }
+
+        .meta-label {
+            color: #b8860b;
+            font-size: 0.9em;
+        }
+
+        .meta-value {
+            font-weight: bold;
+        }
+
+        .rarity-badge {
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid #8a2be2;
+            color: #8a2be2;
+            padding: 0.25rem 0.75rem;
+        }
+
+        .section-container {
+            margin: 2.5rem 0;
+            animation: slide-in 0.6s ease-out;
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: #d4af37;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: #b8860b;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .subsection {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 4px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.1);
+        }
+
+        .subsection-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .subsection-text {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        /* Path Cards */
+        .path-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .path-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .path-card:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .path-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.75rem;
+        }
+
+        .path-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .path-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .path-requirement {
+            color: #90ee90;
+            font-size: 0.85em;
+            padding: 0.5rem;
+            background: rgba(144, 238, 144, 0.1);
+            border-left: 2px solid #90ee90;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Dialogue Tree */
+        .dialogue-tree {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 5px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.1);
+        }
+
+        .dialogue-speaker {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 0.25rem;
+        }
+
+        .dialogue-text {
+            color: #b8860b;
+            font-style: italic;
+            padding: 0.75rem;
+            background: rgba(139, 105, 20, 0.1);
+            border-radius: 3px;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .choice {
+            padding: 0.75rem 1rem;
+            background: rgba(139, 105, 20, 0.2);
+            border-left: 3px solid #90ee90;
+            color: #90ee90;
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .choice:hover {
+            background: rgba(139, 105, 20, 0.3);
+            box-shadow: 0 0 10px rgba(144, 238, 144, 0.2);
+        }
+
+        .choice::before {
+            content: '➜ ';
+            color: #90ee90;
+            font-weight: bold;
+        }
+
+        /* Consequence */
+        .consequence {
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(144, 238, 144, 0.1), rgba(139, 105, 20, 0.1));
+            border: 1px solid #90ee90;
+            border-radius: 3px;
+            margin-top: 1rem;
+            color: #90ee90;
+            font-size: 0.9em;
+        }
+
+        .consequence-title {
+            font-weight: bold;
+            color: #90ee90;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Feature Boxes */
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+            border-color: #d4af37;
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.75rem;
+            color: #d4af37;
+        }
+
+        .feature-title {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1em;
+        }
+
+        .feature-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        /* Ending Cards */
+        .ending-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ending-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .ending-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .ending-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .ending-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .ending-consequence {
+            color: #90ee90;
+            font-size: 0.85em;
+            padding-top: 1rem;
+            border-top: 1px solid #8b6914;
+            font-weight: bold;
+        }
+
+        /* Chapter Divider */
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .tag {
+            padding: 0.4rem 1rem;
+            background: rgba(139, 105, 20, 0.3);
+            border: 1px solid #8b6914;
+            color: #d4af37;
+            font-size: 0.85em;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: rgba(139, 105, 20, 0.6);
+            box-shadow: 0 0 10px rgba(139, 105, 20, 0.4);
+        }
+
+        /* Image Placeholder */
+        .image-placeholder {
+            width: 100%;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px dashed #8b6914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b8860b;
+            font-size: 1em;
+            text-align: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.4);
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 0 40px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        .grimoire-footer {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-top: 3px solid #8b6914;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #b8860b;
+        }
+
+        .max-w {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 1.8em;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="grimoire-nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-title" style="text-decoration: none; cursor: pointer;">SIDHVI'S DESIGN JOURNAL</a>
+            <div class="nav-links">
+                <a href="index.html#quests" class="nav-link">Quests</a>
+                <a href="index.html#achievements" class="nav-link">Achievements</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w container-section parchment">
+        <div class="breadcrumb">
+            <a href="index.html">The Grimoire</a> > <a href="index.html#quests">Quests</a> > Project Details
+        </div>
+
+        <div class="project-title">⚔ A Foul Call ⚔</div>
+
+        <div class="project-meta">
+            <div class="meta-item">
+                <span class="meta-label">CATEGORY:</span>
+                <span class="meta-value">Narrative Design</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">INVESTIGATION PATHS:</span>
+                <span class="meta-value">3</span>
+            </div>
+        </div>
+
+        <!-- Quest Summary -->
+        <div class="section-container">
+            <div class="section-title">⚔ QUEST SUMMARY</div>
+            <div class="content-block">
+                Kliq, a seasoned bounty hunter, arrives in Stone-Upon-Fleen to meet an old ally: Reverend Lemuel, a mysterious priest from a secret order. Lemuel's letter speaks of foul omens and strange happenings in the village. What begins as a reunion becomes an investigation into dark magic, moral choices, and secrets that will test Kliq's loyalty to both friend and principle.
+            </div>
+            <div class="subsection">
+                <div class="subsection-title">The Call</div>
+                <div class="subsection-text">
+                    Lemuel has written to Kliq about bad omens plaguing Stone-Upon-Fleen. The village is experiencing bizarre phenomena: missing pumpkins, a foul stench, and villagers falling mysteriously ill. Kliq must meet Lemuel and uncover the truth behind these events—a truth far darker than simple misfortune.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube Video Section -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« PLAYTHROUGH VIDEO »</div>
+
+        <div class="section-container">
+            <div class="section-title">📹 QUEST IN ACTION</div>
+            <div class="content-block">
+                Watch Kliq's journey through Stone-Upon-Fleen unfold. 
+                This playthrough demonstrates the investigation mechanics, dialogue branching, and how player choices shape the narrative experience.
+            </div>
+
+            <!-- Video Container -->
+            <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                <div style="position: relative; width: 100%; padding-bottom: 56.25%; overflow: hidden; margin-bottom: 1rem; border: 2px solid #8b6914; border-radius: 3px; height: 0;">
+                    <iframe 
+                        width="560" 
+                        height="315" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                        title="A Foul Call Quest Playthrough"
+                        frameborder="0" 
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div style="color: #b8860b;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.75rem;">About this playthrough:</div>
+                    <p>This video showcases one path through A Foul Call. 
+                        Watch how Kliq investigates the garden, discovers Clare's ritual site, gathers information, 
+                        and makes critical choices about whom to tell and how to respond. 
+                        Notice how dialogue changes based on knowledge gathered, and how each decision carries weight.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Features with Images -->
+    <div class="max-w container-section">
+        <div class="section-title">🎮 CORE DESIGN FEATURES</div>
+
+        <!-- Feature Gallery with Images -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 240px; margin-bottom: 1rem;">
+                    🔀 Investigation Paths<br>
+                    <span style="font-size: 0.75em;">(images/three-paths.gif)</span>
+                </div>
+                <div style="background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; padding: 1.5rem;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">Multiple Investigation Paths</div>
+                    <div style="color: #b8860b; font-size: 0.9em; line-height: 1.6;">Three completely different ways to discover the truth: direct revelation, gathered clues, or brute force. Each feels like a different playstyle.</div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 240px; margin-bottom: 1rem;">
+                    📊 Attribute Choices<br>
+                    <span style="font-size: 0.75em;">(images/attribute-system.gif)</span>
+                </div>
+                <div style="background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; padding: 1.5rem;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">Attribute-Based Choices</div>
+                    <div style="color: #b8860b; font-size: 0.9em; line-height: 1.6;">Player-invested skills (Discovery, Charisma, Onslaught, Stealth) directly unlock dialogue options and story paths.</div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 240px; margin-bottom: 1rem;">
+                    🎭 Moral Complexity<br>
+                    <span style="font-size: 0.75em;">(images/moral-choices.gif)</span>
+                </div>
+                <div style="background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; padding: 1.5rem;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">Moral Complexity</div>
+                    <div style="color: #b8860b; font-size: 0.9em; line-height: 1.6;">No "good" or "evil" choice. Each path has wisdom and cost. Players navigate nuance, not alignment.</div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 240px; margin-bottom: 1rem;">
+                    🔗 Consequence Tracking<br>
+                    <span style="font-size: 0.75em;">(images/consequences.gif)</span>
+                </div>
+                <div style="background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; padding: 1.5rem;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">Consequence Tracking</div>
+                    <div style="color: #b8860b; font-size: 0.9em; line-height: 1.6;">Choices affect future quests, NPC availability, and trust relationships. The world remembers what Kliq did.</div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 240px; margin-bottom: 1rem;">
+                    👥 NPC Perspectives<br>
+                    <span style="font-size: 0.75em;">(images/npc-stories.gif)</span>
+                </div>
+                <div style="background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; padding: 1.5rem;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">Multiple NPC Perspectives</div>
+                    <div style="color: #b8860b; font-size: 0.9em; line-height: 1.6;">Lemuel, Clare, Kathlyn, and Foy each have their own truth. Players piece together a complex picture.</div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 240px; margin-bottom: 1rem;">
+                    ⚡ Playstyle Flexibility<br>
+                    <span style="font-size: 0.75em;">(images/playstyle-options.gif)</span>
+                </div>
+                <div style="background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%); border: 2px solid #8b6914; padding: 1.5rem;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">Playstyle Flexibility</div>
+                    <div style="color: #b8860b; font-size: 0.9em; line-height: 1.6;">Combat specialists, stealth players, diplomats—every playstyle has a path to success.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three Main Investigation Paths -->
+    <div class="max-w container-section">
+        <div class="chapter-divider">⚔ THREE PATHS TO DISCOVERY ⚔</div>
+
+        <div class="section-container">
+            <div class="section-title">🔍 HOW PLAYERS INVESTIGATE</div>
+            <div class="content-block">
+                A Foul Call offers three distinct investigation approaches. Each leads to the same truth but shapes how Kliq discovers it and which NPCs he encounters along the way.
+            </div>
+        </div>
+
+        <div class="path-container">
+            <!-- Path 1: Direct -->
+            <div class="path-card">
+                <div class="path-icon">🎯</div>
+                <div class="path-title">The Direct Path</div>
+                <div class="path-desc">
+                    Kliq goes straight to Lemuel. The reverend immediately reveals the foul smell emanating from Clare's garden, cutting through investigation and moving directly to action.
+                </div>
+                <div class="path-requirement">
+                    ⏱️ Context Heavy route
+                </div>
+                <div style="color: #b8860b; font-size: 0.85em; border-top: 1px solid #8b6914; padding-top: 0.75rem;">
+                    <strong>Flow:</strong> Speak to Lemuel → Investigate Garden → Report Findings → Go to Barn → Fight Spirit → Consequences
+                </div>
+            </div>
+
+            <!-- Path 2: Investigation -->
+            <div class="path-card">
+                <div class="path-icon">🔎</div>
+                <div class="path-title">The Investigation Path</div>
+                <div class="path-desc">
+                    Kliq interviews townsfolk about three mysterious events: missing pumpkins, foul smell, and sickness from rotten mushrooms. Each NPC provides a voice line that adds a discovery to the journal, painting a picture of something wrong.
+                </div>
+                <div class="path-requirement">
+                    📊 Discovery heavy route
+                </div>
+                <div style="color: #b8860b; font-size: 0.85em; border-top: 1px solid #8b6914; padding-top: 0.75rem;">
+                    <strong>Flow:</strong> Gather 3 Clues → Speak to Lemuel → Get Keys → Go to Barn → Fight Spirit → Consequences
+                </div>
+            </div>
+
+            <!-- Path 3: Direct Action -->
+            <div class="path-card">
+                <div class="path-icon">💪</div>
+                <div class="path-title">The Onslaught Path</div>
+                <div class="path-desc">
+                    Kliq bypasses investigation entirely and goes directly to the barn. 
+                    Using the Onslaught attribute (a skill player has invested points in), 
+                    he breaks the barn door and confronts the spirit head-on, skipping all preceding story beats.
+                </div>
+                <div class="path-requirement">
+                    ⚔️ Fastest Route
+                </div>
+                <div style="color: #b8860b; font-size: 0.85em; border-top: 1px solid #8b6914; padding-top: 0.75rem;">
+                    <strong>Flow:</strong> Go to Barn → Break Door → Fight Spirit → Consequences
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Investigation Mechanics -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« INVESTIGATING THE GARDEN »</div>
+        
+            <div class="subsection">
+                <div class="subsection-title">Two Ways to Access Clare's House</div>
+                <div class="subsection-text">
+                    <strong>Discovery Attribute:</strong> Find the magic vines leading directly to Clare's house through investigation and observation.<br><br>
+                    <strong>Charisma Attribute:</strong> Talk to Foy, the garden helper. Using charm or persuasion, convince him to reveal Clare's location directly.
+                </div>
+            </div>
+
+            <!-- Two Access Methods - Side by Side Images -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 250px;">
+                        🔍 Discovery Path<br>
+                        <span style="font-size: 0.8em;">(images/discovery-vines.png)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Follow the Vines</div>
+                    <div style="color: #b8860b; font-size: 0.9em;">Investigate the magical vines to find the path</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 250px;">
+                        💬 Charisma Path<br>
+                        <span style="font-size: 0.8em;">(images/foy-dialogue.gif)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Charm Foy the Garden Helper</div>
+                    <div style="color: #b8860b; font-size: 0.9em;">Use charisma to convince Foy to reveal Clare's location</div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">The Ritual Site Revelation</div>
+                <div class="subsection-text">
+                    At the ritual site, Kliq finds evidence of dark magic. A book bears Kathlyn's name—a connection that raises questions about who is truly involved in this ritual and why.
+                </div>
+            </div>
+
+        <!-- Two Access Methods - Side by Side Images -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 250px;">
+                    🎃 Discovery Path<br>
+                    <span style="font-size: 0.8em;">(images/ritual-site.png)</span>
+                </div>
+                <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Botched Ritual</div>
+                <div style="color: #b8860b; font-size: 0.9em;">Kliq discovers a ritual site made by amateurs</div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="image-placeholder" style="height: 250px;">
+                    📖 Discovery Path<br>
+                    <span style="font-size: 0.8em;">(images/kathlyn-book.gif)</span>
+                </div>
+                <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Kathlyn's Spell Book</div>
+                <div style="color: #b8860b; font-size: 0.9em;">Kliq discovers a spellbook with Kathlyn's name</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Key Decision Points -->
+    <div class="max-w container-section">
+        <div class="chapter-divider">⚔ PIVOTAL CHOICES ⚔</div>
+
+        <div class="section-container">
+            <div class="section-title">🎭 DIALOGUE DECISIONS WITH CONSEQUENCE</div>
+
+            <!-- First Decision: Finding the Key -->
+            <div class="dialogue-tree">
+                <div class="dialogue-speaker">SCENARIO: Getting Access to the Barn</div>
+                <div class="dialogue-text">Kliq has discovered the ritual site but needs the key to the barn where the spirit is imprisoned.</div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">OPTION 1: Report to Lemuel</div>
+                    <div style="color: #b8860b;">Kliq tells Lemuel about the amateurish ritual. 
+                        Lemuel trusts Kliq's judgment and gives him the key without pressing for details. 
+                        This preserves Lemuel's trust in Kliq's autonomy.</div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">OPTION 2: Find Kathlyn</div>
+                    <div style="color: #b8860b;">Kliq discovers Kathlyn's name and address in the book and seeks her out. 
+                        "Who even writes their name and address on a dark spell rituals book?" says Kliq.
+                        She also possesses a key to the barn. This path creates a new alliance and provides alternative access.</div>
+                </div>
+                <!-- Image: Lemuel vs Kathlyn Path -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 250px;">
+                            🎭 Speaking to Lemuel<br>
+                            <span style="font-size: 0.8em;">(images/lemuel-dialogue.gif)</span>
+                        </div>
+                        <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Trust Lemuel</div>
+                        <div style="color: #b8860b; font-size: 0.9em;">Lemuel gives the key and trusts your judgment</div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 250px;">
+                            👥 Seeking out Kathlyn<br>
+                            <span style="font-size: 0.8em;">(images/kathlyn-dialogue.gif)</span>
+                        </div>
+                        <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Find Kathlyn</div>
+                        <div style="color: #b8860b; font-size: 0.9em;">Kathlyn provides an alternative key and reveals her involvement</div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+    <!-- Dynamic Dialogue Based on Approach -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« CONTEXT-AWARE DIALOGUE »</div>
+
+        <div class="section-container">
+            <div class="section-title">💬 MEETING CLARE: DIALOGUE CHANGES WITH KNOWLEDGE</div>
+            <div class="content-block">
+                When Kliq reaches Clare in the barn, his opening dialogue shifts based on what he's learned along the way. Same meeting, different conversation. This creates micro-variations that feel organic to the journey taken.
+            </div>
+
+            <!-- Scenario 1: Direct Approach -->
+            <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                <div style="color: #d4af37; font-size: 1.2em; font-weight: bold; margin-bottom: 1rem;">
+                    🎯 SCENARIO 1: The Direct Approach
+                </div>
+                <div style="color: #b8860b; margin-bottom: 1rem;">
+                    Kliq went straight to Lemuel, got the barn key, and came directly here. He knows nothing about Clare except that a ritual happened.
+                </div>
+
+                <!-- Image for Direct Approach -->
+                <div style="margin: 1.5rem 0;">
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 250px;">
+                            🎬 Barn Meeting (Direct)<br>
+                            <span style="font-size: 0.8em;">(images/barn-direct-approach.gif)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 105, 20, 0.2); padding: 1rem; border-left: 3px solid #d4af37; margin: 1rem 0;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">KLIQ:</div>
+                    <div style="color: #b8860b; font-style: italic;">"Who are you?"</div>
+                    <div style="margin-top: 0.75rem; color: #b8860b;">
+                        <strong style="color: #d4af37;">Analysis:</strong> Kliq has no context. He doesn't know her name, her involvement, or her situation. His question is direct and probing—he's gathering information.
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 105, 20, 0.2); padding: 1rem; border-left: 3px solid #90ee90; margin: 1rem 0;">
+                    <div style="color: #90ee90; font-weight: bold; margin-bottom: 0.5rem;">CLARE:</div>
+                    <div style="color: #b8860b; font-style: italic;">"I'm Clare. I... I was trying to win the competition."</div>
+                    <div style="margin-top: 0.75rem; color: #b8860b;">
+                        <strong style="color: #90ee90;">Impact:</strong> Clare's answer is defensive and explanatory. She assumes Kliq doesn't know anything, so she offers information freely to justify herself.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2: Garden Investigated -->
+            <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                <div style="color: #d4af37; font-size: 1.2em; font-weight: bold; margin-bottom: 1rem;">
+                    🔍 SCENARIO 2: Investigated the Garden
+                </div>
+                <div style="color: #b8860b; margin-bottom: 1rem;">
+                    Kliq investigated Clare's garden, found the ritual site, and either followed the vines or talked to Foy. He knows the ritual happened in her garden but hasn't spoken to Kathlyn.
+                </div>
+
+                <!-- Image for Garden Approach -->
+                <div style="margin: 1.5rem 0;">
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 250px;">
+                            🎬 Barn Meeting (Garden Knowledge)<br>
+                            <span style="font-size: 0.8em;">(images/barn-garden-approach.gif)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 105, 20, 0.2); padding: 1rem; border-left: 3px solid #d4af37; margin: 1rem 0;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">KLIQ:</div>
+                    <div style="color: #b8860b; font-style: italic;">"I was in your garden. I saw what you did. What's your name?"</div>
+                    <div style="margin-top: 0.75rem; color: #b8860b;">
+                        <strong style="color: #d4af37;">Analysis:</strong> Kliq has evidence. He confronts her with what he knows, showing he's done his homework. His question now has weight—he already knows the ritual was hers.
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 105, 20, 0.2); padding: 1rem; border-left: 3px solid #90ee90; margin: 1rem 0;">
+                    <div style="color: #90ee90; font-weight: bold; margin-bottom: 0.5rem;">CLARE:</div>
+                    <div style="color: #b8860b; font-style: italic;">"I'm Clare. Please... you have to understand, I wasn't trying to hurt anyone."</div>
+                    <div style="margin-top: 0.75rem; color: #b8860b;">
+                        <strong style="color: #90ee90;">Impact:</strong> Clare is caught. She knows Kliq saw the garden. Her response shifts to defensiveness and pleading. She's no longer offering information—she's asking for mercy.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3: Spoke to Kathlyn -->
+            <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                <div style="color: #d4af37; font-size: 1.2em; font-weight: bold; margin-bottom: 1rem;">
+                    🎭 SCENARIO 3: Spoke to Kathlyn First
+                </div>
+                <div style="color: #b8860b; margin-bottom: 1rem;">
+                    Kliq found Kathlyn's name in the book, tracked her down, and spoke with her. He knows both conspirators' names and that they worked together. He arrives at the barn with full knowledge.
+                </div>
+
+                <!-- Image for Full Knowledge Approach -->
+                <div style="margin: 1.5rem 0;">
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 250px;">
+                            🎬 Barn Meeting (Full Knowledge)<br>
+                            <span style="font-size: 0.8em;">(images/barn-full-knowledge.gif)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 105, 20, 0.2); padding: 1rem; border-left: 3px solid #d4af37; margin: 1rem 0;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">KLIQ:</div>
+                    <div style="color: #b8860b; font-style: italic;">"Kathlyn told me everything, Clare. I know what you both did."</div>
+                    <div style="margin-top: 0.75rem; color: #b8860b;">
+                        <strong style="color: #d4af37;">Analysis:</strong> Kliq cuts through all pretense. He has the full picture. His statement is direct and reveals he's already gathered all the information. The dialogue is shorter because there's nothing left to discover.
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 105, 20, 0.2); padding: 1rem; border-left: 3px solid #90ee90; margin: 1rem 0;">
+                    <div style="color: #90ee90; font-weight: bold; margin-bottom: 0.5rem;">CLARE:</div>
+                    <div style="color: #b8860b; font-style: italic;">"... Yes. We both did this. Kathlyn wanted to help me."</div>
+                    <div style="margin-top: 0.75rem; color: #b8860b;">
+                        <strong style="color: #90ee90;">Impact:</strong> Clare's response is resigned. She knows there's no hiding. The dialogue is cut short—she acknowledges reality rather than defend or explain. This version feels more honest and less performative.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Chart -->
+            <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                <div style="color: #d4af37; font-size: 1.1em; font-weight: bold; margin-bottom: 1rem;">
+                    📊 Dialogue Comparison
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div style="padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #90ee90;">
+                        <div style="color: #90ee90; font-weight: bold; margin-bottom: 0.5rem;">Direct Approach</div>
+                        <div style="color: #b8860b; font-size: 0.85em; line-height: 1.6;">
+                            <strong style="color: #d4af37;">Tone:</strong> Curious, investigating<br>
+                            <strong style="color: #d4af37;">Length:</strong> Longer exchange<br>
+                            <strong style="color: #d4af37;">Energy:</strong> Clare explains more
+                        </div>
+                    </div>
+
+                    <div style="padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #90ee90;">
+                        <div style="color: #90ee90; font-weight: bold; margin-bottom: 0.5rem;">Garden Knowledge</div>
+                        <div style="color: #b8860b; font-size: 0.85em; line-height: 1.6;">
+                            <strong style="color: #d4af37;">Tone:</strong> Confrontational<br>
+                            <strong style="color: #d4af37;">Length:</strong> Medium exchange<br>
+                            <strong style="color: #d4af37;">Energy:</strong> Clare becomes defensive
+                        </div>
+                    </div>
+
+                    <div style="padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #90ee90;">
+                        <div style="color: #90ee90; font-weight: bold; margin-bottom: 0.5rem;">Full Knowledge</div>
+                        <div style="color: #b8860b; font-size: 0.85em; line-height: 1.6;">
+                            <strong style="color: #d4af37;">Tone:</strong> Accusatory, final<br>
+                            <strong style="color: #d4af37;">Length:</strong> Short & direct<br>
+                            <strong style="color: #d4af37;">Energy:</strong> Clare admits immediately
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+            <!-- Second Decision: The Final Conversation with Clare -->
+            <div class="dialogue-tree">
+                <div class="dialogue-speaker">AFTER DEFEATING THE SPIRIT</div>
+                <div class="dialogue-text">Clare is freed from the spirit's life-draining vines. She understands what she's done—attempted a dark ritual to win the pumpkin competition. Now Kliq must choose how to respond.</div>
+
+                <div style="margin: 2rem 0;">
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 300px;">
+                            ⚔️ Defeating the Pumpkin Spirit<br>
+                            <span style="font-size: 0.8em;">(images/spirit-defeat.gif)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">CHOICE 1: Assure Her</div>
+                    <div style="color: #b8860b;">"I won't tell anyone. You're safe now."<br><br>
+                    <strong style="color: #90ee90;">Consequence:</strong> Clare becomes grateful and loyal. She will help Kliq in a future quest (still in design). A potential ally is made.</div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">CHOICE 2: Judge Her</div>
+                    <div style="color: #b8860b;">"You deserve punishment for what you've done."<br><br>
+                    <strong style="color: #90ee90;">Consequence:</strong> Clare understands your judgment. She accepts responsibility but no alliance is formed. This path is morally stern but creates no future benefit.</div>
+                </div>
+            </div>
+
+            <!-- Image: Clare Reactions -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 250px;">
+                        💚 Assuring Clare<br>
+                        <span style="font-size: 0.8em;">(images/clare-assured.gif)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Mercy Route</div>
+                    <div style="color: #b8860b; font-size: 0.9em;">Clare becomes grateful and becomes a future ally</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 250px;">
+                        ⚖️ Judging Clare<br>
+                        <span style="font-size: 0.8em;">(images/clare-judged.gif)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Justice Route</div>
+                    <div style="color: #b8860b; font-size: 0.9em;">Clare accepts judgment but no alliance forms</div>
+                </div>
+            </div>
+
+            <!-- Third Decision: What to Tell Lemuel -->
+            <div class="dialogue-tree">
+                <div class="dialogue-speaker">THE FINAL CONVERSATION WITH LEMUEL</div>
+                <div class="dialogue-text">Lemuel asks what Kliq discovered. The truth about Clare and Kathlyn's involvement now hangs in the balance. Kliq can reveal nothing, partial truth, or full truth.</div>
+
+                <div style="margin: 2rem 0;">
+                    <div style="text-align: center;">
+                        <div class="image-placeholder" style="height: 300px;">
+                            🎭 Final Lemuel Conversation<br>
+                            <span style="font-size: 0.8em;">(images/lemuel-final.gif)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">OPTION 1: Tell Nothing</div>
+                    <div style="color: #b8860b;">"I handled it. The problem is solved."<br><br>
+                    <strong style="color: #90ee90;">✓ BEST ENDING:</strong> Lemuel has said he trusts what Kliq is doing and won't press for details. This preserves everyone's secret and shows wisdom in discretion. Both Clare and Kathlyn remain in the village, protected.</div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">OPTION 2: Tell About Clare Only</div>
+                    <div style="color: #b8860b;">"Clare was behind the ritual. She was trying to win the competition."<br><br>
+                    <strong style="color: #b8860b;">✗ WORST ENDING:</strong> Lemuel has no choice but to act. Clare is banished from Stone-Upon-Fleen. A woman who was already suffering is now exiled. Kliq's judgment becomes the instrument of her downfall.</div>
+                </div>
+
+                <div style="margin-top: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(139, 105, 20, 0.1); border-left: 3px solid #d4af37;">
+                    <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">OPTION 3: Tell About Both</div>
+                    <div style="color: #b8860b;">"Both Clare and Kathlyn were involved. They performed the ritual together."<br><br>
+                    <strong style="color: #90ee90;">Consequence:</strong> Both face potential judgment. Lemuel must deal with both parties. Full transparency, but also full responsibility for the consequences.</div>
+                </div>
+            </div>
+
+            <!-- Image: Ending Paths -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 230px;">
+                        🤐 Tell Nothing<br>
+                        <span style="font-size: 0.8em;">(images/ending-silence.png)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Discretion</div>
+                    <div style="color: #90ee90; font-size: 0.85em;">✓ Best Ending</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 230px;">
+                        📢 Tell About Clare<br>
+                        <span style="font-size: 0.8em;">(images/ending-exposure.png)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Exposure</div>
+                    <div style="color: #b8860b; font-size: 0.85em;">✗ Worst Ending</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder" style="height: 230px;">
+                        📋 Tell About Both<br>
+                        <span style="font-size: 0.8em;">(images/ending-truth.png)</span>
+                    </div>
+                    <div style="color: #d4af37; font-weight: bold; margin-top: 0.75rem;">Full Truth</div>
+                    <div style="color: #90ee90; font-size: 0.85em;">Complex Ending</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Ending Outcomes -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« QUEST ENDINGS »</div>
+
+        <div class="section-container">
+            <div class="section-title">🎬 OUTCOMES & CONSEQUENCES</div>
+
+            <div class="ending-container">
+                <div class="ending-card">
+                    <div class="ending-title">✓ Best Ending: Discretion</div>
+                    <div class="ending-desc">
+                        Kliq tells Lemuel nothing about Clare or Kathlyn. The secret is kept. Both women remain in the village. Clare is grateful for being saved and becomes an ally. Lemuel respects Kliq's judgment.
+                    </div>
+                    <div class="ending-consequence">
+                        Future Quest: Clare can be called upon to help Kliq in a future mission. Lemuel's trust deepens.
+                    </div>
+                </div>
+
+                <div class="ending-card">
+                    <div class="ending-title">✗ Worst Ending: Exposure</div>
+                    <div class="ending-desc">
+                        Kliq tells Lemuel only about Clare, protecting Kathlyn. Lemuel has no choice but to enforce village justice. Clare is banished from Stone-Upon-Fleen. She is exiled for her crime.
+                    </div>
+                    <div class="ending-consequence">
+                        Clare loses her home and life. Kathlyn remains secret, creating a debt to Kliq. A dark ending born from incomplete mercy.
+                    </div>
+                </div>
+
+                <div class="ending-card">
+                    <div class="ending-title">📋 Full Truth: Both Exposed</div>
+                    <div class="ending-desc">
+                        Kliq reveals both Clare and Kathlyn's involvement. Lemuel must address both. The truth is laid bare, and justice—whatever form it takes—falls on both conspirators.
+                    </div>
+                    <div class="ending-consequence">
+                        Full transparency but complex consequences. Both NPCs' fates are uncertain. Lemuel makes the final judgment.
+                    </div>
+                </div>
+
+                <div class="ending-card">
+                    <div class="ending-title">⚔️ Stealth Kill Ending</div>
+                    <div class="ending-desc">
+                        If Kliq has high Stealth, he kills the pumpkin spirit without a fight. No witnesses. Clare is freed silently. Everything proceeds as normal, but Kliq solved it alone.
+                    </div>
+                    <div class="ending-consequence">
+                        Lemuel never knows about the barn. No one saw the truth. Kliq's method remains his secret. A ghost resolution.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Design Philosophy -->
+    <div class="max-w container-section">
+        <div class="chapter-divider">⚔ DESIGN PHILOSOPHY ⚔</div>
+
+        <div class="section-container">
+            <div class="section-title">💡 CORE DESIGN THINKING</div>
+
+            <div class="subsection">
+                <div class="subsection-title">Player Agency Through Attributes</div>
+                <div class="subsection-text">
+                    Every skill point a player invests (Discovery, Charisma, Onslaught, Stealth) directly unlocks narrative paths. A combat-focused character experiences the quest differently from an investigation-focused one. This makes character progression feel consequential to story.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Moral Ambiguity Over Judgment</div>
+                <div class="subsection-text">
+                    The quest doesn't judge the player for their choices. Remaining silent isn't "good" and honesty isn't "pure good." Each path has wisdom and cost. Clare is a victim of her own ambition but still a sympathetic character. Kathlyn is complicit but mysterious. Players must navigate nuance, not alignment.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Multiple Truths</div>
+                <div class="subsection-text">
+                    The three investigation paths (Direct, Clue-Gathering, Onslaught) arrive at the same ritual site but with different understandings of the context. A player who gathers clues understands the village's suffering. A direct player is spared that emotional weight. Both are valid experiences.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Consequences That Ripple Forward</div>
+                <div class="subsection-text">
+                    Choices in A Foul Call affect future quests (Clare's alliance), NPC availability (her potential banishment), and trust relationships (Lemuel's trust in Kliq's judgment). The world remembers what Kliq did.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Accessibility Through Flexibility</div>
+                <div class="subsection-text">
+                    A stealth-focused player can bypass the entire investigation and confrontation. A combat player can Onslaught the barn door. A diplomatic player can charm Foy. Every playstyle has a path to victory. No player is locked out of the quest's core experience.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="max-w container-section">
+        <div class="chapter-divider">⚔ KEYWORDS & SYSTEMS ⚔</div>
+        <div class="tags-container">
+            <div class="tag">Multiple Investigation Paths</div>
+            <div class="tag">Attribute-Based Choices</div>
+            <div class="tag">Moral Complexity</div>
+            <div class="tag">NPC Relationships</div>
+            <div class="tag">Consequence Tracking</div>
+            <div class="tag">Dialogue Branching</div>
+            <div class="tag">Player Agency</div>
+            <div class="tag">Voice Line Discovery</div>
+            <div class="tag">Future Quest Hooks</div>
+            <div class="tag">Stealth Options</div>
+            <div class="tag">Character-Driven Narrative</div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« INTERESTED IN COLLABORATION? »</div>
+        <div style="text-align: center; padding: 2rem;">
+            <div style="color: #b8860b; font-size: 1.1em; margin-bottom: 1.5rem;">
+                This project demonstrates sophisticated narrative design: player agency, moral complexity, attribute integration, and consequence systems that feel meaningful. If you're building quests that matter, let's talk.
+            </div>
+            <a href="/cdn-cgi/l/email-protection#3e47514b4c135b535f57527e5b465f534e525b105d5153" class="cta-button">
+                SEND RAVEN MESSAGE
+            </a>
+            <a href="index.html#quests" class="cta-button" style="margin-left: 1rem; background: linear-gradient(135deg, #3a3430 0%, #2a2420 100%); border-color: #8b6914; color: #d4af37;">
+                BACK TO GRIMOIRE
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="grimoire-footer">
+        <div class="header-ornament" style="margin: 0;">✦ FINIS ✦</div>
+        <div style="font-size: 0.9em; margin-top: 1rem;">© 2024 The Designer's Grimoire</div>
+        <div style="font-size: 0.8em; color: #8b6914; margin-top: 0.5rem;">A Foul Call - Narrative Design with Multiple Investigative paths </div>
+    </div>
+</body>
