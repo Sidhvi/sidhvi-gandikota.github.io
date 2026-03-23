@@ -614,11 +614,18 @@
 
     <script>
         const projects = [
-            // NARRATIVE DESIGN
             {
                 id: 1,
                 category: 'narrative',
                 title: 'The Branching Pathways',
+                description: '300+ dialogue nodes with personality-locked choices, consequence tracking, and dynamic quest restructuring. Every conversation a new thread in the tapestry of your story.',
+                tags: ['Dialogue Trees', 'Personality Systems', 'Consequence Maps'],
+                quest: 'Let dialogue be character; let choices echo through worlds.'
+            },
+            {
+                id: 1,
+                category: 'combat',
+                title: 'AI Combat Design',
                 description: '300+ dialogue nodes with personality-locked choices, consequence tracking, and dynamic quest restructuring. Every conversation a new thread in the tapestry of your story.',
                 tags: ['Dialogue Trees', 'Personality Systems', 'Consequence Maps'],
                 quest: 'Let dialogue be character; let choices echo through worlds.'
@@ -630,6 +637,7 @@
         // Mapping project titles to their detail pages
         const projectLinks = {
             'The Branching Pathways': 'projects/project-a-foul-call/project-a-foul-call-tabbed.html',
+            'AI Combat Design': 'projects/project-a-foul-call/project-a-foul-call-tabbed.html',
         };
 
         function renderProjects() {
