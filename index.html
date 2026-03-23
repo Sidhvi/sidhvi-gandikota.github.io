@@ -314,35 +314,6 @@
             top: 50%;
             left: 50%;
         }
-
-        .project-rarity {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border: 1px solid;
-            margin-bottom: 0.5rem;
-            font-size: 0.8em;
-            font-weight: bold;
-            letter-spacing: 0.05em;
-        }
-
-        .rarity-legendary {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: #ffd700;
-            color: #ffd700;
-        }
-
-        .rarity-epic {
-            background: rgba(138, 43, 226, 0.1);
-            border-color: #8a2be2;
-            color: #8a2be2;
-        }
-
-        .rarity-rare {
-            background: rgba(0, 191, 255, 0.1);
-            border-color: #00bfff;
-            color: #00bfff;
-        }
-
         .project-title {
             color: #d4af37;
             font-size: 1.2em;
@@ -645,7 +616,7 @@
         const projects = [
             // NARRATIVE DESIGN
             {
-                id: 4,
+                id: 1,
                 category: 'narrative',
                 title: 'The Branching Pathways',
                 description: '300+ dialogue nodes with personality-locked choices, consequence tracking, and dynamic quest restructuring. Every conversation a new thread in the tapestry of your story.',
@@ -658,15 +629,7 @@
 
         // Mapping project titles to their detail pages
         const projectLinks = {
-            'Adaptive Difficulty Tapestry': 'project-adaptive-difficulty.html',
-            'Faction Web of Influence': 'project-faction-system.html',
-            'Economic Equilibrium Framework': 'project-economy-system.html',
             'The Branching Pathways': 'projects/project-a-foul-call/project-a-foul-call-tabbed.html',
-            'Lore Woven in Stone & Soil': 'project-environmental-lore.html',
-            'Companion Evolution Engine': 'project-companion-system.html',
-            'The Stance Philosophy': 'project-combat-stances.html',
-            'Hierarchical Enemy Intelligence': 'project-enemy-ai.html',
-            'Dynamic Encounter Scaling': 'project-encounter-design.html'
         };
 
         function renderProjects() {
@@ -696,8 +659,7 @@
                     this.style.transform = 'translateY(-8px)';
                 });
 
-                card.innerHTML = `
-            <div class="project-rarity ${rarityClass}">${project.rarity.toUpperCase()}</div>
+                card.innerHTML = 
             <div class="project-title">⚔ ${project.title}</div>
             <div class="project-description">${project.description}</div>
             <div style="color: #90ee90; font-size: 0.9em; font-style: italic; margin-bottom: 1rem; padding: 0.75rem; background: rgba(144, 238, 144, 0.1); border-left: 2px solid #90ee90;">
