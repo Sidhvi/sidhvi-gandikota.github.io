@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Whimsical - Basic AI System - Sidhvi's Design Journal">
+    <title>Project Whimsical's: Basic AI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0a0a0a 100%);
+            background-attachment: fixed;
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 105, 20, 0.3);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-bottom: 3px solid #8b6914;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+
+        .project-title {
+            font-size: 2.5em;
+            color: #d4af37;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 105, 20, 0.4);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50% { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #b8860b;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border-color: #d4af37;
+            color: #d4af37;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.6);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: #d4af37;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: #b8860b;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .subsection {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 4px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.1);
+        }
+
+        .subsection-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .subsection-text {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .path-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .path-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .path-card:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .path-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .path-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .path-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .feature-title {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1em;
+        }
+
+        .feature-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .pillar-box {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 5px solid #d4af37;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .pillar-number {
+            color: #d4af37;
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-desc {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .system-diagram {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .system-flow {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(139, 105, 20, 0.2);
+            border-radius: 3px;
+        }
+
+        .arrow {
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 0.5rem 0;
+        }
+
+        .learning-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .learning-text {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-top: 3px solid #8b6914;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #b8860b;
+        }
+
+        /* Uniform gif-card */
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .gif-card:hover {
+            transform: scale(1.5);
+            z-index: 9999;
+
+            border-color: #d4af37;
+            box-shadow: 0 20px 50px rgba(139, 105, 20, 0.5);
+        }
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .gif-card-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+        .gif-card-desc {
+            color: #b8860b;
+            font-size: 0.88em;
+            line-height: 1.6;
+            flex: 1;
+        }
+        /* Non-interactable gif-card */
+        .gif-non-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            width:50%;
+            margin: 0 auto;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .gif-non-card img {
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+
+        /* STATE MACHINE STYLES */
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+            overflow: visible;
+        }
+
+        .state-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: visible;
+            z-index: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .state-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+
+        .state-card.patrol::before { background: #4a9e4a; }
+        .state-card.halt::before { background: #d4af37; }
+        .state-card.alert::before { background: #e88a2e; }
+        .state-card.combat::before { background: #cc3333; }
+        .state-card.investigate::before { background: #5b8dd9; }
+
+        .state-card:hover {
+            z-index: 10;
+            position: relative;
+            transform: none;
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .state-label {
+            font-size: 0.75em;
+            font-weight: bold;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .state-card.patrol .state-label { color: #4a9e4a; }
+        .state-card.halt .state-label { color: #d4af37; }
+        .state-card.alert .state-label { color: #e88a2e; }
+        .state-card.combat .state-label { color: #cc3333; }
+        .state-card.investigate .state-label { color: #5b8dd9; }
+
+        .state-name {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .state-icon {
+            font-size: 2em;
+            margin-bottom: 0.5rem;
+        }
+
+        .state-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+
+        .state-trigger {
+            font-size: 0.8em;
+            padding: 0.4rem 0.75rem;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .state-card.patrol .state-trigger { background: rgba(74,158,74,0.15); color: #4a9e4a; border: 1px solid #4a9e4a; }
+        .state-card.halt .state-trigger { background: rgba(212,175,55,0.15); color: #d4af37; border: 1px solid #d4af37; }
+        .state-card.alert .state-trigger { background: rgba(232,138,46,0.15); color: #e88a2e; border: 1px solid #e88a2e; }
+        .state-card.combat .state-trigger { background: rgba(204,51,51,0.15); color: #cc3333; border: 1px solid #cc3333; }
+        .state-card.investigate .state-trigger { background: rgba(91,141,217,0.15); color: #5b8dd9; border: 1px solid #5b8dd9; }
+
+        /* METER BARS */
+        .meter-container {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #8b6914;
+            border-radius: 2px;
+            height: 10px;
+            margin-top: 0.75rem;
+            overflow: visible;
+        }
+
+        .meter-fill {
+            height: 100%;
+            border-radius: 2px;
+            animation: meter-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes meter-pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .state-card.halt .meter-fill { background: linear-gradient(90deg, #d4af37, #f5d060); width: 40%; }
+        .state-card.alert .meter-fill { background: linear-gradient(90deg, #e88a2e, #f5a952); width: 75%; }
+        .state-card.combat .meter-fill { background: linear-gradient(90deg, #cc3333, #e85555); width: 100%; }
+        .state-card.investigate .meter-fill { background: linear-gradient(90deg, #5b8dd9, #7aaef5); width: 55%; }
+
+        /* FLOW DIAGRAM */
+        .flow-node {
+            padding: 1rem 1.5rem;
+            border: 2px solid;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 3px;
+            margin: 0.5rem auto;
+            max-width: 350px;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.4em;
+            margin: 0.3rem 0;
+            line-height: 1;
+        }
+
+        .flow-label {
+            text-align: center;
+            color: #8b6914;
+            font-size: 0.8em;
+            font-style: italic;
+            margin-bottom: 0.3rem;
+        }
+
+        .flow-branch {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 0.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-branch-item {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        /* IMAGE PLACEHOLDER STYLES */
+        .media-placeholder {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px dashed #8b6914;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            margin: 1.25rem 0;
+            text-align: center;
+            gap: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .media-placeholder:hover { border-color: #d4af37; }
+        .media-placeholder .ph-icon { font-size: 2.2em; opacity: 0.6; }
+        .media-placeholder .ph-label { color: #d4af37; font-weight: bold; font-size: 0.95em; letter-spacing: 0.08em; }
+        .media-placeholder .ph-hint { color: #8b6914; font-size: 0.78em; font-style: italic; }
+        .media-placeholder.tall { min-height: 220px; }
+        .media-placeholder.short { min-height: 140px; }
+
+        .media-caption {
+            color: #8b6914;
+            font-size: 0.8em;
+            font-style: italic;
+            text-align: center;
+            margin-top: -0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .media-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1200px) {
+            .max-w { padding: 0 60px; }
+        }
+
+        @media (max-width: 900px) {
+            .max-w { padding: 0 32px; }
+            .path-container { grid-template-columns: repeat(2, 1fr); }
+            .state-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .max-w { padding: 0 16px; }
+            .project-title { font-size: 1.6em; }
+            .tab-buttons { flex-direction: column; }
+            .tab-button { width: 100%; }
+            .path-container { grid-template-columns: repeat(2, 1fr); }
+            .state-grid { grid-template-columns: repeat(2, 1fr); }
+            .media-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 420px) {
+            .path-container { grid-template-columns: 1fr; }
+            .state-grid { grid-template-columns: 1fr; }
+            .media-grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="design-journal-nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-title" style="text-decoration: none; cursor: pointer;">SIDHVI'S DESIGN JOURNAL</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w container-section parchment" >
+       <!-- <div class="header-ornament">✦ SYSTEMS DESIGN ✦</div> -->
+        <div class="project-title">⚙ PROJECT WHIMSICAL'S: Basic AI ⚙</div>
+
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #b8860b;">CATEGORY:</span>
+                <span>AI Design · Encounter Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">TYPE:</span>
+                <span>Enemy AI State Machine</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">ENGINE:</span>
+                <span>Unreal Engine</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">STATES:</span>
+                <span>5 Behaviour States</span>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview', event)">Overview</button>
+                <button class="tab-button" onclick="switchTab('states', event)">State Breakdown</button>
+                <button class="tab-button" onclick="switchTab('flow', event)">AI Behaviour Flow</button>
+                <button class="tab-button" onclick="switchTab('philosophy', event)">Design Pillars & Systems</button>
+                <button class="tab-button" onclick="switchTab('learnings', event)">Learnings</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                <div class="section-container">
+                    <div class="section-title">⚙ SYSTEM SUMMARY</div>
+                    <div class="content-block">
+                        Project Whimsical's Basic AI system is a reactive enemy behaviour framework built in Unreal Engine utilising Blueprints and Statetree. <br> 
+                        It creates intelligent, escalating responses to player presence - from peaceful spline-based patrol to full combat engagement - using a layered detection and alertness model that rewards player stealth and punishes carelessness.
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">The Design Goal</div>
+                        <div class="subsection-text">
+                            The AI is designed to feel challenging and credible without being overwhelming. <br> 
+                            Rather than binary "sees you / doesn't see you" switches, 
+                            it uses a graduated alertness system with escalating meters that give players time to react, hide, or engage. <br>
+                            Every encounter can play out differently depending on the player's choices while adhering to various playstyles.
+                        </div>
+                    </div>
+
+                    <div class="gif-non-card">
+                        <img src="./projects/project-basic-ai//images/header.gif" alt="AI Complete">
+                    </div> <br>
+                    <div class="media-caption"><strong> Full AI encounter</strong> </div>
+                </div>
+
+                <!-- Core Feature Cards -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚙ SYSTEM HIGHLIGHTS ⚙</div>
+                    <div class="section-title">🎮 CORE DESIGN FEATURES</div>
+                    <div class="path-container">
+                        <div class="path-card">
+                            <div class="path-icon">🛤️</div>
+                            <div class="path-title">Spline Patrol</div>
+                            <div class="path-desc">
+                                Each enemy is assigned a patrol spline, creating predictable but varied patrol routes. Players can observe and exploit patrol timing to navigate undetected.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">📊</div>
+                            <div class="path-title">Graduated Alertness</div>
+                            <div class="path-desc">
+                                Detection isn't instant. A two-stage meter system (Alert → Combat) gives players a narrow window to break line of sight and abort an encounter before it escalates.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">📏</div>
+                            <div class="path-title">Distance-Scaled Detection</div>
+                            <div class="path-desc">
+                                The closer the player is when spotted, the faster the Alert and Combat meters fill. Keeping distance buys time — closing in accelerates escalation. Players are rewarded for cautious, ranged observation.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">🔍</div>
+                            <div class="path-title">Investigation Mode</div>
+                            <div class="path-desc">
+                                If the player hides before the combat meter fills, the AI enters Investigation Mode and moves to the last known location - rewarding stealth but never letting the player feel completely safe.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">⚔️</div>
+                            <div class="path-title">Dual Engagement Paths</div>
+                            <div class="path-desc">
+                                Players can choose their approach: execute a stealth kill while the AI is unaware, or engage in direct combat once the encounter has escalated to full confrontation.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">🔄</div>
+                            <div class="path-title">Patrol Return</div>
+                            <div class="path-desc">
+                                If the player successfully hides and the alert meter drains to zero, the AI abandons investigation and returns to its assigned patrol route - closing the loop cleanly.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">🧠</div>
+                            <div class="path-title">Last Known Location</div>
+                            <div class="path-desc">
+                                The AI tracks and moves to the player's last seen position during investigation, making the hiding phase tense. Simply breaking line of sight isn't enough - timing matters.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OVERVIEW MEDIA GRID -->
+                    <div class="media-grid-2">
+
+                        <div>
+                            <div class ="gif-card">
+                                <img src="./projects/project-basic-ai/images/ai-stealth-kill.gif" alt="AI Stealth Kill">
+                            </div> <br>
+                            <div class="media-caption">▲ <strong> Stealth kill while AI is unaware </strong><strong> </div>
+                        </div>
+                        <div>
+                            <div class ="gif-card">
+                                <img src="./projects/project-basic-ai/images/ai-combat-kill.gif" alt="AI Combat Kill">
+                            </div> <br>
+                            <div class="media-caption">▲ <strong>Direct kill while AI is in combat </strong> </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State Overview Summary -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚙ THE FIVE STATES ⚙</div>
+                    <div class="section-title">🗺️ STATE OVERVIEW</div>
+                    <div class="content-block">
+                        The AI operates across five distinct behavioural states, each with a clear trigger condition and purpose. Together they create a believable escalation arc from peaceful patrol to full aggression.
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin: 2rem 0;">
+                        <div style="text-align: center; padding: 1rem; background: rgba(74,158,74,0.1); border: 2px solid #4a9e4a; border-radius: 3px;">
+                            <div style="font-size: 1.8em;">🚶</div>
+                            <div style="color: #4a9e4a; font-weight: bold; margin-top: 0.5rem;">PATROL</div>
+                            <div style="color: #b8860b; font-size: 0.85em; margin-top: 0.3rem;">Default State</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: rgba(212,175,55,0.1); border: 2px solid #d4af37; border-radius: 3px;">
+                            <div style="font-size: 1.8em;">✋</div>
+                            <div style="color: #d4af37; font-weight: bold; margin-top: 0.5rem;">HALT</div>
+                            <div style="color: #b8860b; font-size: 0.85em; margin-top: 0.3rem;">First Detection</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: rgba(232,138,46,0.1); border: 2px solid #e88a2e; border-radius: 3px;">
+                            <div style="font-size: 1.8em;">👁️</div>
+                            <div style="color: #e88a2e; font-weight: bold; margin-top: 0.5rem;">ALERT</div>
+                            <div style="color: #b8860b; font-size: 0.85em; margin-top: 0.3rem;">Meter Filling</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: rgba(204,51,51,0.1); border: 2px solid #cc3333; border-radius: 3px;">
+                            <div style="font-size: 1.8em;">⚔️</div>
+                            <div style="color: #cc3333; font-weight: bold; margin-top: 0.5rem;">COMBAT</div>
+                            <div style="color: #b8860b; font-size: 0.85em; margin-top: 0.3rem;">Full Engagement</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: rgba(91,141,217,0.1); border: 2px solid #5b8dd9; border-radius: 3px;">
+                            <div style="font-size: 1.8em;">🔎</div>
+                            <div style="color: #5b8dd9; font-weight: bold; margin-top: 0.5rem;">INVESTIGATE</div>
+                            <div style="color: #b8860b; font-size: 0.85em; margin-top: 0.3rem;">Lost Target</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Implementation -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚙ TECHNICAL IMPLEMENTATION ⚙</div>
+                    <div class="section-title">🔧 HOW IT'S BUILT IN UNREAL ENGINE</div>
+                    <div class="content-block">
+                        The AI is implemented using Unreal Engine's <strong style="color: #d4af37;">State Tree</strong> system - a modern, data-driven behaviour framework. Rather than putting all logic into the State Tree itself, the system is intentionally kept modular: a dedicated <strong style="color: #d4af37;">custom AI component (BPC_AIBrain)</strong> owns all the state logic, while the State Tree simply reads from it and transitions accordingly.
+                    </div>
+
+                    <div class="path-container">
+                        <div class="path-card">
+                            <div class="path-icon">🌳</div>
+                            <div class="path-title">State Tree</div>
+                            <div class="path-desc">
+                                The State Tree defines the four top-level states -<br> <strong>PATROL, HALT, INVESTIGATE, COMBAT</strong> - each with child tasks that are executed with their own exit conditions. Transitions between states are handled by GLOBAL EVALUATORS of Statetree.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">🧩</div>
+                            <div class="path-title">Custom AI Component (BPC_AIBrain)</div>
+                            <div class="path-desc">
+                                A custom Blueprint component attached to the AI that owns all state data. Various details of AI Actor such as Patrol path, AI State, Investigation vector, etc. are stored here, keeping the State Tree clean and the logic centralised.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">📋</div>
+                            <div class="path-title">Custom State Tree Tasks</div>
+                            <div class="path-desc">
+                                Various custom <strong>STTs (State Tree Tasks)</strong> reads various AI variables and sets writes to StateTree. This bridges the external component's data into the State Tree's evaluation context.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">⚖️</div>
+                            <div class="path-title">Gameplay Tags</div>
+                            <div class="path-desc">
+                                Each State Tree branch uses a simple <strong>equality condition</strong> that compares the current AI State Enum value to the expected state. <br>
+                                When the enum changes (e.g. Idle → Halt), the State Tree automatically transitions to the matching branch whenever Gameplay Tag is sent to StateTree when the state is changed.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">🗺️</div>
+                            <div class="path-title">Patrol - Next Patrol Point</div>
+                            <div class="path-desc">
+                                In the Patrol state, a Blueprint condition checks the AI State via BPC_AIBrain and calls a <strong>Next Patrol Point</strong> task to advance along the spline. A branch node evaluates the condition; True progresses the patrol, False loops back to Root to evaluate further.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">⚔️</div>
+                            <div class="path-title">Combat - Unsheath & Chase</div>
+                            <div class="path-desc">
+                                On entering Combat state, AI Unsheathes the sword and Chase uses <strong>Move To Parameters.Player_Reference</strong>. After closing distance, the Attack task runs with a 3-second Wait before looping back to Root.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State Tree structure note -->
+                    <div class="subsection">
+                        <div class="subsection-title">Why This Architecture?</div>
+                        <div class="subsection-text">
+                            Keeping all logic in a single Component <strong> BPC_AI_Brain </strong> rather than embedded in the State Tree tasks means any system - perception, combat, animation - can change the AI state by writing to a single component. <br>
+                            The State Tree will need to communicate with a Component rather than casting to actor saving resources. This separation of concerns makes the system easier to extend, debug, and reuse across different enemy types without rewriting behaviour logic individually.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: STATE BREAKDOWN -->
+            <div id="states" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">⚙ STATE MACHINE BREAKDOWN</div>
+                    <div class="content-block">
+                        Each state defines a distinct set of behaviours, triggers, and exit conditions. The transitions between states form the core of the AI's perceived intelligence.
+                    </div>
+
+                    <div class="state-grid">
+                        <!-- PATROL -->
+                        <div class="state-card patrol">
+                            <div class="state-label">State 01</div>
+                            <div class="state-icon">🚶</div>
+                            <div class="state-name">PATROL</div>
+                            <div class="state-desc">
+                                The AI's default resting state. It moves along its assigned spline in a continuous loop, scanning its surroundings passively. No player awareness. The AI is calm, predictable, and approachable - a window for the player to observe and plan.
+                            </div>
+                            <div><span class="state-trigger">▶ Trigger: Default / Alert meter = 0</span></div>
+                            <div style="margin-top: 0.75rem; color: #b8860b; font-size: 0.85em;"><strong style="color: #4a9e4a;">Exit:</strong> Player enters detection range → transitions to HALT</div>
+                           <div class ="gif-card">
+                                <img src="./projects/project-basic-ai//images/ai-patrol.gif" alt="AI Patrolling">
+                            </div>
+                        </div>
+
+                        <!-- HALT -->
+                        <div class="state-card halt">
+                            <div class="state-label">State 02</div>
+                            <div class="state-icon">✋</div>
+                            <div class="state-name">HALT</div>
+                            <div class="state-desc">
+                                The AI stops moving and fixates on the detected stimulus. It hesitates - something caught its attention. Movement pauses while the AI processes what it saw. This brief window is the player's last easy escape.
+                            </div>
+                            <div><span class="state-trigger">▶ Trigger: Player spotted in detection range</span></div>
+                            <div style="margin-top: 0.75rem; color: #b8860b; font-size: 0.85em;"><strong style="color: #d4af37;">Exit:</strong> Alert meter begins filling → transitions to ALERT</div>
+                            <div class="meter-container"><div class="meter-fill"></div></div>
+                            <div style="color: #b8860b; font-size: 0.75em; margin-top: 0.3rem;">Alert meter - early stage</div>
+                            <div class ="gif-card">
+                                <img src="./projects/project-basic-ai//images/ai-halt.gif" alt="AI Halting">
+                            </div>
+                        </div>
+
+                        <!-- ALERT -->
+                        <div class="state-card alert">
+                            <div class="state-label">State 03</div>
+                            <div class="state-icon">👁️</div>
+                            <div class="state-name">ALERT</div>
+                            <div class="state-desc">
+                                The AI is actively suspicious and tracking the player. The alert meter fills as long as the player remains in sight.
+                                Once full, the combat meter begins filling. If the player breaks line of sight here, the AI shifts to Investigation instead of combat. 
+                                The speed of filling is calculated based on player distance to AI. 
+                            </div>
+                            <div><span class="state-trigger">▶ Trigger: Alert meter filled from HALT</span></div>
+                            <div style="margin-top: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; color: #b8860b; font-size: 0.75em; margin-bottom: 0.3rem;">
+                                    <span>Far → Slow fill</span>
+                                    <span>Close → Fast fill</span>
+                                </div>
+                                <div class="meter-container"><div class="meter-fill"></div></div>
+                                <div style="color: #b8860b; font-size: 0.75em; margin-top: 0.3rem;">Alert meter — rate scales with proximity</div>
+                            </div>
+                            <div class ="gif-card">
+                                <img src="./projects/project-basic-ai//images/ai-alert.gif" alt="AI is getting Alerted">
+                            </div>
+                        </div>
+
+                        <!-- COMBAT -->
+                        <div class="state-card combat">
+                            <div class="state-label">State 04</div>
+                            <div class="state-icon">⚔️</div>
+                            <div class="state-name">COMBAT</div>
+                            <div class="state-desc">
+                                Full engagement. The AI moves directly toward the player's position and initiates attack behaviour. No hesitation, no backing down. The encounter has fully escalated. The player must fight or the situation resolves only through AI defeat.
+                            </div>
+                            <div><span class="state-trigger">▶ Trigger: Combat meter reaches 100%</span></div>
+                            <div style="margin-top: 0.75rem; color: #b8860b; font-size: 0.85em;"><strong style="color: #cc3333;">Behaviour:</strong> Pursue player → attack → repeat until combat ends</div>
+                            <div class="meter-container"><div class="meter-fill"></div></div>
+                            <div style="color: #b8860b; font-size: 0.75em; margin-top: 0.3rem;">Combat meter - full</div>
+                            <div class ="gif-card">
+                                <img src="./projects/project-basic-ai//images/ai-combat.gif" alt="AI goes into Combat mode">
+                            </div>
+                        </div>
+
+                        <!-- INVESTIGATE -->
+                        <div class="state-card investigate">
+                            <div class="state-label">State 05</div>
+                            <div class="state-icon">🔎</div>
+                            <div class="state-name">INVESTIGATE</div>
+                            <div class="state-desc">
+                                The player has hidden before combat fully triggered. The AI moves to the last known player position and scans. Alert meter drains over time. If the meter reaches zero, the AI gives up and returns to patrol. If the player is spotted again, escalation resumes.
+                            </div>
+                            <div><span class="state-trigger">▶ Trigger: Player hides before combat meter = 100%</span></div>
+                            <div style="margin-top: 0.75rem; color: #b8860b; font-size: 0.85em;">
+                                <strong style="color: #4a9e4a;">Exit A:</strong> Alert meter drains → returns to PATROL<br>
+                                <strong style="color: #cc3333;">Exit B:</strong> Player spotted again → re-escalates to ALERT
+                            </div>
+                            <div class="meter-container"><div class="meter-fill"></div></div>
+                            <div style="color: #b8860b; font-size: 0.75em; margin-top: 0.3rem;">Alert meter - draining</div>
+                            <div class ="gif-card">
+                                <img src="./projects/project-basic-ai//images/ai-investigate.gif" alt="AI Investigating">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State Tree Implementation -->
+                    <div class="chapter-divider">⚙ STATE TREE STRUCTURE ⚙</div>
+                    <div class="section-title">🌳 UNREAL ENGINE STATE TREE</div>
+                    <div class="content-block">
+                        Each state in the State Tree corresponds directly to one of the five behaviours. The Root node evaluates conditions on each tick and routes to the correct branch based on the AI State Enum stored in BPC_AIBrain.
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #4a9e4a; padding: 1.25rem; border-radius: 3px;">
+                            <div style="color: #4a9e4a; font-weight: bold; margin-bottom: 0.5rem;">🚶 Patrol Branch</div>
+                            <div style="color: #b8860b; font-size: 0.88em; line-height: 1.6;">
+                                <strong style="color: #d4af37;">Condition:</strong> AI State Is Idle AND AI Patrol Is True<br>
+                                <strong style="color: #d4af37;">Tasks:</strong> Get Next Patrol Point → Move To Spline Point<br>
+                                <strong style="color: #d4af37;">Transitions:</strong> Patrol, Halt, Investigate, Combat
+                            </div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #d4af37; padding: 1.25rem; border-radius: 3px;">
+                            <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">✋ Halt Branch</div>
+                            <div style="color: #b8860b; font-size: 0.88em; line-height: 1.6;">
+                                <strong style="color: #d4af37;">Condition:</strong> If AI State Is Halt<br>
+                                <strong style="color: #d4af37;">Tasks:</strong> STT Set Character Input State Actor<br>
+                                <strong style="color: #d4af37;">Transitions:</strong> Patrol, Combat, Investigate
+                            </div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #5b8dd9; padding: 1.25rem; border-radius: 3px;">
+                            <div style="color: #5b8dd9; font-weight: bold; margin-bottom: 0.5rem;">🔎 Investigate Branch</div>
+                            <div style="color: #b8860b; font-size: 0.88em; line-height: 1.6;">
+                                <strong style="color: #d4af37;">Condition:</strong> If AI State Is Investigation<br>
+                                <strong style="color: #d4af37;">Tasks:</strong> Get Investigation Point → Move To Parameters.StimulusLocation → Wait At Point<br>
+                                <strong style="color: #d4af37;">On Arrive Success:</strong> → Halt &nbsp;|&nbsp; <strong style="color: #d4af37;">On Fail:</strong> → Root
+                            </div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #cc3333; padding: 1.25rem; border-radius: 3px;">
+                            <div style="color: #cc3333; font-weight: bold; margin-bottom: 0.5rem;">⚔️ Combat Branch</div>
+                            <div style="color: #b8860b; font-size: 0.88em; line-height: 1.6;">
+                                <strong style="color: #d4af37;">Condition:</strong> If AI State Is Combat<br>
+                                <strong style="color: #d4af37;">Tasks:</strong> Unsheath Sword (if not sheathed) → Chase (Move To Player_Reference) → Attack → Wait 3s → Root<br>
+                                <strong style="color: #d4af37;">Chase Fail:</strong> → Root
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REAL SCREENSHOTS FROM UPLOADS -->
+                    <div class="section-title" style="margin-top: 2rem;">📸 STATE TREE IN UNREAL ENGINE</div>
+                    <div class="media-grid-2">
+                        <div>
+                            
+                                <img src="./projects/project-basic-ai//images/state_tree_patrol.png" alt="State Tree Patrol, Halt">
+                            <br>
+                            <div class="media-caption">State Tree - Patrol, Halt and Investigate branches with tasks</div>
+                        </div>
+                        <div>
+                            
+                                <img src="./projects/project-basic-ai//images/state_tree_combat.png" alt="State Tree Combatt">
+                            <br>
+                            <div class="media-caption">State Tree - Combat branch: Unsheath → Chase → Attack → Wait</div>
+                        </div>
+                    </div>
+                    <div>
+                        
+                            <img src="./projects/project-basic-ai//images/patrol_next_point.png" alt="Blueprint showing next point">
+                        <br>
+                        <div class="media-caption">Blueprint graph - AI State Enum condition driving Next Patrol Point logic via BPC_AIBrain</div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">The Modular Architecture</div>
+                        <div class="subsection-text">
+                            All conditions read the <strong style="color: #d4af37;">AI State Enum</strong> from a custom Blueprint component (<strong style="color: #d4af37;">BPC_AIBrain</strong>) via a custom <strong style="color: #d4af37;">STT (State Tree Task)</strong>. The State Tree never owns logic - it only reacts to what BPC_AIBrain reports. Any system (perception, combat, animation) can update the state by writing to BPC_AIBrain, and the State Tree responds automatically.
+                        </div>
+                    </div>
+
+                    <!-- Stealth Kill / Combat Note -->
+                    <div class="chapter-divider">⚙ PLAYER OPTIONS ⚙</div>
+                    <div class="section-title">🎯 ENGAGEMENT CHOICES</div>
+                    <div class="content-block">
+                        The player always has two paths when facing an AI encounter. Both are valid - each carries different risk and reward.
+                    </div>
+                    <div class="path-container">
+                        <div class="path-card">
+                            <div class="path-icon">🗡️</div>
+                            <div class="path-title">Stealth Kill</div>
+                            <div class="path-desc">
+                                Available when the AI is in Patrol or early Halt state and unaware of the player's exact position. Requires positioning and patience. Eliminates the enemy without triggering escalation. High risk, silent reward.
+                            </div>
+                        </div>
+                        <div class="path-card">
+                            <div class="path-icon">⚔️</div>
+                            <div class="path-title">Direct Combat</div>
+                            <div class="path-desc">
+                                Available once the encounter has escalated fully to Combat state. The AI is now actively hostile and attacking. The player must fight it out. Louder and riskier, but always a valid option.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: AI BEHAVIOUR FLOW -->
+            <div id="flow" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">⚙ FULL BEHAVIOUR FLOW</div>
+                    <div class="content-block">
+                        This diagram traces every possible path through the AI's state machine - from initial patrol through all escalation and de-escalation branches.
+                    </div>
+
+                    <!-- Flow Diagram -->
+                    <div class="system-diagram">
+                        <div class="flow-node" style="border-color: #4a9e4a; color: #4a9e4a; background: rgba(74,158,74,0.1);">
+                            🚶 PATROL<br><span style="font-size: 0.8em; font-weight: normal; color: #b8860b;">Moving along assigned spline</span>
+                        </div>
+
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-label">Player enters detection range</div>
+
+                        <div class="flow-node" style="border-color: #d4af37; color: #d4af37; background: rgba(212,175,55,0.1);">
+                            ✋ HALT<br><span style="font-size: 0.8em; font-weight: normal; color: #b8860b;">AI stops - alert meter begins filling</span>
+                        </div>
+
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-label">Alert meter fills completely</div>
+
+                        <div class="flow-node" style="border-color: #e88a2e; color: #e88a2e; background: rgba(232,138,46,0.1);">
+                            👁️ ALERT<br><span style="font-size: 0.8em; font-weight: normal; color: #b8860b;">Tracking player - combat meter starts filling</span>
+                        </div>
+
+                        <!-- Branch point -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 1rem 0;">
+                            <div style="text-align: center; color: #8b6914; font-size: 0.85em; padding: 0.5rem; border-right: 1px solid #8b6914;">
+                                Player hides<br>↓ before 100%
+                            </div>
+                            <div style="text-align: center; color: #8b6914; font-size: 0.85em; padding: 0.5rem;">
+                                Combat meter<br>reaches 100% ↓
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 0.5rem 0; align-items: start;">
+
+                            <!-- Investigate Branch -->
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+                                <div class="flow-node" style="width: 100%; box-sizing: border-box; border-color: #5b8dd9; color: #5b8dd9; background: rgba(91,141,217,0.1);">
+                                    🔎 INVESTIGATE<br><span style="font-size: 0.8em; font-weight: normal; color: #b8860b;">Move to last known location</span>
+                                </div>
+                                <div class="flow-arrow">↓</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%;">
+                                    <div>
+                                        <div style="text-align: center; color: #8b6914; font-size: 0.8em; margin-bottom: 0.3rem;">Alert drains to 0</div>
+                                        <div class="flow-node" style="box-sizing: border-box; border-color: #4a9e4a; color: #4a9e4a; background: rgba(74,158,74,0.1); font-size: 0.85em; padding: 0.75rem; margin: 0;">
+                                            🚶 Return to PATROL
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="text-align: center; color: #8b6914; font-size: 0.8em; margin-bottom: 0.3rem;">Player spotted again</div>
+                                        <div class="flow-node" style="box-sizing: border-box; border-color: #e88a2e; color: #e88a2e; background: rgba(232,138,46,0.1); font-size: 0.85em; padding: 0.75rem; margin: 0;">
+                                            👁️ Re-escalate to ALERT
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Combat Branch -->
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+                                <div class="flow-node" style="width: 100%; box-sizing: border-box; border-color: #cc3333; color: #cc3333; background: rgba(204,51,51,0.1);">
+                                    ⚔️ COMBAT<br><span style="font-size: 0.8em; font-weight: normal; color: #b8860b;">Move to & attack player</span>
+                                </div>
+                                <div class="flow-arrow">↓</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%;">
+                                    <div>
+                                        <div style="text-align: center; color: #8b6914; font-size: 0.8em; margin-bottom: 0.3rem;">Player stealth kills (pre-combat)</div>
+                                        <div class="flow-node" style="box-sizing: border-box; border-color: #8b6914; color: #b8860b; background: rgba(139,105,20,0.1); font-size: 0.85em; padding: 0.75rem; margin: 0;">
+                                            🗡️ Enemy Eliminated
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="text-align: center; color: #8b6914; font-size: 0.8em; margin-bottom: 0.3rem;">Player engages directly</div>
+                                        <div class="flow-node" style="box-sizing: border-box; border-color: #cc3333; color: #cc3333; background: rgba(204,51,51,0.1); font-size: 0.85em; padding: 0.75rem; margin: 0;">
+                                            ⚔️ Direct Combat Resolves
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Meter Logic Explanation -->
+                    <div class="chapter-divider">⚙ METER LOGIC ⚙</div>
+                    <div class="section-title">📊 HOW THE METERS WORK</div>
+                    <div class="content-block">
+                        The two-meter system is the backbone of the escalation design. It creates a readable, tense window of opportunity for the player.
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">🟡 Alert Meter</div>
+                        <div class="pillar-desc">
+                            Begins filling the moment the AI spots the player in HALT state. Fills continuously as long as the player remains in detection range. Once full, it transitions the AI to ALERT and begins filling the Combat meter. Drains over time during Investigation if the player stays hidden. Returns AI to Patrol when it hits zero.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">📏 Distance Modifier</div>
+                        <div class="pillar-desc">
+                            Player distance directly affects how fast both meters fill. The closer the player is to the AI, the faster the Alert and Combat meters escalate — rewarding players who keep their distance and punishing those who linger nearby. At maximum detection range, meters fill slowly, giving more time to react. Up close, escalation is near-instant.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">🔴 Combat Meter</div>
+                        <div class="pillar-desc">
+                            Starts filling only after the Alert meter has fully filled (during ALERT state). Represents the AI locking in on the player and committing to an attack. If the player hides before this meter reaches 100%, the AI enters Investigation rather than Combat. Once at 100%, the AI enters Combat unconditionally.
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">The Design Intent</div>
+                        <div class="subsection-text">
+                            The two-stage meter sequence creates a clear, readable tension arc. Players can see how close an encounter is to fully escalating, and they have a concrete decision point: engage now, hide now, or let it escalate. This makes encounters feel fair and strategic rather than arbitrary.
+                            <p style="margin-top: 0.75rem;"><strong style="color: #d4af37;">Distance Scaling:</strong> Proximity accelerates both meters. A player spotted at close range escalates to Combat far faster than one seen from the edge of detection range - adding a spatial dimension to every encounter.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: DESIGN PILLARS & SYSTEMS -->
+            <div id="philosophy" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚙ DESIGN PILLARS ⚙</div>
+                    <div class="section-title">🏛️ CORE DESIGN PRINCIPLES</div>
+                    <div class="content-block">
+                        Four pillars guided every state, transition, and interaction in the Basic AI system. They define the philosophy behind how the AI feels to play against.
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">1</div>
+                        <div class="pillar-title">Readability</div>
+                        <div class="pillar-desc">
+                            The player should always understand what state the AI is in and why. Distinct states with clear behavioural signatures - patrol movement, halt freeze, active tracking, aggressive pursuit - mean the AI is never a black box. Players can predict and react.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">2</div>
+                        <div class="pillar-title">Player Agency</div>
+                        <div class="pillar-desc">
+                            No encounter is forced. The two-meter system always gives players a decision window: hide now, engage now, or let escalation happen. Stealth kill or direct combat are both valid resolutions. Players feel in control of how each encounter unfolds.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">3</div>
+                        <div class="pillar-title">Graduated Tension</div>
+                        <div class="pillar-desc">
+                            Encounters build, they don't snap. Patrol → Halt → Alert → Combat is a crescendo, not a switch. Each stage raises the stakes incrementally, giving players time to feel the pressure mount and make meaningful decisions under tension rather than reacting to sudden surprises.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">4</div>
+                        <div class="pillar-title">Consequence Without Punishment</div>
+                        <div class="pillar-desc">
+                            Being spotted isn't an instant fail state. It's the start of a challenge. The investigation phase and the combat meter drain system ensure that skilled players can recover from detection. The AI is persistent but not unfair - hiding well is always rewarded.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Systemic Connections -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚙ SYSTEMIC CONNECTIONS ⚙</div>
+                    <div class="section-title">🔗 HOW THE SYSTEMS INTERACT</div>
+                    <div class="content-block">
+                        The Basic AI isn't just a state machine - it's a system where each component feeds into the next to create a coherent experience.
+                    </div>
+
+                    <div class="system-diagram">
+                        <div style="color: #d4af37; font-weight: bold; font-size: 1.2em; margin-bottom: 1rem;">PATROL SPLINE</div>
+                        <div style="color: #b8860b;">(Defines movement pattern & timing)</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Player Observes Patrol → Identifies Window to Act</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Detection Triggers Halt → Alert Meter Begins</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Player Decision: Hide or Let It Escalate</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Investigate (Recoverable) OR Combat (Committed)</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Stealth Kill / Direct Combat / Escape to Patrol Reset</div>
+                        <div style="color: #d4af37; font-weight: bold; margin-top: 1rem;">(Every encounter can resolve differently based on player timing)</div>
+                    </div>
+
+                    <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                        <div style="color: #d4af37; font-weight: bold; font-size: 1.1em; margin-bottom: 1rem;">How This Creates Depth:</div>
+                        <div style="color: #b8860b; line-height: 1.8;">
+                            <p><strong>Spline as Strategy:</strong> The patrol route is information. Players who observe patterns can exploit gaps, time stealth kills, or predict when the AI will face away.</p>
+                            <p><strong>Meter Transparency:</strong> The two visible meters turn AI detection into a readable mini-game. Players aren't guessing - they're making informed decisions under pressure.</p>
+                            <p><strong>Investigation as Consequence:</strong> Getting partially spotted isn't a failure - it's a new challenge. The investigation state rewards players who react quickly and punishes those who panic.</p>
+                            <p><strong>Dual Resolution Paths:</strong> Stealth kill and direct combat serve different playstyles. Neither is mechanically superior in all situations, which means both remain valid throughout gameplay.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: LEARNINGS -->
+            <div id="learnings" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚙ DESIGN LEARNINGS ⚙</div>
+                    <div class="section-title">💡 KEY INSIGHTS FROM BUILDING THE BASIC AI</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 1: State Clarity Is More Important Than State Complexity</div>
+                        <div class="learning-text">
+                            Five states might seem simple, but the value of this system is that each state is immediately readable. Players intuitively understand the AI's intent at every moment. Adding more states risks muddying that clarity - a lesson in restraint. <strong>A smaller number of well-defined states beats a larger number of ambiguous ones.</strong>
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 2: Two-Stage Detection Creates Player Empowerment</div>
+                        <div class="learning-text">
+                            A single instant-detection system would make every encounter feel punishing. The Halt-then-Alert-then-Combat escalation gives players agency over the outcome. They feel the pressure mount, make a decision, and live with it. <strong>Detection as a process - not an event - turns encounters into gameplay rather than accidents.</strong>
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 3: The Investigation State Is the Most Valuable State</div>
+                        <div class="learning-text">
+                            Without Investigation Mode, detection is binary: either you're safe or you're in combat. The investigation state creates a middle zone of active tension - the player is hiding, the AI is searching, and the outcome is still in play. <strong>Recoverable failures are dramatically more interesting than hard failures.</strong>
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 4: Patrol Splines Are Player-Facing Design, Not Just AI Logistics</div>
+                        <div class="learning-text">
+                            The patrol route isn't just about where the AI goes - it's the first information the player receives. Thoughtful spline placement creates natural choke points, observable timing windows, and stealth opportunities. <strong>Patrol design is encounter design.</strong>
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 5: The Last Known Location Mechanic Changes Everything</div>
+                        <div class="learning-text">
+                            Moving to the last known location during investigation means breaking line of sight isn't enough - players need to relocate quickly and intelligently. This single mechanic transforms hiding from a passive action into an active spatial challenge. <strong>Memory-based AI behaviours elevate tension without increasing complexity.</strong>
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 6: No Retreat Behaviour Is a Conscious Design Boundary</div>
+                        <div class="learning-text">
+                            Choosing not to implement flee or retreat behaviour keeps the AI's role clear: it is a threat that escalates, not a character that weighs self-preservation. For a basic AI system, this focus prevents scope creep. <strong>Knowing what your system is not is as important as knowing what it is.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="design-journal-footer">
+        <div style="font-size: 0.8em; color: #8b6914; margin-top: 0.5rem;">Project Whimsical - Basic AI System Design</div>
+    </div>
+
+    <script>
+        function switchTab(tabName, event) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

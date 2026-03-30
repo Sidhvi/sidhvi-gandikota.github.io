@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Whimsical - Sidhvi's Design Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-dim: #8b6914;
+            --gold-pale: #f0d060;
+            --parchment: #2a2420;
+            --parchment-light: #3a3430;
+            --ink: #b8860b;
+            --bg: #0d0b08;
+            --green-accent: #7ab87a;
+            --border: rgba(139, 105, 20, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(139,105,20,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(139,105,20,0.05) 0%, transparent 55%);
+            font-family: 'Crimson Text', Georgia, serif;
+            color: var(--gold);
+            min-height: 100vh;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, #0d0b08 0%, rgba(13,11,8,0.92) 100%);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            padding: 0 2.5rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--gold); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        /* ─── HEADER ─── */
+        .project-header {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem;
+            position: relative;
+        }
+
+        .breadcrumb {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gold-dim);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: var(--gold); }
+
+        .project-title-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .project-name {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            text-shadow: 0 0 40px rgba(212,175,55,0.2);
+        }
+
+        .project-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--green-accent);
+            border: 1px solid rgba(122,184,122,0.4);
+            padding: 3px 10px;
+            margin-bottom: 0.4rem;
+        }
+
+        .project-lore {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--ink);
+            max-width: 600px;
+            line-height: 1.65;
+            margin-bottom: 2rem;
+        }
+
+        .header-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .header-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--gold-dim), transparent);
+        }
+
+        .header-divider-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ─── QUEST GRID ─── */
+        .quests-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .section-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.75rem;
+            text-align: center;
+        }
+
+        .quests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ─── QUEST CARD ─── */
+        .quest-card {
+            display: block;
+            text-decoration: none;
+            background: linear-gradient(155deg, #211c15 0%, #2e2618 60%, #211c15 100%);
+            border: 1px solid var(--gold-dim);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .quest-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                180deg,
+                transparent,
+                transparent 28px,
+                rgba(139,105,20,0.04) 28px,
+                rgba(139,105,20,0.04) 29px
+            );
+            pointer-events: none;
+        }
+
+        /* animated shimmer on hover */
+        .quest-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.06), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .quest-card:hover::after { left: 140%; }
+
+        .quest-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 20px rgba(212,175,55,0.1);
+        }
+
+        /* left accent bar */
+        .quest-card-accent {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+        }
+
+        .accent-narrative { background: linear-gradient(180deg, #4a8fd4, #2a5f94); }
+        .accent-ai        { background: linear-gradient(180deg, #7ab87a, #4a884a); }
+        .accent-combat    { background: linear-gradient(180deg, #d47a4a, #a04a20); }
+        .accent-attr      { background: linear-gradient(180deg, #9a7ad4, #6a4aa4); }
+
+        .quest-card-inner {
+            padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quest-type-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .quest-type {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .qt-narrative { color: #4a8fd4; }
+        .qt-ai        { color: #7ab87a; }
+        .qt-combat    { color: #d47a4a; }
+        .qt-attr      { color: #9a7ad4; }
+
+        .quest-difficulty {
+            font-size: 0.65rem;
+            color: var(--gold-dim);
+            letter-spacing: 0.05em;
+        }
+
+        .quest-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            line-height: 1.25;
+        }
+
+        .quest-desc {
+            font-family: 'Crimson Text', serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+            line-height: 1.6;
+            margin-bottom: 1.1rem;
+        }
+
+        /* GIF thumbnail strip */
+        .quest-media {
+            height: 110px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(139,105,20,0.2);
+            margin-bottom: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quest-media-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-direction: column;
+            transition: opacity 0.4s;
+        }
+
+        .quest-media-placeholder svg { opacity: 0.2; }
+
+        .quest-media-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        .quest-gif {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .quest-card:hover .quest-gif { opacity: 1; }
+        .quest-card:hover .quest-media-placeholder { opacity: 0; }
+
+        .quest-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .quest-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.08em;
+            color: var(--gold-dim);
+            border: 1px solid rgba(139,105,20,0.3);
+            padding: 2px 8px;
+            text-transform: uppercase;
+        }
+
+        .quest-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(139,105,20,0.2);
+        }
+
+        .quest-wisdom {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 0.8rem;
+            color: rgba(184,134,11,0.6);
+            max-width: 65%;
+            line-height: 1.4;
+        }
+
+        .quest-cta {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            color: var(--gold);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap;
+        }
+
+        .quest-cta::after {
+            content: '→';
+            transition: transform 0.2s;
+        }
+
+        .quest-card:hover .quest-cta::after { transform: translateX(3px); }
+
+        /* ─── SKILLS ASIDE ─── */
+        .skills-aside {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .skills-parchment {
+            background: linear-gradient(135deg, #1a1610 0%, #252018 100%);
+            border: 1px solid var(--border);
+            padding: 2rem 2.5rem;
+        }
+
+        .skills-header {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .skills-header::before, .skills-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim));
+        }
+
+        .skills-header::after {
+            background: linear-gradient(90deg, var(--gold-dim), transparent);
+        }
+
+        .skills-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .skill-pin {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border: 1px solid;
+            transition: all 0.2s;
+        }
+
+        .skill-pin:hover {
+            box-shadow: 0 0 12px currentColor;
+            opacity: 0.9;
+        }
+
+        .sp-blue   { color: #4a8fd4; border-color: rgba(74,143,212,0.35); }
+        .sp-green  { color: #7ab87a; border-color: rgba(122,184,122,0.35); }
+        .sp-orange { color: #d47a4a; border-color: rgba(212,122,74,0.35); }
+        .sp-purple { color: #9a7ad4; border-color: rgba(154,122,212,0.35); }
+        .sp-gold   { color: var(--gold); border-color: var(--border); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 640px) {
+            .quests-grid { grid-template-columns: 1fr; }
+            nav { padding: 0 1rem; }
+            .project-header, .quests-section { padding-left: 1rem; padding-right: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-left">
+            <a class="nav-back" href="index.html">← Board</a>
+            <div class="nav-sep"></div>
+            <div class="nav-title">Project Whimsical</div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="project-header">
+        <div class="breadcrumb">
+            <a href="index.html">Design Journal</a>
+            <span>›</span>
+            <span>Project Whimsical</span>
+        </div>
+        <div class="project-title-row">
+            <h1 class="project-name">Project Whimsical</h1>
+            <span class="project-badge">Unreal Engine · Active</span>
+        </div>
+        <p class="project-lore">A third-person action-adventure built in Unreal Engine 5 - a sandbox for designing and testing interconnected game systems: AI behaviour, quest design, combat, and player progression.</p>
+        <div class="header-divider">
+            <div class="header-divider-line"></div>
+            <span class="header-divider-text">⚔ Select a Quest ⚔</span>
+            <div class="header-divider-line" style="background: linear-gradient(90deg, transparent, var(--gold-dim)); transform: scaleX(-1);"></div>
+        </div>
+    </header>
+
+    <!-- QUEST GRID -->
+    <section class="quests-section">
+        <p class="section-label">⚔ Sub-Projects · 4 Quests ⚔</p>
+        <div class="quests-grid">
+
+            <!-- A FOUL CALL -->
+            <a class="quest-card" href="Project Whimsical's The Foul Play.html">
+                <div class="quest-card-accent accent-narrative"></div>
+                <div class="quest-card-inner">
+                    <div class="quest-type-row">
+                        <span class="quest-type qt-narrative">Quest Design</span>
+                    </div>
+                    <div class="quest-title">The Foul Play</div>
+                    <div class="quest-desc">Same quest, unique conversations depending on your playstyle. Multiple paths including but not limited to Investigative, Onslaught, Stealth - all valid. Every choice remembered.</div>
+                    <div class="quest-media">
+                        <div class="quest-media-placeholder">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                <path d="M6 12h24M6 18h18M6 24h12" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quest-media-label">Hover to preview</span>
+                        </div>
+                        <img class="quest-gif"
+                             src="./images/a-foul-call-preview.gif"
+                             alt="A Foul Call preview"
+                             loading="lazy">
+                    </div>
+                    <div class="quest-tags">
+                        <span class="quest-tag">Dialogue Trees</span>
+                        <span class="quest-tag">NPC Memory</span>
+                        <span class="quest-tag">Playstyle Paths</span>
+                        <span class="quest-tag">Attribute Unlocks</span>
+                    </div>
+                    <div class="quest-footer">
+                        <span class="quest-wisdom">"Let dialogue be character; let choices echo."</span>
+                        <span class="quest-cta">Open Quest</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- BASIC AI SYSTEM -->
+            <a class="quest-card" href="Project Whimsical's Basic AI.html">
+                <div class="quest-card-accent accent-ai"></div>
+                <div class="quest-card-inner">
+                    <div class="quest-type-row">
+                        <span class="quest-type qt-ai">AI Systems</span>
+                    </div>
+                    <div class="quest-title">Basic AI System</div>
+                    <div class="quest-desc">A five-state enemy AI - Patrol, Halt, Alert, Combat, Investigate - with a two-stage detection meter, spline-based patrol, and dual player engagement paths.</div>
+                    <div class="quest-media">
+                        <div class="quest-media-placeholder">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                <circle cx="18" cy="18" r="12" stroke="#8b6914" stroke-width="1"/>
+                                <circle cx="18" cy="18" r="3" fill="#8b6914" opacity="0.5"/>
+                                <path d="M18 6v4M18 26v4M6 18h4M26 18h4" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quest-media-label">Hover to preview</span>
+                        </div>
+                        <img class="quest-gif"
+                             src="./images/ai-system-preview.gif"
+                             alt="Basic AI System preview"
+                             loading="lazy">
+                    </div>
+                    <div class="quest-tags">
+                        <span class="quest-tag">State Tree</span>
+                        <span class="quest-tag">Blueprint</span>
+                        <span class="quest-tag">Spline Patrol</span>
+                        <span class="quest-tag">Detection Meter</span>
+                    </div>
+                    <div class="quest-footer">
+                        <span class="quest-wisdom">"Every state a story; every transition a choice."</span>
+                        <span class="quest-cta">Open Quest</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- COMBAT SYSTEM -->
+            <a class="quest-card" href="Project Whimsical's Pumpkin Spirit.html">
+                <div class="quest-card-accent accent-combat"></div>
+                <div class="quest-card-inner">
+                    <div class="quest-type-row">
+                        <span class="quest-type qt-combat">Combat Design</span>
+                    </div>
+                    <div class="quest-title">Boss Fight - Pumpkin Spirit</div>
+                    <div class="quest-desc">What is a good satisfactory end to a quest? A good boss fight that is build around player mastery.</div>
+                    <div class="quest-media">
+                        <div class="quest-media-placeholder">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                <path d="M8 28L28 8M24 8h4v4" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="10" cy="26" r="3" stroke="#8b6914" stroke-width="1"/>
+                            </svg>
+                            <span class="quest-media-label">Hover to preview</span>
+                        </div>
+                        <img class="quest-gif"
+                             src="./images/combat-preview.gif"
+                             alt="Combat System preview"
+                             loading="lazy">
+                    </div>
+                    <div class="quest-tags">
+                        <span class="quest-tag">Combo Attacks</span>
+                        <span class="quest-tag">Elemental Damage</span>
+                        <span class="quest-tag">Status Effects</span>
+                        <span class="quest-tag">Boss Design</span>
+                    </div>
+                    <div class="quest-footer">
+                        <span class="quest-wisdom">"Combat as conversation between player and world."</span>
+                        <span class="quest-cta">Open Quest</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PLAYER ATTRIBUTE SYSTEM -->
+            <a class="quest-card" href="projects/attribute-system/attribute-system.html">
+                <div class="quest-card-accent accent-attr"></div>
+                <div class="quest-card-inner">
+                    <div class="quest-type-row">
+                        <span class="quest-type qt-attr">Systems Design</span>
+                    </div>
+                    <div class="quest-title">Player Attribute System</div>
+                    <div class="quest-desc">Four core attributes - BODY, HAND, MIND, EYES - shaping what playstyle paths and dialogue options become available across every quest in the project.</div>
+                    <div class="quest-media">
+                        <div class="quest-media-placeholder">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                                <rect x="6" y="6" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1"/>
+                                <rect x="20" y="6" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1"/>
+                                <rect x="6" y="20" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1"/>
+                                <rect x="20" y="20" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1" stroke-dasharray="2 1.5"/>
+                            </svg>
+                            <span class="quest-media-label">Hover to preview</span>
+                        </div>
+                        <img class="quest-gif"
+                             src="./images/attribute-system-preview.gif"
+                             alt="Attribute System preview"
+                             loading="lazy">
+                    </div>
+                    <div class="quest-tags">
+                        <span class="quest-tag">BODY</span>
+                        <span class="quest-tag">HAND</span>
+                        <span class="quest-tag">MIND</span>
+                        <span class="quest-tag">EYES</span>
+                        <span class="quest-tag">Progression</span>
+                    </div>
+                    <div class="quest-footer">
+                        <span class="quest-wisdom">"Stats that speak - each point a door opened."</span>
+                        <span class="quest-cta">Open Quest</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- SKILLS USED -->
+    <section class="skills-aside">
+        <div class="skills-parchment">
+            <div class="skills-header">Known Disciplines</div>
+            <div class="skills-cloud">
+                <span class="skill-pin sp-blue">Dialogue Design</span>
+                <span class="skill-pin sp-green">State Tree</span>
+                <span class="skill-pin sp-orange">Combat Systems</span>
+                <span class="skill-pin sp-purple">Player Progression</span>
+                <span class="skill-pin sp-gold">Unreal Engine 5</span>
+                <span class="skill-pin sp-green">Blueprint</span>
+                <span class="skill-pin sp-blue">NPC Memory</span>
+                <span class="skill-pin sp-orange">Boss Design</span>
+                <span class="skill-pin sp-purple">Attribute Systems</span>
+                <span class="skill-pin sp-gold">Quest Architecture</span>
+                <span class="skill-pin sp-blue">Consequence Mapping</span>
+                <span class="skill-pin sp-green">Detection Systems</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-text">✦ Sidhvi's Design Journal ✦</div>
+    </footer>
+
+</body>
+</html>

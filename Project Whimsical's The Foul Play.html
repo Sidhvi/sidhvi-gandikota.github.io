@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Whimsical's: The Foul Play - Quest Design">
+    <title>Project Whimsical's: The Foul Play</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-dim: #8b6914;
+            --ink: #b8860b;
+            --bg: #0d0b08;
+            --parchment: #2a2420;
+            --parchment-light: #3a3430;
+            --border: rgba(139, 105, 20, 0.5);
+        }
+
+        * { font-family: 'Crimson Text', Georgia, serif; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(139,105,20,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(139,105,20,0.05) 0%, transparent 55%);
+            background-attachment: fixed;
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 105, 20, 0.3);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #0d0b08 0%, rgba(13,11,8,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--gold); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: xx-large;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .project-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.6em, 3vw, 2.4em);
+            color: var(--gold);
+            margin: 1rem 0;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 40px rgba(212,175,55,0.2);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50% { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 1px solid var(--gold-dim);
+            color: var(--ink);
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border-color: #d4af37;
+            color: #d4af37;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.6);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: #d4af37;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: #b8860b;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .subsection {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 4px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.1);
+        }
+
+        .subsection-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .subsection-text {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .path-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .path-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .path-card:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .path-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.75rem;
+        }
+
+        .path-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .path-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+
+        .feature-title {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1em;
+        }
+
+        .feature-desc {
+            color: #b8860b;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .pillar-box {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 5px solid #d4af37;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .pillar-number {
+            color: #d4af37;
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-desc {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .system-diagram {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .system-flow {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(139, 105, 20, 0.2);
+            border-radius: 3px;
+        }
+
+        .arrow {
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 0.5rem 0;
+        }
+
+        .learning-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .learning-text {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #0d0b08 0%, #1a1410 100%);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--ink);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            border-radius: 3px;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 0 40px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* Uniform gif-card */
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .gif-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+
+            border-color: #d4af37;
+            box-shadow: 0 20px 50px rgba(139, 105, 20, 0.5);
+        }
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .gif-card-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+        .gif-card-desc {
+            color: #b8860b;
+            font-size: 0.88em;
+            line-height: 1.6;
+            flex: 1;
+        }
+        /* Non-interactable gif-card */
+        .gif-non-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            margin: 0 auto;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .gif-non-card img {
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+
+        /* Scenario cards (dialogue tab) */
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .scenario-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .scenario-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+
+            border-color: #d4af37;
+            box-shadow: 0 20px 50px rgba(139, 105, 20, 0.5);
+        }
+        .scenario-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .scenario-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .scenario-label {
+            color: #d4af37;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        .scenario-text {
+            color: #b8860b;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        .dialogue-line {
+            background: rgba(139, 105, 20, 0.15);
+            padding: 0.5rem 0.75rem;
+            border-left: 3px solid #d4af37;
+            margin-top: 0.3rem;
+        }
+        .dialogue-line.npc {
+            background: rgba(144, 238, 144, 0.07);
+            border-left-color: #90ee90;
+        }
+        .dialogue-speaker { font-size: 0.76em; font-weight: bold; margin-bottom: 0.15rem; }
+        .dialogue-speaker.kliq { color: #d4af37; }
+        .dialogue-speaker.npc  { color: #90ee90; }
+        .dialogue-quote { color: #b8860b; font-style: italic; font-size: 0.83em; line-height: 1.5; }
+
+        /* Endings grid */
+        .endings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .ending-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .ending-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+
+            border-color: #d4af37;
+            box-shadow: 0 20px 50px rgba(139, 105, 20, 0.5);
+        }
+        .ending-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .ending-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .ending-card-title { color: #d4af37; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.95em; }
+        .ending-card-desc  { color: #b8860b; font-size: 0.88em; line-height: 1.6; flex: 1; }
+        .ending-card-tag   { color: #90ee90; font-size: 0.8em; margin-top: 0.6rem; }
+
+        /* Clare choice 2-col */
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .choice-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            overflow: hidden;
+        }
+        .choice-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+
+            border-color: #d4af37;
+            box-shadow: 0 20px 50px rgba(139, 105, 20, 0.5);
+        }
+        .choice-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .choice-card-body { padding: 0.75rem 1rem; flex: 1; }
+        .choice-card-title { color: #d4af37; font-weight: bold; font-size: 0.95em; margin-bottom: 0.25rem; }
+        .choice-card-sub { color: #b8860b; font-size: 0.85em; }
+
+        /* Slick YouTube chrome */
+        .video-chrome {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            border-radius: 4px;
+            overflow: hidden;
+            max-width: 600px;
+            margin: 1.5rem auto;
+        }
+        .video-chrome-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.85rem;
+            background: linear-gradient(90deg, #1a1410, #2a2420);
+            border-bottom: 1px solid #8b6914;
+        }
+        .video-chrome-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #8b6914;
+            opacity: 0.55;
+        }
+        .video-chrome-label {
+            color: #8b6914;
+            font-size: 0.72em;
+            letter-spacing: 0.1em;
+            flex: 1;
+            text-align: center;
+        }
+        .video-chrome-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        .video-chrome-frame iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+        }
+
+        /* path-card equal height */
+        .path-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .path-desc { flex: 1; }
+
+        @media (max-width: 768px) {
+            .max-w { padding: 0 20px; }
+            .project-title { font-size: 1.8em; }
+            .tab-buttons { flex-direction: column; }
+            .tab-button { width: 100%; }
+            .path-container,
+            .grid-3-col,
+            .scenario-grid,
+            .endings-grid { grid-template-columns: repeat(2, 1fr); }
+            .video-chrome { max-width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            .path-container,
+            .grid-3-col,
+            .scenario-grid,
+            .endings-grid,
+            .choice-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="design-journal-nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="Project Whimsical.html" class="nav-back">← Whimsical</a>
+            </div>
+
+            <span class="nav-title">The Foul Play</span>
+            <a href="index.html" style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:color 0.2s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='#8b6914'">Design Journal</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w container-section parchment">
+        <div class="project-title">⚔ PROJECT WHIMSICAL'S: The Foul Play ⚔</div>
+
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #b8860b;">CATEGORY:</span>
+                <span>Narrative Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">TYPE:</span>
+                <span>Quest System</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">PATHS:</span>
+                <span>5 Unique Routes</span>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-button" onclick="switchTab('dialogue')">Dialogue & Narrative</button>
+                <button class="tab-button" onclick="switchTab('playstyles')">Playstyles</button>
+                <button class="tab-button" onclick="switchTab('philosophy')">Design Philosophy</button>
+                <button class="tab-button" onclick="switchTab('learnings')">Learnings</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                <div class="section-container">
+                    <div class="section-title">⚔ QUEST SUMMARY</div>
+                    <div class="content-block">
+                        Kliq, a seasoned bounty hunter, arrives in Stone-Upon-Fleen to meet an old ally: Reverend Lemuel, a mysterious priest from a secret order. Lemuel's letter speaks of foul omens and strange happenings in the village. What begins as a reunion becomes an investigation into dark magic, moral choices, and secrets that will test Kliq's loyalty to both friend and principle.
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">The Call</div>
+                        <div class="subsection-text">
+                            Lemuel has written to Kliq about bad omens plaguing Stone-Upon-Fleen. The village is experiencing bizarre phenomena: missing pumpkins, a foul stench, and villagers falling mysteriously ill. Kliq must meet Lemuel and uncover the truth behind these events-a truth far darker than simple misfortune.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video -->
+                <div class="section-container parchment">
+                    <div class="header-ornament">« PLAYTHROUGH VIDEO »</div>
+                    <div class="section-title">📹 QUEST IN ACTION</div>
+                    <div class="content-block">
+                        Watch Kliq's journey unfold. This playthrough demonstrates investigation mechanics and how player choices shape the narrative.
+                    </div>
+                    <div class="video-chrome">
+                        <div class="video-chrome-bar">
+                            <div class="video-chrome-dot"></div>
+                            <div class="video-chrome-dot"></div>
+                            <div class="video-chrome-dot"></div>
+                            <div class="video-chrome-label">▶ QUEST IN ACTION - FULL PLAYTHROUGH</div>
+                        </div>
+                        <div class="video-chrome-frame">
+                            <iframe 
+                                src="https://www.youtube.com/embed/nPF9AHznbKQ?rel=0" 
+                                title="The Foul Play Quest Playthrough"
+                                frameborder="0" 
+                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Three Paths Overview -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚔ THREE PATHS TO DISCOVERY ⚔</div>
+                    <div class="section-title">🔍 HOW PLAYERS INVESTIGATE</div>
+                    <div class="content-block">
+                        The Foul Play offers three distinct investigation approaches. Each leads to the same truth but shapes how Kliq discovers it.
+                    </div>
+
+                    <div class="path-container">
+                        <div class="path-card">
+                            <div class="path-icon">🎯</div>
+                            <div class="path-title">The Direct Path</div>
+                            <div class="path-desc">
+                                Kliq goes straight to Lemuel for answers. Fastest completion but misses contextual clues.
+                            </div>
+                        </div>
+
+                        <div class="path-card">
+                            <div class="path-icon">🔎</div>
+                            <div class="path-title">The Investigation Path</div>
+                            <div class="path-desc">
+                                Interview townsfolk about 3 clues: missing pumpkins, foul smell, sickness. Gathers more context.
+                            </div>
+                        </div>
+
+                        <div class="path-card">
+                            <div class="path-icon">💪</div>
+                            <div class="path-title">The Onslaught Path</div>
+                            <div class="path-desc">
+                                Skip investigation and break into the barn. Requires Onslaught skill investment.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Features -->
+                <div class="section-container">
+                    <div class="section-title">🎮 CORE DESIGN FEATURES</div>
+                    <div class="grid-3-col">
+                        <div class="gif-card">
+                            <img src="./projects/project-a-foul-call/images/Three-Paths.gif" alt="Three Paths">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">🔀 Multiple Investigation Paths</div>
+                                <div class="gif-card-desc">Three completely different ways to discover the truth, each feeling like a different playstyle.</div>
+                            </div>
+                        </div>
+                        <div class="gif-card">
+                            <img src="./projects/project-a-foul-call/images/Attribute-System.gif" alt="Attribute System">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">📊 Attribute-Based Choices</div>
+                                <div class="gif-card-desc">Player-invested skills (Discovery, Charisma, Onslaught, Stealth) unlock dialogue options and story paths.</div>
+                            </div>
+                        </div>
+                        <div class="gif-card">
+                            <img src="./projects/project-a-foul-call/images/Moral-Choices.gif" alt="Moral Choices">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">🎭 Moral Complexity</div>
+                                <div class="gif-card-desc">No "good" or "evil" choice. Each path has wisdom and cost.</div>
+                            </div>
+                        </div>
+                        <div class="gif-card">
+                            <img src="./projects/project-a-foul-call/images/Consequences.gif" alt="Consequences">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">🔗 Consequence Tracking</div>
+                                <div class="gif-card-desc">Choices affect future quests, NPC availability, and trust relationships.</div>
+                            </div>
+                        </div>
+                        <div class="gif-card">
+                            <img src="./projects/project-a-foul-call/images/npc-stories.gif" alt="NPC Stories">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">👥 Multiple NPC Perspectives</div>
+                                <div class="gif-card-desc">Lemuel, Clare, Kathlyn, and Foy each have their own truth.</div>
+                            </div>
+                        </div>
+                        <div class="gif-card">
+                            <img src="./projects/project-a-foul-call/images/Playstyle-Flexibility.gif" alt="Playstyle Flexibility">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">⚡ Playstyle Flexibility</div>
+                                <div class="gif-card-desc">Every playstyle-combat, stealth, diplomatic-has a path to success.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DIALOGUE & NARRATIVE -->
+            <div id="dialogue" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">💬 CONTEXT-AWARE DIALOGUE</div>
+                    <div class="content-block">
+                        When Kliq reaches Clare, his opening dialogue shifts based on what he's learned along the way. Same meeting, different conversation.
+                    </div>
+
+                    <div class="scenario-grid">
+                        <!-- Scenario 1 -->
+                        <div class="scenario-card">
+                            <img src="./projects/project-a-foul-call/images/barn-direct-approach.gif" alt="Barn Direct Approach">
+                            <div class="scenario-card-body">
+                                <div class="scenario-label">🎯 SCENARIO 1: The Direct Approach</div>
+                                <div class="scenario-text">Went straight to Lemuel, got the key, came directly here. Knows nothing about Clare.</div>
+                                <div class="dialogue-line">
+                                    <div class="dialogue-speaker kliq">KLIQ</div>
+                                    <div class="dialogue-quote">"Who are you?"</div>
+                                </div>
+                                <div class="dialogue-line npc">
+                                    <div class="dialogue-speaker npc">CLARE</div>
+                                    <div class="dialogue-quote">"I'm Clare. I... I was trying to win the competition."</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Scenario 2 -->
+                        <div class="scenario-card">
+                            <img src="./projects/project-a-foul-call/images/barn-garden-approach.gif" alt="Barn Garden Approach">
+                            <div class="scenario-card-body">
+                                <div class="scenario-label">🔍 SCENARIO 2: Investigated the Garden</div>
+                                <div class="scenario-text">Found evidence of the ritual in Clare's garden. Knows it happened there but hasn't spoken to Kathlyn.</div>
+                                <div class="dialogue-line">
+                                    <div class="dialogue-speaker kliq">KLIQ</div>
+                                    <div class="dialogue-quote">"I was in your garden. I saw what you did. What's your name?"</div>
+                                </div>
+                                <div class="dialogue-line npc">
+                                    <div class="dialogue-speaker npc">CLARE</div>
+                                    <div class="dialogue-quote">"I'm Clare. Please... you have to understand, I wasn't trying to hurt anyone."</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Scenario 3 -->
+                        <div class="scenario-card">
+                            <img src="./projects/project-a-foul-call/images/barn-full-knowledge.gif" alt="Barn Full Knowledge">
+                            <div class="scenario-card-body">
+                                <div class="scenario-label">🎭 SCENARIO 3: Spoke to Kathlyn First</div>
+                                <div class="scenario-text">Found Kathlyn, spoke with her, knows both conspirators' names and their partnership.</div>
+                                <div class="dialogue-line">
+                                    <div class="dialogue-speaker kliq">KLIQ</div>
+                                    <div class="dialogue-quote">"Kathlyn told me everything, Clare. I know what you both did."</div>
+                                </div>
+                                <div class="dialogue-line npc">
+                                    <div class="dialogue-speaker npc">CLARE</div>
+                                    <div class="dialogue-quote">"... Yes. We both did this. Kathlyn wanted to help me."</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pivotal Choices -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚔ PIVOTAL CHOICES ⚔</div>
+                    <div class="section-title">🎭 DIALOGUE DECISIONS WITH CONSEQUENCE</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Getting the Barn Key</div>
+                        <div class="subsection-text">
+                            <strong style="color: #d4af37;">OPTION 1 - Report to Lemuel:</strong> Lemuel trusts you and gives the key without pressing for details.<br><br>
+                            <strong style="color: #d4af37;">OPTION 2 - Find Kathlyn:</strong> Discover her name in the book and seek her out for an alternate key source.
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Responding to Clare (After Battle)</div>
+                        <div class="choice-grid">
+                            <div class="choice-card">
+                                <img src="./projects/project-a-foul-call/images/clare-assured.gif" alt="Clare Assured">
+                                <div class="choice-card-body">
+                                    <div class="choice-card-title">Assure Her</div>
+                                    <div class="choice-card-sub">Clare becomes a future ally</div>
+                                </div>
+                            </div>
+                            <div class="choice-card">
+                                <img src="./projects/project-a-foul-call/images/clare-judged.gif" alt="Clare Judged">
+                                <div class="choice-card-body">
+                                    <div class="choice-card-title">Judge Her</div>
+                                    <div class="choice-card-sub">No alliance forms</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subsection-text">
+                            <strong style="color: #d4af37;">CHOICE 1 - Assure Her:</strong> "I won't tell anyone. You're safe now." → Clare becomes a future ally.<br><br>
+                            <strong style="color: #d4af37;">CHOICE 2 - Judge Her:</strong> "You deserve punishment for what you've done." → No alliance forms.
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Final Conversation with Lemuel</div>
+                        <div class="subsection-text">
+                            <strong style="color: #90ee90;">✓ BEST - Tell Nothing:</strong> Lemuel trusts your judgment. Everyone's secret is kept.<br><br>
+                            <strong style="color: #b8860b;">✗ WORST - Tell About Clare Only:</strong> Clare is banished from the village.<br><br>
+                            <strong style="color: #d4af37;">Tell About Both:</strong> Both face judgment. Full transparency with complex consequences.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Endings -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚔ QUEST ENDINGS ⚔</div>
+                    <div class="section-title">🎬 OUTCOMES & CONSEQUENCES</div>
+
+                    <div class="endings-grid">
+                        <div class="ending-card">
+                            <img src="./projects/project-a-foul-call/images/ending-silence.gif" alt="Ending Silence">
+                            <div class="ending-card-body">
+                                <div class="ending-card-title">✓ Best Ending: Discretion</div>
+                                <div class="ending-card-desc">Tell Lemuel nothing. Both Clare and Kathlyn remain in the village. Clare becomes a future ally. Lemuel respects your judgment.</div>
+                                <div class="ending-card-tag">Future Quest: Clare can help Kliq in a future mission.</div>
+                            </div>
+                        </div>
+                        <div class="ending-card">
+                            <img src="./projects/project-a-foul-call/images/ending-exposure.gif" alt="Ending Exposure">
+                            <div class="ending-card-body">
+                                <div class="ending-card-title">✗ Worst Ending: Exposure</div>
+                                <div class="ending-card-desc">Tell Lemuel only about Clare. He has no choice but to enforce justice. Clare is banished from Stone-Upon-Fleen. A dark ending born from incomplete mercy.</div>
+                            </div>
+                        </div>
+                        <div class="ending-card">
+                            <img src="./projects/project-a-foul-call/images/ending-truth.gif" alt="Ending Truth">
+                            <div class="ending-card-body">
+                                <div class="ending-card-title">📋 Full Truth: Both Exposed</div>
+                                <div class="ending-card-desc">Reveal both Clare and Kathlyn's involvement. Lemuel must address both. Full transparency with complex consequences for both NPCs.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: PLAYSTYLES -->
+            <div id="playstyles" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">⚔ PLAYSTYLE BREAKDOWN</div>
+                    <div class="content-block">
+                        Every playstyle has a unique path through The Foul Play. These videos showcase each approach.
+                    </div>
+
+                    <!-- Direct Path -->
+                    <div class="subsection">
+                        <div class="subsection-title">🎯 The Direct Path</div>
+                        <div class="subsection-text">
+                            Go straight to Lemuel for answers. Learn about the garden. Investigate. Confront Clare. Make moral choices. No detours.
+                        </div>
+                        <div class="video-chrome">
+                            <div class="video-chrome-bar">
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-label">▶ DIRECT PATH PLAYTHROUGH</div>
+                            </div>
+                            <div class="video-chrome-frame">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/nPF9AHznbKQ?rel=0" 
+                                    title="Direct Path Playthrough"
+                                    frameborder="0" 
+                                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Investigation Path -->
+                    <div class="subsection">
+                        <div class="subsection-title">🔎 The Investigation Path</div>
+                        <div class="subsection-text">
+                            Gather 3 clues from townsfolk (missing pumpkins, foul smell, sickness). Talk to Lemuel. Explore the garden thoroughly. Then confront Clare with full context.
+                        </div>
+                        <div class="video-chrome">
+                            <div class="video-chrome-bar">
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-label">▶ INVESTIGATION PATH PLAYTHROUGH</div>
+                            </div>
+                            <div class="video-chrome-frame">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/nPF9AHznbKQ?rel=0" 
+                                    title="Investigation Path Playthrough"
+                                    frameborder="0" 
+                                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onslaught Path -->
+                    <div class="subsection">
+                        <div class="subsection-title">💪 The Onslaught Path</div>
+                        <div class="subsection-text">
+                            Skip investigation entirely. Go straight to the barn. Use Onslaught skill to break the door. Confront the spirit. Bypass all preceding story beats. Direct action.
+                        </div>
+                        <div class="video-chrome">
+                            <div class="video-chrome-bar">
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-label">▶ ONSLAUGHT PATH PLAYTHROUGH</div>
+                            </div>
+                            <div class="video-chrome-frame">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/nPF9AHznbKQ?rel=0" 
+                                    title="Onslaught Path Playthrough"
+                                    frameborder="0" 
+                                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attribute Mechanics -->
+                    <div class="section-container">
+                        <div class="section-title">📊 ATTRIBUTE-BASED UNLOCKS</div>
+                        <div class="content-block">
+                            Player-invested skills directly unlock narrative content. No progression gating-just different options for different builds.
+                        </div>
+
+                        <div class="grid-3-col">
+                            <div class="gif-card" style="border-left: 4px solid #90ee90;">
+                                <div class="gif-card-body">
+                                    <div class="gif-card-title" style="color: #90ee90;">🔍 Discovery Attribute</div>
+                                    <div class="gif-card-desc">Find magic vines leading to Clare's house. Investigate garden clues thoroughly.</div>
+                                </div>
+                            </div>
+                            <div class="gif-card" style="border-left: 4px solid #90ee90;">
+                                <div class="gif-card-body">
+                                    <div class="gif-card-title" style="color: #90ee90;">💬 Charisma Attribute</div>
+                                    <div class="gif-card-desc">Talk to Foy the garden helper. Charm him into revealing Clare's location.</div>
+                                </div>
+                            </div>
+                            <div class="gif-card" style="border-left: 4px solid #90ee90;">
+                                <div class="gif-card-body">
+                                    <div class="gif-card-title" style="color: #90ee90;">💪 Onslaught Attribute</div>
+                                    <div class="gif-card-desc">Break barn door. Skip investigation. Direct confrontation with the spirit.</div>
+                                </div>
+                            </div>
+                            <div class="gif-card" style="border-left: 4px solid #90ee90;">
+                                <div class="gif-card-body">
+                                    <div class="gif-card-title" style="color: #90ee90;">🎭 Stealth Attribute</div>
+                                    <div class="gif-card-desc">Kill spirit unseen. No witnesses. Nobody knows what really happened.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: DESIGN PHILOSOPHY -->
+            <div id="philosophy" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚔ DESIGN PILLARS ⚔</div>
+                    <div class="section-title">🏛️ CORE DESIGN PRINCIPLES</div>
+                    <div class="content-block">
+                        These four pillars guided every decision in The Foul Play. They are the foundation of the quest's philosophy.
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">1</div>
+                        <div class="pillar-title">Player Agency</div>
+                        <div class="pillar-desc">
+                            Every choice matters. Investigation path, dialogue response, final decision-all shape the outcome. Players don't feel railroaded; they feel in control of Kliq's story.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">2</div>
+                        <div class="pillar-title">Moral Nuance</div>
+                        <div class="pillar-desc">
+                            No clear "good" or "evil" path. Telling nothing is merciful but deceptive. Telling the truth is honest but destructive. Assuring Clare creates an ally but enables her crime. Players navigate complexity.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">3</div>
+                        <div class="pillar-title">Reactive World</div>
+                        <div class="pillar-desc">
+                            NPCs remember and react. Lemuel notices your judgment. Clare responds to mercy or harshness. Kathlyn's involvement changes if you know about her. The world isn't static-it watches and responds.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">4</div>
+                        <div class="pillar-title">Accessibility</div>
+                        <div class="pillar-desc">
+                            Combat specialists, sneaky players, investigators, diplomats-everyone has a valid path to completion. No playstyle is locked out. The quest adapts to who you are.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Systemic Connections -->
+                <div class="section-container">
+                    <div class="chapter-divider">⚔ SYSTEMIC CONNECTIONS ⚔</div>
+                    <div class="section-title">🔗 HOW SYSTEMS INTERACT</div>
+                    <div class="content-block">
+                        The Foul Play isn't just dialogue and choices-it's a system where every element connects and reinforces the others.
+                    </div>
+
+                    <div class="system-diagram">
+                        <div style="color: #d4af37; font-weight: bold; font-size: 1.2em; margin-bottom: 1rem;">PLAYER ATTRIBUTES</div>
+                        <div style="color: #b8860b;">(Discovery, Charisma, Onslaught, Stealth)</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Unlocks Different Investigation Paths</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Different Dialogue Options Become Available</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">NPC Knowledge & Reactions Change</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Leads to Different Quest Endings</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Future Quest Availability Changes</div>
+                        <div style="color: #d4af37; font-weight: bold; margin-top: 1rem;">(Clare may become an ally OR be banished)</div>
+                    </div>
+
+                    <div style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%); border: 2px solid #8b6914; border-radius: 5px;">
+                        <div style="color: #d4af37; font-weight: bold; font-size: 1.1em; margin-bottom: 1rem;">How This Creates Depth:</div>
+                        <div style="color: #b8860b; line-height: 1.8;">
+                            <p><strong>Knowledge Tracking:</strong> The system knows what Kliq has seen and heard. Dialogue adapts based on this knowledge.</p>
+                            <p><strong>Consequence Chains:</strong> Assuring Clare isn't just a nice moment-it unlocks future content. Banishing her removes an NPC permanently.</p>
+                            <p><strong>Playstyle Expression:</strong> A combat player and a stealth player experience the same quest completely differently, but both feel valid.</p>
+                            <p><strong>Replayability:</strong> New paths open based on different attribute choices. The quest isn't the same twice.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: LEARNINGS -->
+            <div id="learnings" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚔ DESIGN LEARNINGS ⚔</div>
+                    <div class="section-title">💡 KEY INSIGHTS FROM BUILDING The Foul Play</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 1: Knowledge Matters More Than Morality</div>
+                        <div class="learning-text">
+                            I realized the quest isn't about "right vs wrong" choices-it's about <strong>what the player knows</strong>. The same dialogue option means different things depending on context. Telling nothing is merciful if you've built empathy with Clare, but callous if you just met her. This taught me that <strong>narrative depth comes from context, not alignment systems</strong>.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 2: Dynamic Dialogue Rewards Exploration</div>
+                        <div class="learning-text">
+                            Initially, I thought dialogue would be static. But watching how opening lines changed (Direct "Who are you?" vs Investigation "I saw your garden" vs Full Knowledge "Kathlyn told me") showed me that <strong>exploration should be rewarded with unique dialogue</strong>. Players who investigated felt smarter. Players who rushed felt the pressure. This micro-variation had outsized narrative impact.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 3: Attributes Should Gate Narrative, Not Combat</div>
+                        <div class="learning-text">
+                            Most games use attributes for stat checks. But The Foul Play uses them to unlock <strong>different story moments</strong>. High Discovery unlocks the vine path. High Charisma lets you charm Foy. This meant <strong>character building directly shapes the narrative experience</strong>. It made attributes feel meaningful in a way stat bonuses never do.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 4: NPCs Need Memory to Have Agency</div>
+                        <div class="learning-text">
+                            I learned that consequence weight comes from NPCs remembering. Lemuel remembering whether Kliq lied, Clare remembering if he was merciful, Kathlyn remembering if she was protected-these memories make the world feel alive. Without memory, choices feel hollow. <strong>NPC recall systems are more important than branching dialogue</strong>.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 5: Playstyle Flexibility Creates Depth, Not Simplicity</div>
+                        <div class="learning-text">
+                            I worried that giving all playstyles a valid path would make the quest feel shallow. It did the opposite. A stealth player sneaking into the barn unseen, a combat player Onslaught-breaking the door, an investigator piecing together clues-same quest, three completely different experiences. <strong>Accessibility through playstyle choice enhances depth</strong>.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 6: Moral Complexity Requires Trust in the Player</div>
+                        <div class="learning-text">
+                            The biggest learning was trusting players to navigate moral ambiguity without a "good" marker. No quest giver saying "the right thing to do is..." Players had to make their own judgments about Clare's culpability, Lemuel's authority, and their own conscience. This <strong>required me to let go of directive narrative and trust player interpretation</strong>.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 7: Consequences Don't Need to Be Dramatic</div>
+                        <div class="learning-text">
+                            I initially thought consequences needed to be big (death, banishment, war). But the most meaningful consequence is <strong>a future quest unlocked or closed</strong>. Clare becoming an ally for a future mission feels more consequential than a death. It makes players feel their choices ripple forward, not just forward in the same narrative.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="design-journal-footer">
+        <div style="font-size: 0.9em; margin-top: 1rem;">✦ Sidhvi's Design Journal ✦</div>
+        <div style="font-size: 0.8em; color: #8b6914; margin-top: 0.5rem;">Project Whimsical's: The Foul Play - Quest Design</div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top of content
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

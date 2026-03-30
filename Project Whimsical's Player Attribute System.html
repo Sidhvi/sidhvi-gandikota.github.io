@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Player Attribute System - Design Deep Dive">
+    <title>Player Attribute System - Sidhvi's Design Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-dim: #8b6914;
+            --ink: #b8860b;
+            --bg: #0d0b08;
+            --border: rgba(139, 105, 20, 0.5);
+        }
+
+        * { font-family: 'Crimson Text', Georgia, serif; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(139,105,20,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(139,105,20,0.05) 0%, transparent 55%);
+            background-attachment: fixed;
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 105, 20, 0.3);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #0d0b08 0%, rgba(13,11,8,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--gold); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: xx-large;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .project-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.6em, 3vw, 2.4em);
+            color: var(--gold);
+            margin: 1rem 0;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 40px rgba(212,175,55,0.2);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50% { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 1px solid var(--gold-dim);
+            color: var(--ink);
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border-color: #d4af37;
+            color: #d4af37;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.6);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .media-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+        .media-grid-2 img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Removes the tiny gap at the bottom of images */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: #d4af37;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: #b8860b;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .subsection {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 4px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.1);
+        }
+
+        .subsection-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .subsection-text {
+            color: #b8860b;
+            line-height: 1.7;
+        }
+
+        .attribute-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .attribute-card:hover {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.4);
+        }
+
+        .attribute-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .attribute-name {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .attribute-desc {
+            color: #b8860b;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .derived-stats {
+            background: rgba(144, 238, 144, 0.1);
+            border-left: 3px solid #90ee90;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+            border-radius: 3px;
+        }
+
+        .derived-label {
+            color: #90ee90;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 0.5rem;
+        }
+
+        .derived-item {
+            color: #b8860b;
+            font-size: 0.85em;
+            margin: 0.25rem 0;
+        }
+
+        .progression-box {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .progression-header {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .progression-text {
+            color: #b8860b;
+            line-height: 1.6;
+        }
+
+        .synergy-box {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #d4af37;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 3px;
+        }
+
+        .synergy-title {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .synergy-text {
+            color: #b8860b;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .build-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .build-name {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .build-focus {
+            color: #90ee90;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9em;
+        }
+
+        .build-desc {
+            color: #b8860b;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .build-path {
+            background: rgba(139, 105, 20, 0.2);
+            padding: 0.75rem;
+            border-radius: 3px;
+            margin-top: 0.75rem;
+        }
+
+        .build-path-label {
+            color: #d4af37;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .build-path-text {
+            color: #b8860b;
+            font-size: 0.9em;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 2rem auto;
+        }
+
+        .grimoire-footer {
+            background: linear-gradient(180deg, #0d0b08 0%, #1a1410 100%);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--ink);
+        }
+
+        /* ── GIF CARDS (aligned to other pages) ── */
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .gif-card:hover {
+            transform: translateY(-6px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+        }
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .gif-card-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+        .gif-card-desc {
+            color: #b8860b;
+            font-size: 0.88em;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        /* grid for side-by-side gif cards */
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* full-width gif card (single, centred) */
+        .gif-card-wide {
+            max-width: 760px;
+            margin: 2rem auto;
+        }
+
+        .media-caption {
+            color: #8b6914;
+            font-size: 0.8em;
+            font-style: italic;
+            text-align: center;
+            margin-top: -0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 640px) { .grid-2-col { grid-template-columns: 1fr; } }
+
+        .cta-button {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            border-radius: 3px;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 0 40px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1200px) { .max-w { padding: 0 60px; } }
+        @media (max-width: 900px)  { .max-w { padding: 0 32px; } }
+        @media (max-width: 600px) {
+            .max-w { padding: 0 16px; }
+            .project-title { font-size: 1.6em; }
+            .tab-buttons { flex-direction: column; }
+            .tab-button { width: 100%; }
+        }
+        @media (max-width: 480px) { .max-w { padding: 0 0.75rem; } }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="design-journal-nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="Project Whimsical.html" class="nav-back">← Whimsical</a>
+            </div>
+
+            <span class="nav-title">Player Attribute System</span>
+            <a href="index.html" style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:color 0.2s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='#8b6914'">Design Journal</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w container-section parchment" style="padding-top:2rem;padding-bottom:2rem;">
+        <div class="project-title">PROJECT WHIMSICAL'S: Player Attribute System</div>
+
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #b8860b;">TYPE:</span>
+                <span>Systems Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">PROGRESSION:</span>
+                <span>Experience Points Investment</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #b8860b;">ATTRIBUTES:</span>
+                <span>4 Attributes : (8 Sub-Attributes Derived)</span>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview')">System Overview</button>
+                <button class="tab-button" onclick="switchTab('attributes')">Direct Attributes</button>
+                <button class="tab-button" onclick="switchTab('progression')">Progression & Examples</button>
+                <button class="tab-button" onclick="switchTab('synergies')">Synergies & Builds</button>
+            </div>
+
+            <!-- TAB 1: SYSTEM OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                <div class="section-container">
+                    <div class="section-title">⚙️ HOW THE ATTRIBUTE SYSTEM WORKS</div>
+                    <div class="content-block">
+                        The Player Attribute System uses <strong>4 Direct Attributes</strong> that players invest points into. <br>
+                        Each point invested creates a ripple effect, increasing multiple derived stats simultaneously. This creates an interconnected web where building one attribute naturally strengthens multiple playstyles.
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Core Mechanics (Subject To Change)</div>
+                        <div class="subsection-text">
+                            <strong style="color: #d4af37;">Points Per Level:</strong> 1 attribute point earned per level<br>
+                            <strong style="color: #d4af37;">Respec:</strong> Using a potions that is very pricey<br>
+                            <strong style="color: #d4af37;">Attribute Diversity:</strong> 8 Indirect attributes provide multiple playstyle options
+                        </div>
+                    </div>
+
+                    <!-- Character Stat Screen GIF -->
+                    <div class="gif-card gif-card-wide">
+                        <img src="./projects/project-whimsical-attributes/images/journal-attributes.png" alt="Character Stat Screen">
+                        <div class="gif-card-body">
+                            <div class="gif-card-title">📊 Character Stat Screen</div>
+                            <div class="gif-card-desc">How players allocate points and see their attribute progression</div>
+                        </div>
+                    </div>
+                    <div class="subsection">
+                        <div class="subsection-title">The Journal Visual</div>
+                        <div class="subsection-text">
+                            The Attributes menus is a sub-menu of Journal menu. 
+                            Each sub-menu of the journal appears to be in style of a journal page.
+                            The attributes skill is deliberately designed in the style of a compass where each playstyle is in a direction. <br>
+                            The <strong>Cardinal Directions</strong> are directly derived from the skill point while the <strong>Ordinal Directions</strong> are derived from their Cardinal parents. This creates a visual representation of how the attributes are interconnected.
+                        </div>
+                    </div>
+
+                    <div class="chapter-divider">⚔ THE 4 DIRECT ATTRIBUTES ⚔</div>
+
+                    <div class="content-block">
+                        Each Direct Attribute is designed to support a unique playstyle while interconnecting with others through derived stats:
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div class="attribute-card">
+                            <div class="attribute-icon">💪</div>
+                            <div class="attribute-name">BODY</div>
+                            <div class="attribute-desc">
+                                Physical strength and resilience. Invest in BODY for survivability and melee combat effectiveness.
+                            </div>
+                            <div class="derived-stats">
+                                <div class="derived-label">Grants Per Point:</div>
+                                <div class="derived-item">+5 Vigour (Health)</div>
+                                <div class="derived-item">+2.5 Stealth</div>
+                                <div class="derived-item">+2.5 Critical Hit (Chance)</div>
+                            </div>
+                        </div>
+
+                        <div class="attribute-card">
+                            <div class="attribute-icon">✋</div>
+                            <div class="attribute-name">HAND</div>
+                            <div class="attribute-desc">
+                                Dexterity and combat skill. Invest in HAND for damage, precision strikes, and quick reflexes.
+                            </div>
+                            <div class="derived-stats">
+                                <div class="derived-label">Grants Per Point:</div>
+                                <div class="derived-item">+5 Onslaught (Damage)</div>
+                                <div class="derived-item">+2.5 Critical Hit</div>
+                                <div class="derived-item">+2.5 Reflex (Speed)</div>
+                            </div>
+                        </div>
+
+                        <div class="attribute-card">
+                            <div class="attribute-icon">🧠</div>
+                            <div class="attribute-name">MIND</div>
+                            <div class="attribute-desc">
+                                Intelligence and magical prowess. Invest in MIND for spell power and dialogue influence.
+                            </div>
+                            <div class="derived-stats">
+                                <div class="derived-label">Grants Per Point:</div>
+                                <div class="derived-item">+5 Magic (Spell Potency)</div>
+                                <div class="derived-item">+2.5 Reflex (Cooldown Reduction)</div>
+                                <div class="derived-item">+2.5 Charisma</div>
+                            </div>
+                        </div>
+
+                        <div class="attribute-card">
+                            <div class="attribute-icon">👁️</div>
+                            <div class="attribute-name">EYES</div>
+                            <div class="attribute-desc">
+                                Perception and awareness. Invest in EYES for finding secrets and moving unseen.
+                            </div>
+                            <div class="derived-stats">
+                                <div class="derived-label">Grants Per Point:</div>
+                                <div class="derived-item">+5 Discovery (Finding Items)</div>
+                                <div class="derived-item">+2.5 Charisma</div>
+                                <div class="derived-item">+2.5 Stealth</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">The Interconnected Web</div>
+                        <div class="subsection-text">
+                            Notice how each attribute contributes to multiple derived stats. A player investing purely in BODY gets health, stealth, and critical hits. A player investing in HAND gets damage, critical hits, and speed. This overlap means <strong>no attribute is useless</strong> for any playstyle. A magic user (MIND) still benefits from Reflex (faster spell cooldowns), making the system feel organic rather than siloed.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DIRECT ATTRIBUTES -->
+            <div id="attributes" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">📊 DERIVED STATS EXPLAINED</div>
+                    <div class="content-block">
+                        Each Direct Attribute increases multiple Derived Stats. Here's what each one does:
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Vigour</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> BODY (+5 per point)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> +1 Health per Vigour point<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Determines how much damage you can take before death. Core survivability stat.
+                        </div>
+                        <!-- BODY Attribute GIF -->
+                        <div class="media-grid-2">
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/body-normal.png" alt="Body basic points">
+                                <br>
+                                <div class="media-caption">Observe that the Health is 100/100 (Default)</div>
+                            </div>
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/body-increases.png" alt="Body Points Invested">
+                                <br>
+                                <div class="media-caption">Observe that the Health is 130/130 (2 Points Invested) </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Critical Hit</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> BODY (+2.5) + HAND (+2.5)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Increases chance to land critical strikes on every hit<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Rewards precise timing and combat skill. Scales with both physical attributes.
+                        </div>
+                        <div class="media-grid-2">
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/crit-normal.gif" alt="Normal Critical Hit Chance">
+                                <br>
+                                <div class="media-caption">Critical Hit occurs on 10th Hit (Default)</div>
+                            </div>
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/crit-points.gif" alt="Body Points Invested">
+                                <br>
+                                <div class="media-caption">Critical Hit occurs on 6th Hit (4 Points in Body) </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Onslaught</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> HAND (+5 per point)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Increases damage output per attack<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Direct combat power. Essential for aggressive builds. Also enables breaking barriers (like barn doors).
+                        </div>
+                        <div class="media-grid-2">
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/onslaught-normal.gif" alt="Base Attack Damage">
+                                <br>
+                                <div class="media-caption">Regular Damage: 5 and Heavy Damage: 10 (Default)</div>
+                            </div>
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/onslaught-points.gif" alt="Hand Points Invested">
+                                <br>
+                                <div class="media-caption">Regular Damage: 15 and Heavy Damage: 30 (2 Points in Hand) </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Reflex</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> HAND (+) + MIND (+2.5)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Decreases spell cooldown and increases movement speed<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Allows quicker attacks, faster spell casting, and more fluid combat. Bridges physical and magical playstyles.
+                        </div>
+                        <div class="media-grid-2">
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/reflex-normal.gif" alt="Base Reflex Time">
+                                <br>
+                                <div class="media-caption">Observe the Lower Right Corner for magic timer (Default)</div>
+                            </div>
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/reflex-upgraded.gif" alt="Hand Points Invested">
+                                <br>
+                                <div class="media-caption">Observe the Lower Right Corner for magic timer (2 Points in Hand) </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Magic</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> MIND (+5 per point)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Increases spell potency (e.g., fire damage, heal strength)<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Core magical stat. More Magic = more powerful spells and effects. Scales all spell-based abilities.
+                        </div>
+                        <div class="media-grid-2">
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/magic-normal.png" alt="Base Magic Damage Numbers">
+                                <br>
+                                <div class="media-caption">Notice that default fire magic damage on enemies is 2.5</div>
+                            </div>
+                            <div>
+
+                                <img src="./projects/project-whimsical-attributes/images/magic-upgraded.png" alt="Mind Points Invested">
+                                <br>
+                                <div class="media-caption">Notice that fire magic damage on enemies is 7.5 after investing 2 points in Mind </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Charisma</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> MIND (+2.5) + EYES (+2.5)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Unlocks dialogue options with NPCs. Future expansion: affects traders and bartering.<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Currently gates narrative content. Used in A Foul Call to charm Foy. Planned for NPC interactions.
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Discovery</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> EYES (+5 per point)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Increases chance of finding hidden items and secrets in the world<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Enables exploration-focused gameplay. Finding clues in A Foul Call requires Discovery. Rewards curiosity.
+                        </div>
+                    </div>
+
+                    <!-- EYES Attribute GIF -->
+                    <div class="gif-card gif-card-wide">
+                        <img src="./images/attribute-system/eyes-attribute-demo.gif" alt="EYES Attribute Demo">
+                        <div class="gif-card-body">
+                            <div class="gif-card-title">👁️ EYES Attribute in Action</div>
+                            <div class="gif-card-desc">Finding hidden items, discovering secrets, and sneaking unseen</div>
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Stealth</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Source:</strong> BODY (+2.5) + EYES (+2.5)<br>
+                            <strong style="color: #d4af37;">Effect:</strong> Decreases detection radius by enemies, reduces sound made while moving<br>
+                            <strong style="color: #d4af37;">Impact:</strong> Enables stealth kills and avoiding combat. Can kill bosses unseen. Core for sneaky playstyles.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: PROGRESSION & EXAMPLES -->
+            <div id="progression" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">📈 PROGRESSION SYSTEM</div>
+                    <div class="content-block">
+                        Players earn 1 attribute point per level. 
+                        These points are allocated freely to any of the 4 Direct Attributes. The plan is to allow respec of the level using a costly potion. 
+                    </div>
+
+                    <div class="progression-box">
+                        <div class="progression-header">Level Progression Example</div>
+                        <div class="progression-text">
+                            <strong style="color: #d4af37;">Level 1:</strong> 1 point earned → Player allocates to BODY and increase Health, Stealth and Critical Hit<br>
+                            <strong style="color: #d4af37;">Level 5:</strong> 5 total points earned → Player allocates to BODY + HAND to create a Warrior Build.<br>
+                            <strong style="color: #d4af37;">Level 10:</strong> 10 total points earned → Player allocates to BODY + HAND + MIND to create a Magical Warrior Build.<br>
+                            <strong style="color: #d4af37;">Level 25:</strong> Player has RESPEC POTION → Player drinks it and gets back all 25 points and allocates to MIND + EYES to create a Charismatic Magician Build.<br>
+                        </div>
+                    </div>
+
+                    <div class="chapter-divider">⚔ GATING CONTENT WITH ATTRIBUTES ⚔</div>
+
+                    <div class="content-block">
+                        Attributes aren't just for combat stats—they <strong>gate access to quest content and story moments</strong>. Different playstyles unlock different experiences.
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Discovery >= 3: Follow Magic Vines</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Quest:</strong> A Foul Call<br>
+                            <strong style="color: #d4af37;">Requirements:</strong> EYES attribute level 3+<br>
+                            <strong style="color: #d4af37;">Action Unlocked:</strong> Find magical vines leading to Clare's house in the garden<br>
+                            <strong style="color: #d4af37;">Playstyle Impact:</strong> Investigative players naturally invest in EYES for discovery, unlocking this path without forcing it.
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Charisma >= 4: Charm Foy</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Quest:</strong> A Foul Call<br>
+                            <strong style="color: #d4af37;">Requirements:</strong> MIND >= 2 + EYES >= 2 (or higher)<br>
+                            <strong style="color: #d4af37;">Action Unlocked:</strong> Persuade Foy (garden helper) to reveal Clare's location<br>
+                            <strong style="color: #d4af37;">Playstyle Impact:</strong> Diplomatic/observant players get unique dialogue options. Fast-tracks investigation.
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Onslaught >= 5: Break Barn Door</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Quest:</strong> A Foul Call<br>
+                            <strong style="color: #d4af37;">Requirements:</strong> HAND attribute level 5+<br>
+                            <strong style="color: #d4af37;">Action Unlocked:</strong> Forcefully break down the barn door, skipping investigation<br>
+                            <strong style="color: #d4af37;">Playstyle Impact:</strong> Combat-focused players can brute-force their way in. Fastest path to spirit.
+                        </div>
+                    </div>
+
+                    <div class="attribute-card">
+                        <div class="attribute-name" style="color: #90ee90;">Stealth >= 5: Stealth Kill Spirit</div>
+                        <div class="attribute-desc">
+                            <strong style="color: #d4af37;">Quest:</strong> A Foul Call (Boss Fight)<br>
+                            <strong style="color: #d4af37;">Requirements:</strong> BODY >= 3 + EYES >= 2 (or equivalent Stealth)<br>
+                            <strong style="color: #d4af37;">Action Unlocked:</strong> Kill pumpkin spirit unseen without triggering combat<br>
+                            <strong style="color: #d4af37;">Playstyle Impact:</strong> Stealth players bypass combat entirely. No witnesses = best moral outcome possible.
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Why This Design Matters</div>
+                        <div class="subsection-text">
+                            By tying attribute requirements to quest content, the system ensures <strong>every playstyle feels valid and rewarded</strong>. A player who invested in Onslaught gets a unique path. A player who invested in Discovery gets a different path. Neither feels "wrong"—both are legitimate strategies that the game acknowledges through special content.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: SYNERGIES & BUILDS -->
+            <div id="synergies" class="tab-content">
+                <div class="section-container">
+                    <div class="section-title">🎯 SYNERGIES & PLAYSTYLE BUILDS</div>
+                    <div class="content-block">
+                        The interconnected nature of the attribute system creates natural synergies. Certain attribute combinations amplify each other and enable unique playstyles.
+                    </div>
+
+                    <div class="chapter-divider">⚔ ATTRIBUTE SYNERGIES ⚔</div>
+
+                    <div class="synergy-box">
+                        <div class="synergy-title">💪 BODY + HAND = Combat Warrior</div>
+                        <div class="synergy-text">
+                            <strong style="color: #d4af37;">Why They Work Together:</strong> BODY grants health and stealth, HAND grants damage and reflex. Combined = a durable, quick attacker.<br>
+                            <strong style="color: #d4af37;">Derived Benefits:</strong> Massive health pool, high damage, fast reflexes, critical hit scaling<br>
+                            <strong style="color: #d4af37;">Gameplay:</strong> Engage in direct combat, outlast enemies through damage and durability.
+                        </div>
+                    </div>
+
+                    <div class="synergy-box">
+                        <div class="synergy-title">🧠 MIND + EYES = Perceptive Mage</div>
+                        <div class="synergy-text">
+                            <strong style="color: #d4af37;">Why They Work Together:</strong> MIND grants magic and reflex, EYES grants discovery and stealth. Combined = a smart spellcaster who finds secrets.<br>
+                            <strong style="color: #d4af37;">Derived Benefits:</strong> Strong spells, fast cooldowns, hidden item detection, undetectable sneaking<br>
+                            <strong style="color: #d4af37;">Gameplay:</strong> Cast powerful spells from stealth, explore thoroughly, discover hidden paths.
+                        </div>
+                    </div>
+
+                    <div class="synergy-box">
+                        <div class="synergy-title">👁️ BODY + EYES = Sneaky Scout</div>
+                        <div class="synergy-text">
+                            <strong style="color: #d4af37;">Why They Work Together:</strong> BODY grants stealth and health, EYES grants discovery and charisma. Combined = a ghost who finds everything.<br>
+                            <strong style="color: #d4af37;">Derived Benefits:</strong> Invisible to enemies, detect all secrets, talk your way out, quick escapes<br>
+                            <strong style="color: #d4af37;">Gameplay:</strong> Sneak through areas undetected, find every secret, charm NPCs when caught.
+                        </div>
+                    </div>
+
+                    <div class="synergy-box">
+                        <div class="synergy-title">✋ HAND + MIND = Quick Spellblade</div>
+                        <div class="synergy-text">
+                            <strong style="color: #d4af37;">Why They Work Together:</strong> HAND grants damage and reflex, MIND grants magic and reflex. Combined = fast physical AND magical attacks.<br>
+                            <strong style="color: #d4af37;">Derived Benefits:</strong> High onslaught, high magic, very fast reflexes, quick spell cooldowns<br>
+                            <strong style="color: #d4af37;">Gameplay:</strong> Blend melee and magic for fluid, rapid combat. Cast while attacking.
+                        </div>
+                    </div>
+
+                    <div class="chapter-divider">⚔ EXAMPLE BUILDS ⚔</div>
+
+                    <div class="build-card">
+                        <div class="build-name">🗡️ The Warrior</div>
+                        <div class="build-focus">Direct Combat Focus</div>
+                        <div class="build-desc">
+                            A player who invests heavily in BODY and HAND for maximum survivability and damage output. Engages bosses head-on and wins through superior stats.
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Recommended Allocation (50 points):</div>
+                            <div class="build-path-text">BODY: 20 points | HAND: 25 points | MIND: 3 points | EYES: 2 points</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Key Stats:</div>
+                            <div class="build-path-text">Vigour: 100+ | Onslaught: 125+ | Critical Hit: Very High</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">A Foul Call Strategy:</div>
+                            <div class="build-path-text">Use Onslaught >= 5 to break barn door directly. Fight spirit with pure strength. Brute force through challenges.</div>
+                        </div>
+                    </div>
+
+                    <!-- Warrior Build Combat GIF -->
+                    <div class="gif-card gif-card-wide">
+                        <img src="./images/attribute-system/warrior-build-combat.gif" alt="Warrior Build Combat">
+                        <div class="gif-card-body">
+                            <div class="gif-card-title">🗡️ Warrior Build in Combat</div>
+                            <div class="gif-card-desc">High health and damage output overwhelming enemies</div>
+                        </div>
+                    </div>
+
+                    <div class="build-card">
+                        <div class="build-name">🎭 The Diplomat</div>
+                        <div class="build-focus">Dialogue & Perception</div>
+                        <div class="build-desc">
+                            A player who invests in MIND and EYES for charm and perception. Solves problems through dialogue, discovery, and understanding rather than combat.
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Recommended Allocation (50 points):</div>
+                            <div class="build-path-text">BODY: 5 points | HAND: 5 points | MIND: 20 points | EYES: 20 points</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Key Stats:</div>
+                            <div class="build-path-text">Charisma: 100+ | Discovery: 100+ | Magic: 100+</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">A Foul Call Strategy:</div>
+                            <div class="build-path-text">Use Discovery >= 3 to follow vines. Use Charisma >= 4 to charm Foy. Gather all information. Make informed moral choices.</div>
+                        </div>
+                    </div>
+
+                    <!-- Diplomat Build Dialogue GIF -->
+                    <div class="gif-card gif-card-wide">
+                        <img src="./images/attribute-system/diplomat-build-dialogue.gif" alt="Diplomat Build Dialogue">
+                        <div class="gif-card-body">
+                            <div class="gif-card-title">🎭 Diplomat Build in Action</div>
+                            <div class="gif-card-desc">Unlocking unique dialogue options and discovering hidden information</div>
+                        </div>
+                    </div>
+
+                    <div class="build-card">
+                        <div class="build-name">🥷 The Shadow</div>
+                        <div class="build-focus">Stealth & Evasion</div>
+                        <div class="build-desc">
+                            A player who invests in BODY and EYES for stealth and perception. Avoids conflict entirely, sneaks past enemies, and solves problems without being seen.
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Recommended Allocation (50 points):</div>
+                            <div class="build-path-text">BODY: 18 points | HAND: 8 points | MIND: 8 points | EYES: 16 points</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Key Stats:</div>
+                            <div class="build-path-text">Stealth: 85+ | Discovery: 80+ | Vigour: 90+</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">A Foul Call Strategy:</div>
+                            <div class="build-path-text">Reach barn unseen. Kill spirit with Stealth >= 5 without triggering combat. Complete quest with zero witnesses.</div>
+                        </div>
+                    </div>
+
+                    <!-- Shadow Build Stealth GIF -->
+                    <div class="gif-card gif-card-wide">
+                        <img src="./images/attribute-system/shadow-build-stealth.gif" alt="Shadow Build Stealth">
+                        <div class="gif-card-body">
+                            <div class="gif-card-title">🥷 Shadow Build in Action</div>
+                            <div class="gif-card-desc">Sneaking past enemies and executing stealth kills unseen</div>
+                        </div>
+                    </div>
+
+                    <div class="build-card">
+                        <div class="build-name">✨ The Mage</div>
+                        <div class="build-focus">Magic & Spell Power</div>
+                        <div class="build-desc">
+                            A player who invests heavily in MIND for spell potency and cooldown reduction. Relies on magical abilities to defeat enemies and overcome obstacles.
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Recommended Allocation (50 points):</div>
+                            <div class="build-path-text">BODY: 8 points | HAND: 8 points | MIND: 28 points | EYES: 6 points</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">Key Stats:</div>
+                            <div class="build-path-text">Magic: 140+ | Reflex: 68+ | Vigour: 40+</div>
+                        </div>
+                        <div class="build-path">
+                            <div class="build-path-label">A Foul Call Strategy:</div>
+                            <div class="build-path-text">Use magic to defeat spirit. Fast spell cooldowns mean more casts per fight. Magic-based crowd control if available.</div>
+                        </div>
+                    </div>
+
+                    <!-- Mage Build Magic GIF -->
+                    <div class="gif-card gif-card-wide">
+                        <img src="./images/attribute-system/mage-build-magic.gif" alt="Mage Build Magic">
+                        <div class="gif-card-body">
+                            <div class="gif-card-title">✨ Mage Build in Action</div>
+                            <div class="gif-card-desc">Casting powerful spells with rapid cooldown reduction in combat</div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Hybrid Builds Are Valid Too</div>
+                        <div class="subsection-text">
+                            The beauty of this system is that players aren't forced into rigid archetypes. A player could allocate 12 points to each attribute and create a well-rounded "Jack of All Trades" character. Or invest 15 in BODY, 15 in HAND, and 20 in EYES for a "Combat Scout." The system is flexible enough to support any reasonable allocation while still rewarding specialization through higher derived stat numbers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="grimoire-footer">
+        <div class="header-ornament" style="margin: 0;">✦ FINIS ✦</div>
+        <div style="font-size: 0.9em; margin-top: 1rem;">© 2024 Sidhvi Gandikota's Design Journal</div>
+        <div style="font-size: 0.8em; color: #8b6914; margin-top: 0.5rem;">Player Attribute System - Design Document</div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

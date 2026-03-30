@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Whimsical - Boss Fight: Pumpkin Spirit">
+    <title>Project Whimsical's: Boss Fight - Pumpkin Spirit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Georgia', serif; }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0a0a0a 100%);
+            background-attachment: fixed;
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 30px rgba(139,105,20,0.3);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-bottom: 3px solid #8b6914;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+
+        .project-title {
+            font-size: 2.5em;
+            color: #d4af37;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(139,105,20,0.4);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50%       { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+        }
+
+        /* ── TABS ── */
+        .tabs-container { margin: 2rem 0; }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #b8860b;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border-color: #d4af37;
+            color: #d4af37;
+            box-shadow: 0 0 20px rgba(139,105,20,0.6);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Slick YouTube chrome */
+        .video-chrome {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            border-radius: 4px;
+            overflow: hidden;
+            max-width: 600px;
+            margin: 1.5rem auto;
+        }
+        .video-chrome-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.85rem;
+            background: linear-gradient(90deg, #1a1410, #2a2420);
+            border-bottom: 1px solid #8b6914;
+        }
+        .video-chrome-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #8b6914;
+            opacity: 0.55;
+        }
+        .video-chrome-label {
+            color: #8b6914;
+            font-size: 0.72em;
+            letter-spacing: 0.1em;
+            flex: 1;
+            text-align: center;
+        }
+        .video-chrome-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        .video-chrome-frame iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+        }
+
+        /* ── TYPOGRAPHY ── */
+        .section-title {
+            font-size: 1.6em;
+            color: #d4af37;
+            border-bottom: 2px solid #8b6914;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block { color: #b8860b; line-height: 1.8; margin-bottom: 1.5rem; }
+
+        .subsection {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 4px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 10px rgba(139,105,20,0.1);
+        }
+
+        .subsection-title { color: #d4af37; font-size: 1.2em; font-weight: bold; margin-bottom: 0.75rem; }
+        .subsection-text  { color: #b8860b; line-height: 1.7; }
+
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        /* ── CARDS ── */
+        .path-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .path-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .path-card:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139,105,20,0.4);
+        }
+
+        .path-icon   { font-size: 2.5em; margin-bottom: 0.75rem; flex-shrink: 0; }
+        .path-title  { color: #d4af37; font-weight: bold; font-size: 1.1em; margin-bottom: 0.75rem; flex-shrink: 0; }
+        .path-desc   { color: #b8860b; font-size: 0.9em; line-height: 1.6; flex: 1; }
+
+        .pillar-box {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border-left: 5px solid #d4af37;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+        }
+
+        .pillar-number { color: #d4af37; font-size: 2em; font-weight: bold; margin-bottom: 0.5rem; }
+        .pillar-title  { color: #d4af37; font-weight: bold; font-size: 1.1em; margin-bottom: 0.5rem; }
+        .pillar-desc   { color: #b8860b; line-height: 1.7; }
+
+        .learning-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-title { color: #d4af37; font-weight: bold; font-size: 1.1em; margin-bottom: 0.75rem; }
+        .learning-text  { color: #b8860b; line-height: 1.7; }
+
+        .system-diagram {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .system-flow {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(139,105,20,0.2);
+            border-radius: 3px;
+        }
+
+        .arrow { color: #8b6914; font-size: 1.5em; margin: 0.5rem 0; }
+
+        /* Uniform gif-card */
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .gif-card:hover {
+            transform: scale(1.5);
+            z-index: 9999;
+
+            border-color: #d4af37;
+            box-shadow: 0 20px 50px rgba(139, 105, 20, 0.5);
+        }
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .gif-card-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+        .gif-card-desc {
+            color: #b8860b;
+            font-size: 0.88em;
+            line-height: 1.6;
+            flex: 1;
+        }
+        /* Non-interactable gif-card */
+        .gif-non-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            margin: 0 auto;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .gif-non-card img {
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid #8b6914;
+        }
+        /* ── PHASE CARDS ── */
+        .phase-card {
+            border: 2px solid;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .phase-card.phase1 {
+            background: linear-gradient(135deg, #1e2a1e 0%, #2a3a2a 100%);
+            border-color: #4a9e4a;
+        }
+
+        .phase-card.phase2 {
+            background: linear-gradient(135deg, #2a1410 0%, #3a1c10 100%);
+            border-color: #cc3333;
+        }
+
+        .phase-label {
+            font-size: 0.75em;
+            font-weight: bold;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .phase-card.phase1 .phase-label { color: #4a9e4a; }
+        .phase-card.phase2 .phase-label { color: #cc3333; }
+
+        .phase-title {
+            color: #d4af37;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .phase-desc { color: #b8860b; line-height: 1.7; font-size: 0.95em; }
+
+        /* ── ATTACK CARDS ── */
+        .attack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .attack-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: visible;
+        }
+
+        .attack-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+
+        .attack-card.pitchfork::before  { background: #e88a2e; }
+        .attack-card.pumpkin::before    { background: #4a9e4a; }
+        .attack-card.vine::before       { background: #5b8dd9; }
+
+        .attack-card:hover {
+            border-color: #d4af37;
+            z-index: 10;
+            box-shadow: 0 10px 25px rgba(139,105,20,0.4);
+            transform: translateY(-6px);
+        }
+
+        .attack-number {
+            font-size: 0.75em;
+            font-weight: bold;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .attack-card.pitchfork .attack-number { color: #e88a2e; }
+        .attack-card.pumpkin   .attack-number { color: #4a9e4a; }
+        .attack-card.vine      .attack-number { color: #5b8dd9; }
+
+        .attack-icon  { font-size: 2em; margin-bottom: 0.5rem; flex-shrink: 0; }
+        .attack-name  { color: #d4af37; font-size: 1.2em; font-weight: bold; margin-bottom: 0.5rem; flex-shrink: 0; }
+        .attack-desc  { color: #b8860b; font-size: 0.9em; line-height: 1.6; flex: 1; margin-bottom: 1rem; }
+
+        .phase-diff {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .phase-diff-item {
+            padding: 0.75rem;
+            border-radius: 3px;
+            font-size: 0.82em;
+            line-height: 1.5;
+        }
+
+        .phase-diff-item.p1 {
+            background: rgba(74,158,74,0.12);
+            border: 1px solid #4a9e4a;
+            color: #b8860b;
+        }
+
+        .phase-diff-item.p2 {
+            background: rgba(204,51,51,0.12);
+            border: 1px solid #cc3333;
+            color: #b8860b;
+        }
+
+        .phase-diff-item strong { display: block; margin-bottom: 0.3rem; }
+        .phase-diff-item.p1 strong { color: #4a9e4a; }
+        .phase-diff-item.p2 strong { color: #cc3333; }
+
+        /* ── HP BAR ── */
+        .hp-bar-container {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #8b6914;
+            border-radius: 3px;
+            height: 14px;
+            margin: 0.75rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hp-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .hp-bar-fill.full    { background: linear-gradient(90deg, #4a9e4a, #6cc46c); width: 100%; }
+        .hp-bar-fill.half    { background: linear-gradient(90deg, #cc3333, #e85555); width: 50%;  }
+
+        .hp-bar-marker {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 2px;
+            background: #d4af37;
+            left: 50%;
+        }
+
+        /* ── MEDIA PLACEHOLDERS ── */
+        .media-placeholder {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px dashed #8b6914;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            margin: 1.25rem 0;
+            text-align: center;
+            gap: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .media-placeholder:hover { border-color: #d4af37; }
+        .media-placeholder .ph-icon  { font-size: 2.2em; opacity: 0.6; }
+        .media-placeholder .ph-label { color: #d4af37; font-weight: bold; font-size: 0.95em; letter-spacing: 0.08em; }
+        .media-placeholder .ph-hint  { color: #8b6914; font-size: 0.78em; font-style: italic; }
+        .media-placeholder.tall  { min-height: 220px; }
+        .media-placeholder.short { min-height: 140px; }
+
+        .media-caption {
+            color: #8b6914;
+            font-size: 0.8em;
+            font-style: italic;
+            text-align: center;
+            margin-top: -0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .media-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        /* ── LAYOUT ── */
+        .max-w { max-width: 100%; margin: 0 auto; padding: 0 150px; }
+        .container-section { margin: 3rem auto; }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-top: 3px solid #8b6914;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #b8860b;
+        }
+
+        /* ── FLOW ── */
+        .flow-node {
+            padding: 1rem 1.5rem;
+            border: 2px solid;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 3px;
+            margin: 0.5rem auto;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        .flow-arrow { text-align: center; color: #8b6914; font-size: 1.4em; margin: 0.3rem 0; line-height: 1; }
+        .flow-label { text-align: center; color: #8b6914; font-size: 0.8em; font-style: italic; margin-bottom: 0.3rem; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1200px) { .max-w { padding: 0 60px; } }
+
+        @media (max-width: 900px) {
+            .max-w { padding: 0 32px; }
+            .path-container  { grid-template-columns: repeat(2, 1fr); }
+            .attack-grid     { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .max-w { padding: 0 16px; }
+            .project-title { font-size: 1.6em; }
+            .tab-buttons { flex-direction: column; }
+            .tab-button  { width: 100%; }
+            .path-container  { grid-template-columns: repeat(2, 1fr); }
+            .attack-grid     { grid-template-columns: repeat(2, 1fr); }
+            .media-grid-2    { grid-template-columns: repeat(2, 1fr); }
+            .phase-diff      { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 420px) {
+            .path-container  { grid-template-columns: 1fr; }
+            .attack-grid     { grid-template-columns: 1fr; }
+            .media-grid-2    { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="design-journal-nav">
+    <div class="nav-content">
+        <a href="index.html" class="nav-title" style="text-decoration:none;cursor:pointer;">SIDHVI'S DESIGN JOURNAL</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="max-w container-section parchment" style="padding-top:2rem;padding-bottom:2rem;">
+    <div class="project-title">PROJECT WHIMSICAL'S: Boss Fight - Pumpkin Spirit</div>
+
+    <div class="project-meta">
+        <div class="meta-item"><span style="color:#b8860b;">CATEGORY:</span><span>Boss Design · Encounter Design</span></div>
+        <div class="meta-item"><span style="color:#b8860b;">TYPE:</span><span>2-Phase Boss Fight</span></div>
+        <div class="meta-item"><span style="color:#b8860b;">ENGINE:</span><span>Unreal Engine</span></div>
+    </div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tabs-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="switchTab('overview',event)">Overview</button>
+            <button class="tab-button" onclick="switchTab('attacks',event)">Attack Breakdown</button>
+            <button class="tab-button" onclick="switchTab('phases',event)">Phase Flow</button>
+            <button class="tab-button" onclick="switchTab('philosophy',event)">Design Pillars & Systems</button>
+            <button class="tab-button" onclick="switchTab('learnings',event)">Learnings</button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+             TAB 1 - OVERVIEW
+        ════════════════════════════════════════════ -->
+        <div id="overview" class="tab-content active">
+
+            <!-- Boss intro + image -->
+            <div class="section-container">
+                <div class="section-title">🎃 MEET THE PUMPKIN SPIRIT</div>
+                <div class="media-grid-2" style="align-items:start;">
+                    <div>
+                        <div class ="gif-non-card">
+                            <img src="./projects/project-pumpkin-boss/images/pumpkin-boss-intro.gif" alt="Pumpkin boss">
+                        </div> <br>
+                        <div class="media-caption"><strong> The Pumpkin Spirit</strong> </div>
+                    </div>
+                    <div>
+                        <div class="content-block">
+                            The Pumpkin Spirit is Project Whimsical's first boss encounter - a towering, vine-wrapped creature crowned with glowing jack-o'-lantern heads, wielding four pitchforks and commanding the dark magic of the harvest. It sleeps dormant in an abandoned barn at the edge of the village, awakening only when a player draws too close.
+                        </div>
+                        <div class="subsection">
+                            <div class="subsection-title">The Encounter Goal</div>
+                            <div class="subsection-text">
+                                The fight is designed to give the player a sense of <strong style="color:#d4af37;">saving the village from a dangerous threat</strong>. Every mechanic - parrying pitchforks, dodging poison bombs, withstanding vine attacks - is built to make the player feel like they overcame something genuinely dangerous. No single playstyle is forced; attributes shape how the encounter unfolds.
+                            </div>
+                        </div>
+                        <div class="subsection">
+                            <div class="subsection-title">The Stealth Skip</div>
+                            <div class="subsection-text">
+                                Players with high enough Stealth attributes can bypass the fight entirely - sneaking up on the dormant boss and executing a stealth kill before it awakens. This rewards dedicated stealth builds without locking out the encounter for players who want the full fight.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero GIF -->
+            <div class="video-chrome">
+                <div class="video-chrome-bar">
+                    <div class="video-chrome-dot"></div>
+                    <div class="video-chrome-dot"></div>
+                    <div class="video-chrome-dot"></div>
+                    <div class="video-chrome-label">▶ FULL BOSS FIGHT PLAYTHROUGH</div>
+                </div>
+                <div class="video-chrome-frame">
+                    <iframe
+                            src="https://www.youtube.com/embed/E9nIYvzc9sE?rel=0"
+                            title="Boss Fight Playthrough"
+                            frameborder="0"
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Phase snapshot -->
+            <div class="section-container">
+                <div class="chapter-divider">🎃 TWO PHASES 🎃</div>
+                <div class="section-title">⚡ PHASE OVERVIEW</div>
+                <div class="content-block">
+                    The Pumpkin Spirit fights across two escalating phases, each with the same three attack types - but meaningfully different execution and player requirements.
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0;">
+                    <div class="phase-card phase1">
+                        <div class="phase-label">Phase 1</div>
+                        <div class="phase-title">🌿 The Awakening</div>
+                        <div style="margin:0.5rem 0;">
+                            <div style="display:flex;justify-content:space-between;color:#b8860b;font-size:0.8em;margin-bottom:0.3rem;">
+                                <span>HP: 100%</span><span>Threshold: 50%</span>
+                            </div>
+                            <div class="hp-bar-container">
+                                <div class="hp-bar-fill full"></div>
+                                <div class="hp-bar-marker"></div>
+                            </div>
+                        </div>
+                        <div class="phase-desc">
+                            The boss fights at measured aggression. Pitchforks require one successful parry. A single pumpkin bomb is thrown at a time. Vines deal damage on contact. The player has room to learn the attack patterns and find their rhythm.
+                        </div>
+                    </div>
+                    <div class="phase-card phase2">
+                        <div class="phase-label">Phase 2 - triggers at 50% HP</div>
+                        <div class="phase-title">🔥 The Unleashing</div>
+                        <div style="margin:0.5rem 0;">
+                            <div style="display:flex;justify-content:space-between;color:#b8860b;font-size:0.8em;margin-bottom:0.3rem;">
+                                <span>HP: 50%</span><span>Threshold: 0%</span>
+                            </div>
+                            <div class="hp-bar-container">
+                                <div class="hp-bar-fill half"></div>
+                            </div>
+                        </div>
+                        <div class="phase-desc">
+                            The boss escalates all attacks. Pitchforks now require three successful parries. Three pumpkin bombs launch simultaneously. Vines now stun on top of dealing damage, leaving the player vulnerable to the next attack. Aggression is relentless.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core feature cards -->
+            <div class="section-container">
+                <div class="chapter-divider">🎃 CORE MECHANICS 🎃</div>
+                <div class="section-title">🎮 FIGHT HIGHLIGHTS</div>
+                <div class="path-container">
+                    <div class="path-card">
+                        <div class="path-icon">🛡️</div>
+                        <div class="path-title">Parry System</div>
+                        <div class="path-desc">Successfully parrying pitchforks is the primary skill expression of the fight. A successful parry stuns the boss and removes a pitchfork permanently - mastering it strips the boss of its most persistent tool.</div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">🔥</div>
+                        <div class="path-title">Fireball Damage</div>
+                        <div class="path-desc">The player can deal damage freely using magic fireballs at any time. Fireball damage and cooldown scale with attributes, meaning investment pays off with a faster, more powerful offensive option.</div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">⚡</div>
+                        <div class="path-title">Stun Windows</div>
+                        <div class="path-desc">Successfully parrying a pitchfork stuns the boss, opening a window for combo attacks. Stun is the only time physical melee damage can be applied, rewarding players who master the parry timing.</div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">🔥</div>
+                        <div class="path-title">Burn Status</div>
+                        <div class="path-desc">If the fire meter is fully charged, hitting the boss with fireballs applies a Burn status - dealing damage over time. This rewards sustained magical pressure and gives fire-focused builds a powerful DoT tool.</div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">🥷</div>
+                        <div class="path-title">Stealth Skip</div>
+                        <div class="path-desc">Players with sufficient Stealth attributes can bypass the entire fight. The boss is dormant until the player approaches - a high-stealth approach lets them execute a kill before it awakens, rewarding the stealth build fully.</div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">📊</div>
+                        <div class="path-title">Attribute Scaling</div>
+                        <div class="path-desc">No single path is forced. Fireball damage, cooldown, and stealth threshold all scale with player attributes - meaning the fight plays out differently based on how the player built their character.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+             TAB 2 - ATTACK BREAKDOWN
+        ════════════════════════════════════════════ -->
+        <div id="attacks" class="tab-content">
+            <div class="section-container">
+                <div class="section-title">⚔️ ATTACK BREAKDOWN</div>
+                <div class="content-block">
+                    The Pumpkin Spirit has three attacks, each with distinct mechanics and meaningfully different behaviour between phases. Every attack is designed to test a different player skill - parry timing, spatial awareness, and positioning.
+                </div>
+
+                <div class="attack-grid">
+
+                    <!-- PITCHFORK -->
+                    <div class="attack-card pitchfork">
+                        <div class="attack-number">Attack 01</div>
+                        <div class="attack-icon">🍴</div>
+                        <div class="attack-name">Pitchfork</div>
+                        <div class="attack-desc">
+                            The boss wields four pitchforks. When this attack triggers, a random pitchfork is selected and launched at the player - stabbing three times in sequence. Successfully parrying returns the pitchfork to the boss, removes it permanently, and stuns the boss. Failing to parry returns it unfired, still available. If all four pitchforks are parried away, the attack is removed entirely.
+                        </div>
+                        <div class="phase-diff">
+                            <div class="phase-diff-item p1">
+                                <strong>Phase 1</strong>
+                                1 successful parry sends it back & stuns boss
+                            </div>
+                            <div class="phase-diff-item p2">
+                                <strong>Phase 2</strong>
+                                3 successful parries required before it returns
+                            </div>
+                            <br>
+                        </div>
+                        <div class ="gif-card">
+                            <img src="./projects/project-pumpkin-boss/images/Pitchfork-attack.gif" alt="Pitchfork Attack">
+                        </div> <br>
+                    </div>
+
+                    <!-- PUMPKIN BOMB -->
+                    <div class="attack-card pumpkin">
+                        <div class="attack-number">Attack 02</div>
+                        <div class="attack-icon">🎃</div>
+                        <div class="attack-name">Pumpkin Bomb</div>
+                        <div class="attack-desc">
+                            The boss hurls pumpkins that explode on impact, releasing a cloud of green smoke. Any player caught in the blast zone receives a Poison effect - health decreases slowly until the effect expires. The key counter is spatial - evade the blast zone before it detonates.
+                        </div>
+                        <div class="phase-diff">
+                            <div class="phase-diff-item p1">
+                                <strong>Phase 1</strong>
+                                1 pumpkin thrown - readable, evadeable
+                            </div>
+                            <div class="phase-diff-item p2">
+                                <strong>Phase 2</strong>
+                                3 pumpkins thrown simultaneously - requires fast evasion reads
+                            </div>
+                            <br>
+                        </div>
+                        <div class ="gif-card">
+                            <img src="./projects/project-pumpkin-boss/images/pumpkin-bomb-attack.gif" alt="Pumpkin Bomb Attack">
+                        </div> <br>
+                    </div>
+
+                    <!-- VINE ATTACK -->
+                    <div class="attack-card vine">
+                        <div class="attack-number">Attack 03</div>
+                        <div class="attack-icon">🌿</div>
+                        <div class="attack-name">Vine Attack</div>
+                        <div class="attack-desc">
+                            Vines spread outward from the boss toward the player's position. In Phase 1 the vines deal health damage if the player is caught in range. In Phase 2 the vines also apply a stun, leaving the player fully vulnerable and unable to evade the boss's next attack - creating dangerous combo potential.
+                        </div>
+                        <div class="phase-diff">
+                            <div class="phase-diff-item p1">
+                                <strong>Phase 1</strong>
+                                Deals health damage if player is in range
+                            </div>
+                            <div class="phase-diff-item p2">
+                                <strong>Phase 2</strong>
+                                Damage + Stun - player is vulnerable to follow-up attack
+                            </div>
+                            <br>
+                        </div>
+                        <div class ="gif-card">
+                            <img src="./projects/project-pumpkin-boss/images/vine-attack.gif" alt="Vine Attack">
+                        </div> <br>
+                    </div>
+
+                </div>
+
+                <!-- Damage windows -->
+                <div class="chapter-divider">🎃 DAMAGE WINDOWS 🎃</div>
+                <div class="section-title">💥 HOW TO DAMAGE THE BOSS</div>
+                <div class="content-block">
+                    The boss cannot be damaged freely. Two specific windows exist - both tied to player skill and build investment.
+                </div>
+
+                <div class="path-container">
+                    <div class="path-card">
+                        <div class="path-icon">⚡</div>
+                        <div class="path-title">Stun Window - Melee</div>
+                        <div class="path-desc">
+                            Parrying a pitchfork successfully stuns the boss. During the stun, the player can land combo attacks. Damage during this window scales with the player's combat attributes - high attribute investment means more damage per stun.
+                        </div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">🔥</div>
+                        <div class="path-title">Fireball - Anytime</div>
+                        <div class="path-desc">
+                            Magic fireballs can be used at any point in the fight regardless of boss state. Damage and cooldown scale with magic attributes. If the fire meter is fully charged, fireballs apply a <strong style="color:#d4af37;">Burn status</strong> - persistent damage over time on top of the hit.
+                        </div>
+                    </div>
+                    <div class="path-card">
+                        <div class="path-icon">🥷</div>
+                        <div class="path-title">Stealth Kill - Pre-Fight</div>
+                        <div class="path-desc">
+                            Available before the fight starts. If the player has high enough Stealth attributes, they can approach the dormant boss undetected and execute an instant kill. The entire encounter is bypassed. A true reward for the stealth playstyle.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status effects -->
+                <div class="chapter-divider">🎃 STATUS EFFECTS 🎃</div>
+                <div class="section-title">☠️ APPLIED STATUS EFFECTS</div>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin:2rem 0;">
+                    <div style="background:linear-gradient(135deg,#1a1410 0%,#2a2420 100%);border:2px solid #4a9e4a;padding:1.25rem;border-radius:3px;display:flex;flex-direction:column;gap:0.5rem;">
+                        <div style="color:#4a9e4a;font-weight:bold;font-size:1em;">☠️ Poison</div>
+                        <div style="color:#b8860b;font-size:0.88em;line-height:1.6;">
+                            <strong style="color:#d4af37;">Source:</strong> Pumpkin Bomb blast zone<br>
+                            <strong style="color:#d4af37;">Flow:</strong> Pumpkin Bomb → Player<br>
+                            <strong style="color:#d4af37;">Effect:</strong> Slow health drain until effect expires<br>
+                            <strong style="color:#d4af37;">Counter:</strong> Avoid green smoke radius</div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#1a1410 0%,#2a2420 100%);border:2px solid #5b8dd9;padding:1.25rem;border-radius:3px;display:flex;flex-direction:column;gap:0.5rem;">
+                        <div style="color:#5b8dd9;font-weight:bold;font-size:1em;">⚡ Stun (Player)</div>
+                        <div style="color:#b8860b;font-size:0.88em;line-height:1.6;">
+                            <strong style="color:#d4af37;">Source:</strong> Vine Attack (Phase 2 only)<br>
+                            <strong style="color:#d4af37;">Flow:</strong> Vine Area → Player<br>
+                            <strong style="color:#d4af37;">Effect:</strong> Player immobilised, vulnerable to follow-up<br>
+                            <strong style="color:#d4af37;">Counter:</strong> Avoid vine range in Phase 2</div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#1a1410 0%,#2a2420 100%);border:2px solid #cc3333;padding:1.25rem;border-radius:3px;display:flex;flex-direction:column;gap:0.5rem;">
+                        <div style="color:#cc3333;font-weight:bold;font-size:1em;">🔥 Burn (Boss)</div>
+                        <div style="color:#b8860b;font-size:0.88em;line-height:1.6;">
+                            <strong style="color:#d4af37;">Source:</strong> Fireball when fire meter is full<br>
+                            <strong style="color:#d4af37;">Flow:</strong> Player's Fire Ball → Pumpkin Spirit<br>
+                            <strong style="color:#d4af37;">Effect:</strong> Boss takes damage over time<br>
+                            <strong style="color:#d4af37;">Trigger:</strong> Requires fully charged fire meter</div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#1a1410 0%,#2a2420 100%);border:2px solid #5b8dd9;padding:1.25rem;border-radius:3px;display:flex;flex-direction:column;gap:0.5rem;">
+                        <div style="color:#5b8dd9;font-weight:bold;font-size:1em;">⚡ Stun (Boss)</div>
+                        <div style="color:#b8860b;font-size:0.88em;line-height:1.6;">
+                            <strong style="color:#d4af37;">Source:</strong> Player Parried Pitchfork<br>
+                            <strong style="color:#d4af37;">Flow:</strong> Pitchfork → Pumpkin Spirit<br>
+                            <strong style="color:#d4af37;">Effect:</strong> Pumpkin Spirit immobilised, vulnerable to player attacks<br>
+                            <strong style="color:#d4af37;">Trigger:</strong> Parry Pitchfork once (Phase 1); Parry Pitchfork thrice (Phase 2)</div>
+                    </div>
+                </div>
+
+                <!-- Stun (Boss) note -->
+                <div class="subsection">
+                    <div class="subsection-title">⚡ Boss Stun - Parry Reward</div>
+                    <div class="subsection-text">
+                        When the player successfully parries a pitchfork (completing the required parry count for the current phase), the boss is stunned and the pitchfork is removed permanently. This is the only melee damage window and the core skill-expression loop of the fight. Each pitchfork parried is a permanent advantage - the boss becomes less dangerous and more vulnerable with each successful exchange.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+             TAB 3 - PHASE FLOW
+        ════════════════════════════════════════════ -->
+        <div id="phases" class="tab-content">
+            <div class="section-container">
+                <div class="section-title">⚡ FULL FIGHT FLOW</div>
+                <div class="content-block">
+                    This diagram traces the complete encounter - from the dormant boss through both phases, all attack branches, damage windows, and possible endings.
+                </div>
+
+                <div class="system-diagram">
+
+                    <!-- Entry -->
+                    <div class="flow-node" style="border-color:#8b6914;color:#d4af37;background:rgba(139,105,20,0.1);width:100%;max-width:400px;">
+                        💤 DORMANT BOSS<br><span style="font-size:0.8em;font-weight:normal;color:#b8860b;">Inactive in abandoned barn</span>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0.75rem 0;">
+                        <div style="text-align:center;color:#8b6914;font-size:0.85em;padding:0.5rem;border-right:1px solid #8b6914;">
+                            High Stealth<br>↓ Stealth Kill
+                        </div>
+                        <div style="text-align:center;color:#8b6914;font-size:0.85em;padding:0.5rem;">
+                            Player Approaches<br>↓ Boss Awakens
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:0.5rem 0;align-items:start;">
+                        <!-- Stealth path -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+                            <div class="flow-node" style="width:100%;box-sizing:border-box;border-color:#8b6914;color:#b8860b;background:rgba(139,105,20,0.1);margin:0;">
+                                🥷 Stealth Kill<br><span style="font-size:0.8em;font-weight:normal;">Boss eliminated silently</span>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node" style="width:100%;box-sizing:border-box;border-color:#d4af37;color:#d4af37;background:rgba(212,175,55,0.1);margin:0;">
+                                🏆 Village Saved
+                            </div>
+                        </div>
+
+                        <!-- Fight path -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+                            <div class="flow-node" style="width:100%;box-sizing:border-box;border-color:#4a9e4a;color:#4a9e4a;background:rgba(74,158,74,0.1);margin:0;">
+                                🌿 PHASE 1 - The Awakening<br><span style="font-size:0.8em;font-weight:normal;color:#b8860b;">3 attacks active · 100% HP → 50%</span>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div style="width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+                                <div style="text-align:center;">
+                                    <div style="color:#e88a2e;font-size:0.8em;margin-bottom:0.3rem;">Pitchfork</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#e88a2e;color:#e88a2e;background:rgba(232,138,46,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">1 parry → stun</div>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="color:#4a9e4a;font-size:0.8em;margin-bottom:0.3rem;">Pumpkin Bomb</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#4a9e4a;color:#4a9e4a;background:rgba(74,158,74,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">1 bomb → evade</div>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="color:#5b8dd9;font-size:0.8em;margin-bottom:0.3rem;">Vine</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#5b8dd9;color:#5b8dd9;background:rgba(91,141,217,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">damage only</div>
+                                </div>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div style="color:#8b6914;font-size:0.85em;font-style:italic;">HP reaches 50%</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node" style="width:100%;box-sizing:border-box;border-color:#cc3333;color:#cc3333;background:rgba(204,51,51,0.1);margin:0;">
+                                🔥 PHASE 2 - The Unleashing<br><span style="font-size:0.8em;font-weight:normal;color:#b8860b;">All attacks escalate · 50% HP → 0%</span>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div style="width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+                                <div style="text-align:center;">
+                                    <div style="color:#e88a2e;font-size:0.8em;margin-bottom:0.3rem;">Pitchfork</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#e88a2e;color:#e88a2e;background:rgba(232,138,46,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">3 parries → stun</div>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="color:#4a9e4a;font-size:0.8em;margin-bottom:0.3rem;">Pumpkin Bomb</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#4a9e4a;color:#4a9e4a;background:rgba(74,158,74,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">3 bombs → fast evade</div>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="color:#5b8dd9;font-size:0.8em;margin-bottom:0.3rem;">Vine</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#5b8dd9;color:#5b8dd9;background:rgba(91,141,217,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">damage + stun</div>
+                                </div>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                                <div>
+                                    <div style="text-align:center;color:#8b6914;font-size:0.8em;margin-bottom:0.3rem;">Parry stun → melee</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#e88a2e;color:#e88a2e;background:rgba(232,138,46,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">⚡ Combo damage</div>
+                                </div>
+                                <div>
+                                    <div style="text-align:center;color:#8b6914;font-size:0.8em;margin-bottom:0.3rem;">Fire meter full</div>
+                                    <div class="flow-node" style="box-sizing:border-box;border-color:#cc3333;color:#cc3333;background:rgba(204,51,51,0.1);font-size:0.8em;padding:0.5rem;max-width:100%;margin:0;">🔥 Burn status</div>
+                                </div>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node" style="width:100%;box-sizing:border-box;border-color:#d4af37;color:#d4af37;background:rgba(212,175,55,0.1);margin:0;">
+                                🏆 Pumpkin Spirit Defeated - Village Saved
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pitchfork persistence diagram -->
+                <div class="chapter-divider">🎃 PITCHFORK PERSISTENCE 🎃</div>
+                <div class="section-title">🍴 HOW PITCHFORKS ARE REMOVED</div>
+                <div class="content-block">
+                    The pitchfork mechanic is a cumulative system - each successful parry permanently strips a weapon from the boss, making the fight progressively more manageable.
+                </div>
+                <div class="system-diagram">
+                    <div style="color:#d4af37;font-weight:bold;font-size:1.1em;margin-bottom:0.5rem;">BOSS STARTS WITH 4 PITCHFORKS</div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">Random pitchfork selected → launched → stabs player 3 times</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;">
+                        <div>
+                            <div style="color:#4a9e4a;font-size:0.85em;margin-bottom:0.3rem;">✅ Player Parries (Phase 1: 1× / Phase 2: 3×)</div>
+                            <div class="system-flow" style="background:rgba(74,158,74,0.15);color:#4a9e4a;">Pitchfork returns → Boss stunned → Pitchfork removed permanently</div>
+                        </div>
+                        <div>
+                            <div style="color:#cc3333;font-size:0.85em;margin-bottom:0.3rem;">❌ Player fails to parry</div>
+                            <div class="system-flow" style="background:rgba(204,51,51,0.15);color:#cc3333;">Pitchfork returns to boss → still available for future attacks</div>
+                        </div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">All 4 pitchforks parried → Attack removed entirely from fight</div>
+                </div>
+                <div class="section-container">
+                        <div class="chapter-divider">🎃 FLOW DESIGN AIM 🎃</div>
+                        <div class="section-title">🏛️ CORE FLOW AIMS</div>
+                        <div class="content-block">
+                           The core flow of the combat is based on two important pillars.
+                        </div>
+
+                        <div class="pillar-box">
+                            <div class="pillar-number">1</div>
+                            <div class="pillar-title">Readable moves</div>
+                            <div class="pillar-desc">
+                                Each move is distinct without any indicators. 
+                                Pitchfork enables high risk with high reward by stunning Pumpkin Spirit when parried. 
+                                Pumpkin grenades force players to move. 
+                                Vine attack gives player breathing room after evading to perform magic attacks. 
+                                All these attacks combined with move rotation logic will make sure player is always on their toes.
+                            </div>
+                        </div>
+                        <div class="pillar-box">
+                            <div class="pillar-number">2</div>
+                            <div class="pillar-title">Cumulative Intensity Scaling</div>
+                            <div class="pillar-desc">
+                            Phase 2 is a graduation, not a reinvention
+                            The boss does not pull a new, unseen weapon in Phase-2; instead, the intensity of existing attacks is dialled to the limit.
+                            Pitchfork requires parrying thrice. 3x bombs are thrown at player in quick successions. 
+                            Being in vine attack range stuns player.
+                            This ensures the player feels the thrill of mastery-they aren't struggling to learn a new fight; 
+                            they are proving they have truly mastered the first one.
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- ═══════════════════════════════════════════
+             TAB 4 - DESIGN PILLARS & SYSTEMS
+        ════════════════════════════════════════════ -->
+        <div id="philosophy" class="tab-content">
+            <div class="section-container">
+                <div class="chapter-divider">🎃 DESIGN PILLARS 🎃</div>
+                <div class="section-title">🏛️ CORE DESIGN PRINCIPLES</div>
+                <div class="content-block">
+                    Four pillars guided every attack, phase transition, and player-facing mechanic in the Pumpkin Spirit encounter.
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-number">1</div>
+                    <div class="pillar-title">Playstyle Inclusivity</div>
+                    <div class="pillar-desc">
+                        No single build is required. Melee players use the parry-stun loop. Magic players fire continuously and build Burn. Stealth players skip the fight entirely. Attribute investment is always meaningful - the fight adapts to the player, not the other way around.
+                    </div>
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-number">2</div>
+                    <div class="pillar-title">Earned Escalation</div>
+                    <div class="pillar-desc">
+                        Phase 2 isn't a sudden wall - it's a tested player entering a harder version of a fight they've already survived. Every mechanic the player learned in Phase 1 is stress-tested in Phase 2. Pitchforks demand more parries. Bombs require faster reads. Vines now punish with stuns. Difficulty rises through familiarity, not surprise.
+                    </div>
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-number">3</div>
+                    <div class="pillar-title">Cumulative Player Advantage</div>
+                    <div class="pillar-desc">
+                        The pitchfork system is designed to reward skilled play persistently. Each parried pitchfork is gone forever - the boss genuinely becomes less dangerous as the fight progresses. Players who master the parry aren't just surviving; they're dismantling the boss. This makes the endgame feel like a victory the player earned, not one that was given.
+                    </div>
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-number">4</div>
+                    <div class="pillar-title">Tension Through Vulnerability</div>
+                    <div class="pillar-desc">
+                        The Phase 2 vine stun creates a chain-threat moment - caught by a vine means the next attack hits a helpless player. This brief window of total vulnerability is the fight's most tense design beat, making evasion in Phase 2 feel meaningful rather than mechanical. Players who understand the chain reward themselves by never letting it close.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Systems Connections -->
+            <div class="section-container">
+                <div class="chapter-divider">🎃 SYSTEMIC CONNECTIONS 🎃</div>
+                <div class="section-title">🔗 HOW THE SYSTEMS INTERACT</div>
+                <div class="content-block">
+                    The boss fight isn't a standalone encounter - it's a system where the player's attribute investment, the parry loop, the fire meter, and the phase structure all feed into each other.
+                </div>
+
+                <div class="system-diagram">
+                    <div style="color:#d4af37;font-weight:bold;font-size:1.2em;margin-bottom:1rem;">PLAYER ATTRIBUTES</div>
+                    <div style="color:#b8860b;">(Combat, Magic, Stealth)</div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">Stealth high enough → Skip fight entirely via stealth kill</div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">Combat attributes → Melee damage during stun windows</div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">Magic attributes → Fireball damage + cooldown + Burn threshold</div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">Parry skill → Pitchforks removed → Boss weakened permanently</div>
+                    <div class="arrow">↓</div>
+                    <div class="system-flow">Phase 2 at 50% - all attacks escalate, tests all learned skills</div>
+                    <div style="color:#d4af37;font-weight:bold;margin-top:1rem;">(Every run plays differently based on how the player built their character)</div>
+                </div>
+
+                <div style="margin:2rem 0;padding:1.5rem;background:linear-gradient(135deg,#1a1410 0%,#2a2420 100%);border:2px solid #8b6914;border-radius:5px;">
+                    <div style="color:#d4af37;font-weight:bold;font-size:1.1em;margin-bottom:1rem;">How This Creates Depth:</div>
+                    <div style="color:#b8860b;line-height:1.8;">
+                        <p><strong>Parry as Investment:</strong> Each successful parry is a permanent mechanical advantage. Players who commit to the parry timing gradually remove the boss's most persistent attack, creating a rewarding skill loop with visible consequence.</p>
+                        <p><strong>Fire Meter as Rhythm:</strong> Fireballs can be used freely but Burn only activates at full charge - encouraging players to manage a resource rather than spam. Magic builds play as a rhythm game layered on top of the dodge-and-react core.</p>
+                        <p><strong>Vine-Stun Chain:</strong> The Phase 2 vine stun is the fight's only true combo threat - vine into stun into the next attack. This single interaction elevates Phase 2 from "harder attacks" to "attacks that punish positioning failures with a chain."</p>
+                        <p><strong>Stealth as Full Alternative:</strong> Treating stealth as a complete bypass rather than just a bonus rewards attribute specialisation meaningfully - stealth players get a resolution that fits their playstyle, not just a shortcut.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════
+             TAB 5 - LEARNINGS
+        ════════════════════════════════════════════ -->
+        <div id="learnings" class="tab-content">
+            <div class="section-container">
+                <div class="chapter-divider">🎃 DESIGN LEARNINGS 🎃</div>
+                <div class="section-title">💡 KEY INSIGHTS FROM BUILDING THE PUMPKIN SPIRIT</div>
+
+                <div class="learning-card">
+                    <div class="learning-title">Learning 1: Permanent Consequences Make Skill Feel Real</div>
+                    <div class="learning-text">
+                        The pitchfork removal system taught me that the most satisfying skill expression isn't dealing big damage - it's changing the fight itself. Each parried pitchfork changes the enemy's available toolkit permanently. <strong>Players feel powerful not because numbers went up, but because the boss became visibly less threatening.</strong>
+                    </div>
+                </div>
+
+                <div class="learning-card">
+                    <div class="learning-title">Learning 2: Phase 2 Should Test, Not Surprise</div>
+                    <div class="learning-text">
+                        Early in design, Phase 2 could have introduced entirely new attacks. Instead, escalating the existing three attacks proved far more effective - players already understand the threat vocabulary and are immediately tested on it under pressure. <strong>A harder version of a known attack is more satisfying to overcome than an unknown one.</strong>
+                    </div>
+                </div>
+
+                <div class="learning-card">
+                    <div class="learning-title">Learning 3: Chain Threats Create the Fight's Best Moments</div>
+                    <div class="learning-text">
+                        The vine-stun → follow-up attack chain in Phase 2 is the single most tense moment in the encounter. A chain threat - where one attack creates vulnerability for the next - elevates the fight beyond individual attacks. <strong>Attacks that create vulnerability for other attacks demand more from players than attacks that simply deal damage.</strong>
+                    </div>
+                </div>
+
+                <div class="learning-card">
+                    <div class="learning-title">Learning 4: A Boss Fight Is a Playstyle Test</div>
+                    <div class="learning-text">
+                        Supporting three completely different resolution paths - melee, magic, stealth - forced every mechanic to be re-evaluated through each lens. The result is a fight that rewards how the player built their character, not just how skilled they are at a single interaction. <strong>Boss fights that accommodate multiple playstyles reveal which systems are genuinely flexible and which ones only appeared to be.</strong>
+                    </div>
+                </div>
+
+                <div class="learning-card">
+                    <div class="learning-title">Learning 5: The Stealth Skip Is a Design Statement</div>
+                    <div class="learning-text">
+                        Allowing the boss to be bypassed entirely via stealth wasn't just a feature - it was a commitment to the attribute system's promise. If stealth is a valid build, it must be valid in the hardest encounters too. <strong>Giving stealth builds a complete resolution, rather than a partial shortcut, is what makes the attribute system feel meaningful rather than cosmetic.</strong>
+                    </div>
+                </div>
+
+                <div class="learning-card">
+                    <div class="learning-title">Learning 6: Status Effects Need a Player Counterpart</div>
+                    <div class="learning-text">
+                        Poison and Stun on the player, Burn and Stun on the boss - the fight uses the same status effect vocabulary in both directions. This symmetry makes the effects readable and the fight feel like a conversation between two combatants rather than a one-sided threat list. <strong>Shared mechanical language between player and enemy creates coherent encounter design.</strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end tabs-container -->
+</div><!-- end main content -->
+
+<!-- Footer -->
+<div class="design-journal-footer">
+    <div style="font-size:0.9em;margin-top:1rem;">✦ Sidhvi's Design Journal ✦</div>
+    <div style="font-size:0.8em;color:#8b6914;margin-top:0.5rem;">Project Whimsical - Boss Fight: Pumpkin Spirit</div>
+</div>
+
+<script>
+    function switchTab(tabName, event) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        if (event && event.target) event.target.classList.add('active');
+        document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

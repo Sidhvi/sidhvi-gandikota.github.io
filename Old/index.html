@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Game Design Portfolio - Narrative RPGs, Open-World Systems, Combat Design">
+    <title>Sidhvi's Design Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0a0a0a 100%);
+            background-attachment: fixed;
+        }
+
+        /* Medieval/RPG Paper Texture */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes unfold {
+            from {
+                opacity: 0;
+                transform: scaleY(0);
+                transform-origin: top;
+            }
+            to {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px #8b6914, 0 0 20px #5c4a0a; }
+            50% { text-shadow: 0 0 20px #8b6914, 0 0 40px #5c4a0a; }
+        }
+
+        @keyframes page-fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Parchment Background */
+        .parchment {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 50%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 105, 20, 0.3);
+            position: relative;
+        }
+
+        .parchment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" /></filter><rect width="100" height="100" fill="%23000000" filter="url(%23noise)" opacity="0.03"/></svg>');
+            pointer-events: none;
+        }
+
+        .parchment-text {
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .header-ornament {
+            color: #8b6914;
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        /* Quest Log Style */
+        .quest-log {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border-left: 5px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: inset 0 0 15px rgba(139, 105, 20, 0.2);
+            position: relative;
+            animation: unfold 0.8s ease-out forwards;
+        }
+
+        .quest-log::before {
+            content: '⚔';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: #8b6914;
+        }
+
+        .quest-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .quest-description {
+            color: #b8860b;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .quest-reward {
+            color: #90ee90;
+            font-size: 0.9em;
+            padding: 0.5rem;
+            background: rgba(144, 238, 144, 0.1);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+        }
+
+        /* Character Stats */
+        .character-sheet {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(139, 105, 20, 0.4);
+            border-color: #d4af37;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            color: #90ee90;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #d4af37;
+            font-size: 0.9em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #8b6914;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #90ee90, #32cd32);
+            transition: width 0.5s ease;
+        }
+
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 2px solid #8b6914;
+            color: #d4af37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.2);
+            transition: left 0.3s;
+        }
+
+        .tab-button:hover::before {
+            left: 100%;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Map/World Section */
+        .world-map {
+            background: linear-gradient(135deg, #1a1410 0%, #2a2420 100%);
+            border: 3px solid #8b6914;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .world-map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(139, 105, 20, 0.1) 35px, rgba(139, 105, 20, 0.1) 70px),
+                repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(139, 105, 20, 0.1) 35px, rgba(139, 105, 20, 0.1) 70px);
+            pointer-events: none;
+        }
+
+        /* Location Pin */
+        .location-pin {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .location-pin::before {
+            content: '📍';
+            margin-right: 0.5rem;
+        }
+
+        .location-pin:hover {
+            box-shadow: 0 0 15px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        /* Project Cards - Quest Style */
+        .project-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: inset 0 0 10px rgba(139, 105, 20, 0.2), 0 5px 15px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: inset 0 0 20px rgba(139, 105, 20, 0.3), 0 10px 30px rgba(139, 105, 20, 0.4);
+            border-color: #d4af37;
+        }
+
+        .project-card:hover::before {
+            top: 50%;
+            left: 50%;
+        }
+        .project-title {
+            color: #d4af37;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: #b8860b;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(139, 105, 20, 0.3);
+            border: 1px solid #8b6914;
+            color: #d4af37;
+            font-size: 0.8em;
+            border-radius: 2px;
+        }
+
+        /* Header Title */
+        .design journal-title {
+            font-size: 3em;
+            color: #d4af37;
+            text-align: center;
+            letter-spacing: 0.1em;
+            margin: 2rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 105, 20, 0.4);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8860b;
+            font-size: 1.2em;
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Chapter Divider */
+        .chapter-divider {
+            text-align: center;
+            color: #8b6914;
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b6914, transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        /* Navigation Bar */
+        .design journal-nav {
+            background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%);
+            border-bottom: 3px solid #8b6914;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #b8860b;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .nav-link:hover {
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(139, 105, 20, 0.6);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #8b6914 0%, #6a5410 100%);
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(139, 105, 20, 0.4);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 0 40px rgba(139, 105, 20, 0.8);
+            transform: scale(1.05);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Flex Container */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .design journal-title {
+                font-size: 2em;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        .max-w {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="design journal-nav">
+        <div class="nav-content">
+            <div class="nav-title">SIDHVI'S DESIGN JOURNAL</div>
+            <div class="nav-links">
+                <a href="#quests" class="nav-link">Quests</a>
+                <a href="#achievements" class="nav-link">Achievements</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Title Section -->
+    <div class="max-w container-section">
+        <div class="design journal-title">⚔ SIDHVI'S design journal ⚔</div>
+        <div class="subtitle">A Compendium of Game Design Systems and Narratives</div>
+    </div>
+
+    <!-- Character Stats Section 
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« CHARACTER PROFILE »</div>
+        <div class="character-sheet">
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Systems Architected</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 95%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">300+</div>
+                <div class="stat-label">Narrative Nodes</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 90%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Combat Mechanics</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 88%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Passion</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Chapter 1: System Design -->
+    <div class="max-w container-section">
+        <div class="chapter-divider">⚔ CHAPTER I: SYSTEMS ARCHITECTURE ⚔</div>
+    </div>
+
+    <div class="max-w container-section" id="quests">
+        <div class="section-tabs">
+            <button class="tab-button active" onclick="filterProjects('all')">All Quests</button>
+            <button class="tab-button" onclick="filterProjects('system')">Systems</button>
+            <button class="tab-button" onclick="filterProjects('narrative')">Narratives</button>
+            <button class="tab-button" onclick="filterProjects('combat')">Combat</button>
+        </div>
+
+        <div id="projects-container"></div>
+    </div>
+
+    <!-- World Map Section -->
+    <div class="max-w container-section parchment">
+        <div class="header-ornament">« KNOWN REALMS »</div>
+        <div class="world-map">
+            <div style="text-align: center; color: #d4af37; margin-bottom: 1.5rem; font-size: 1.1em;">
+                Explore the Domains of Game Design
+            </div>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                <div class="location-pin">Open-World Systems</div>
+                <div class="location-pin">Narrative Branches</div>
+                <div class="location-pin">Combat Loops</div>
+                <div class="location-pin">Player Progression</div>
+                <div class="location-pin">NPC Behaviors</div>
+                <div class="location-pin">Quest Chains</div>
+                <div class="location-pin">Dialogue Trees</div>
+                <div class="location-pin">Environmental Puzzles</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="max-w container-section parchment" id="contact">
+        <div class="header-ornament">« SEEK AN ALLY? »</div>
+        <div style="text-align: center; padding: 2rem;">
+            <div style="color: #b8860b; font-size: 1.1em; margin-bottom: 1.5rem;">
+                I am seeking collaborators who share the passion for crafting immersive worlds where systems, narrative, and gameplay intertwine into unforgettable experiences.
+            </div>
+            <a href="mailto:your-email@example.com" class="cta-button">
+                SEND RAVEN MESSAGE
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background: linear-gradient(180deg, #1a1410 0%, #2a2420 100%); border-top: 3px solid #8b6914; padding: 2rem; margin-top: 3rem; text-align: center; color: #b8860b;">
+        <div class="header-ornament" style="margin: 0;">✦ FINIS ✦</div>
+        <div style="font-size: 0.9em; margin-top: 1rem;">© 2026 Sidhvi's Design Journal</div>
+        <div style="font-size: 0.8em; color: #8b6914; margin-top: 0.5rem;">Crafted with passion for the craft of game design</div>
+    </div>
+
+    <script>
+        const projects = [
+            {
+                id: 1,
+                category: 'narrative',
+                title: 'Project Whimsical\'s The Foul Call',
+                description: 'A quest design project where what you do shapes what you experience. Same quest - unique conversations depending on your playstyle. <br>' +
+                    'Five playstyles - all valid. Every choice remembered.',
+                tags: ['Dialogue Trees', 'Personality Systems', 'Consequence Maps'],
+                quest: 'Let dialogue be character; let choices echo through worlds.'
+            },
+            {
+                id: 1,
+                category: 'combat',
+                title: 'AI Combat Design',
+                description: '300+ dialogue nodes with personality-locked choices, consequence tracking, and dynamic quest restructuring. Every conversation a new thread in the tapestry of your story.',
+                tags: ['Dialogue Trees', 'Personality Systems', 'Consequence Maps'],
+                quest: 'Let dialogue be character; let choices echo through worlds.'
+            },
+        ];
+
+        let currentFilter = 'all';
+
+        // Mapping project titles to their detail pages
+        const projectLinks = {
+            'Project Whimsical\'s: The Foul Call': 'Project Whimsical\'s The Foul Call.html',
+            'AI Combat Design': 'projects/project-a-foul-call/project-a-foul-call-tabbed.html',
+        };
+
+        function renderProjects() {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === 'all' ? projects : projects.filter(p => p.category === currentFilter);
+
+            filtered.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+
+                // Make card clickable
+                card.style.cursor = 'pointer';
+                card.onclick = () => {
+                    const link = projectLinks[project.title];
+                    if (link) {
+                        window.location.href = link;
+                    }
+                };
+
+                // Add hover effect for better UX
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+
+                card.innerHTML = `
+            <div class="project-title">⚔ ${project.title}</div>
+            <div class="project-description">${project.description}</div>
+            <div style="color: #90ee90; font-size: 0.9em; font-style: italic; margin-bottom: 1rem; padding: 0.75rem; background: rgba(144, 238, 144, 0.1); border-left: 2px solid #90ee90;">
+                "Quest Wisdom: ${project.quest}"
+            </div>
+            <div class="project-tags">
+                ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            <div style="color: #d4af37; font-size: 0.85em; margin-top: 1rem; font-weight: bold;">
+                ➜ CLICK TO VIEW FULL QUEST
+            </div>
+        `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function filterProjects(category) {
+            currentFilter = category;
+            
+            // Update button states
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderProjects();
+        }
+
+        // Initial render
+        renderProjects();
+    </script>
+</body>
+</html>
