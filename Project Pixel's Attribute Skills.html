@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Pixel: Attributes & Skills System Design">
+    <title>Project Pixel: Attributes & Skills</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00e5ff;
+            --cyan-dim: #0099bb;
+            --cyan-pale: #80f4ff;
+            --cyber: #0a1420;
+            --cyber-light: #1a2235;
+            --neon: #00d4ff;
+            --bg: #050a12;
+            --thermal: #ff6b35;
+            --cryo: #00e5ff;
+            --border: rgba(0, 149, 187, 0.5);
+            --stat-health: #ef4444;
+            --stat-damage: #ff6b35;
+            --stat-speed: #a78bfa;
+            --stat-accuracy: #fbbf24;
+            --stat-evasion: #10b981;
+        }
+
+        * { font-family: 'Space Mono', monospace; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(0, 100, 150, 0.06) 0%, transparent 55%);
+            background-attachment: fixed;
+            color: var(--cyan);
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 50%, #0f1820 100%);
+            border: 3px solid var(--cyan-dim);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.2);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--cyan-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--cyan); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan);
+            font-size: xx-large;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .project-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.6em, 3vw, 2.4em);
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px var(--cyan-dim), 0 0 20px rgba(0, 100, 150, 0.5); }
+            50% { text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px rgba(0, 100, 150, 0.8); }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            color: var(--cyan);
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 1px solid var(--cyan-dim);
+            color: var(--cyan-pale);
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #1a2235 0%, #2a3450 100%);
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--neon));
+            color: #000;
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: var(--cyan);
+            border-bottom: 2px solid var(--cyan-dim);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: var(--cyan-pale);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        /* STAT CARD */
+        .stat-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .stat-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stat-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .stat-icon.health { background: var(--stat-health); }
+        .stat-icon.damage { background: var(--stat-damage); }
+        .stat-icon.speed { background: var(--stat-speed); }
+        .stat-icon.accuracy { background: var(--stat-accuracy); }
+        .stat-icon.evasion { background: var(--stat-evasion); }
+
+        .stat-desc {
+            color: var(--cyan-pale);
+            line-height: 1.7;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-formula {
+            background: rgba(0, 100, 150, 0.2);
+            border-left: 3px solid var(--thermal);
+            padding: 0.75rem;
+            border-radius: 2px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            margin-top: 1rem;
+        }
+
+        .stat-formula strong {
+            color: var(--neon);
+        }
+
+        /* LEVELING TABLE */
+        .level-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            margin: 2rem 0;
+            border: 2px solid var(--cyan-dim);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .level-table th, .level-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .level-table th {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--neon));
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .level-table td {
+            color: var(--cyan-pale);
+        }
+
+        .level-table tr:hover {
+            background: rgba(0, 229, 255, 0.1);
+        }
+
+        .xp-required {
+            color: var(--neon);
+            font-weight: bold;
+        }
+
+        .hp-gain {
+            color: var(--stat-health);
+            font-weight: bold;
+        }
+
+        .point-gain {
+            color: var(--stat-damage);
+            font-weight: bold;
+        }
+
+        /* SKILL TREE */
+        .skill-allocation {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+
+        .allocation-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .allocation-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .allocation-stat {
+            color: var(--cyan);
+            font-weight: bold;
+        }
+
+        .allocation-bar {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--cyan-dim);
+            height: 24px;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .allocation-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .allocation-points {
+            text-align: right;
+            color: var(--neon);
+            font-weight: bold;
+        }
+
+        .learning-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .learning-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1.0rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .learning-text {
+            color: var(--cyan-pale);
+            line-height: 1.7;
+            font-size: 0.8rem;
+        }
+
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+
+        .gif-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+            border-color: var(--cyan);
+            box-shadow: 0 20px 50px rgba(0, 229, 255, 0.4);
+        }
+
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid var(--cyan-dim);
+        }
+
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gif-card-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .gif-card-desc {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--cyan-dim);
+        }
+
+        @media (max-width: 768px) {
+            .max-w {
+                padding: 0 20px;
+            }
+
+            .gif-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                text-align: left;
+            }
+
+            .allocation-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .level-table {
+                font-size: 0.8rem;
+            }
+
+            .level-table th, .level-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="design-journal-nav">
+    <div class="nav-content">
+        <div class="nav-left">
+            <a href="Project Pixel.html" class="nav-back">← Project Pixel</a>
+        </div>
+
+        <span class="nav-title">ATTRIBUTES & SKILLS</span>
+        <div class="nav-left">
+            <a href="index.html" class="nav-back">Design Journal</a>
+        </div>
+    </div>
+</nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w container-section parchment">
+        <h1 class="project-title">⚡PROJECT PIXEL's: Attributes & Skills System⚡</h1>
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #ffffff;">CATEGORY:</span>
+                <span>System Design - Game Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">TYPE:</span>
+                <span>Levelling and Skill Points</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">STATS:</span>
+                <span>5 (1 Indirect + 4 Direct)</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-button" onclick="switchTab('stats')">5 Core Stats</button>
+                <button class="tab-button" onclick="switchTab('leveling')">Leveling System</button>
+                <button class="tab-button" onclick="switchTab('skill-allocation')">Skill Allocation</button>
+                <!-- <button class="tab-button" onclick="switchTab('builds')">Build Strategies</button> -->
+                <button class="tab-button" onclick="switchTab('learnings')">Learnings</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                <div class="section-container">
+                    <div class="section-title">⚡ CHARACTER PROGRESSION ⚡</div>
+                    <div class="content-block">
+                        In Project Pixel, character strength comes from two sources: <br>
+                        <strong>Leveling</strong> (automatic progression) and <strong>Skill Points</strong> (player choice).<br>
+                        As you win battles, complete quests and gain XP, you level up. <br>
+                        Each level grants an increase to Health and a Stat Point to spend on four core attributes: Damage, Speed, Accuracy, and Evasion.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>The Philosophy:</strong> Leveling is earned through play. Stat Points are earned through leveling. How you spend those points defines your character. A high-Damage, low-Speed character plays completely differently from a high-Speed, balanced character. Every point spent is a declaration of playstyle.
+                    </div>
+                </div>
+
+                <div class = gif-card style="max-width: 600px; margin: 0 auto;">
+                    <img src="./projects/project-pixel-attributes/Attributes_Page.png" alt="Attributes Page"> </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ STAT FUNDAMENTALS ⚡</div>
+                    <div class="section-title">🔑 5 STATS, 2 TYPES</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Type 1: Automatic Stats (Health)</div>
+                        <div class="learning-text">
+                            Health scales automatically with player level. Level 1 = 10 HP. Level 2 = 20 HP. Level 10 = 100 HP. This ensures every level feels like genuine progression-you always have more breathing room.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Type 2: Skill Point Stats (Damage, Speed, Accuracy, Evasion)</div>
+                        <div class="learning-text">
+                            These four stats require player investment. Each level gives you points to allocate however you choose. You decide: am I a speedster? A hard hitter? A balanced fighter? Skill Points turn leveling into customization.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">XP to Level Formula</div>
+                        <div class="learning-text">
+                            100 XP to reach Level 2. 200 XP for Level 3. 300 XP for Level 4. Each level requires 100 more XP than the last. This creates escalating progression: early levels feel quick, late game requires serious commitment.
+                        </div>
+                    </div>
+                </div>
+                
+                </div>
+            </div>
+
+            <!-- TAB 2: 5 CORE STATS -->
+            <div id="stats" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ COMBAT ATTRIBUTES ⚡</div>
+                    <div class="section-title">💪 CHARACTER STATS IN BATTLE</div>
+                    <div class="content-block">
+                        Combat Attributes are the foundational stats that dictate how any character (player or enemy) behaves in combat. The player invests Skill Points into four direct attributes, while enemies have pre-set attributes to create uniquely crafted experiences and maintain a smooth difficulty curve.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="stat-card">
+                        <div class="stat-name">
+                            <span class="stat-icon health">❤️</span>
+                            Vitality
+                        </div>
+                        <div class="stat-desc">
+                            Determines the amount of damage a character can withstand before dying. Vitality is the basis of Health. Automatically increased based on character level.
+                        </div>
+                        <div class="stat-formula">
+                            <strong>Formula:</strong><br>
+                            1 Vitality = 10 Health<br>
+                            <br>
+                            <strong>Level Scaling:</strong><br>
+                            Level 0 = 1 Vitality = 10 HP<br>
+                            Level 1 = 2 Vitality = 20 HP<br>
+                            Level X = (X+1) Vitality = (X+1)×10 HP
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">
+                            <span class="stat-icon damage">⚔️</span>
+                            Damage
+                        </div>
+                        <div class="stat-desc">
+                            Determines the amount of damage a character can deal to enemy characters with an attack.
+                        </div>
+                        <div class="stat-formula">
+                            <strong>Formula:</strong><br>
+                            1 Damage = 10 Damage to Enemies<br>
+                            <br>
+                            <strong>Skill Point Scaling:</strong><br>
+                            +1 Skill Point = 2 Damage = 20 Damage to Enemies<br>
+                            X Skill Points = (X+1) Damage = (X+1)×10 Damage Output
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">
+                            <span class="stat-icon speed">⚡</span>
+                            Speed
+                        </div>
+                        <div class="stat-desc">
+                            Determines turn order in combat. The higher the Speed, the faster the character can play their turn. Can trigger double turns in a single round.
+                        </div>
+                        <div class="stat-formula">
+                            <strong>Turn Order:</strong><br>
+                            Higher Speed acts first<br>
+                            <br>
+                            <strong>Examples:</strong><br>
+                            Player Speed 2, Enemy Speed 4 = Enemy goes first<br>
+                            Player Speed 3, Enemy Speed 2 = Player goes first<br>
+                            <br>
+                            <strong>Double Turn:</strong><br>
+                            Speed > 2× Enemy Speed = Two turns before enemy's single turn
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">
+                            <span class="stat-icon accuracy">🎯</span>
+                            Accuracy
+                        </div>
+                        <div class="stat-desc">
+                            Determines the probability of an outgoing attack hitting the target. Accuracy is used to perform ranged moves. Works in conjunction with Evasion.
+                        </div>
+                        <div class="stat-formula">
+                            <strong>Guaranteed Hit:</strong><br>
+                            If Accuracy > 2× Target Evasion<br>
+                            = Attack is always successful
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">
+                            <span class="stat-icon evasion">🏃</span>
+                            Evasion
+                        </div>
+                        <div class="stat-desc">
+                            Determines the probability of dodging an incoming attack. Evasion is used to calculate dodging of ranged moves. Works in opposition to Accuracy.
+                        </div>
+                        <div class="stat-formula">
+                            <strong>Guaranteed Dodge:</strong><br>
+                            If Evasion > 2× Attacker Accuracy<br>
+                            = Ranged attack fails
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ ACCURACY VS EVASION FORMULA ⚡</div>
+                    <div class="section-title">🎲 HIT CALCULATION SYSTEM</div>
+                    
+                    <div class="learning-card">
+                        <div class="learning-title">Hit Chance Calculation</div>
+                        <div class="learning-text" style="font-family: 'Courier Prime', monospace; background: rgba(0,0,0,0.3); padding: 1rem; line-height: 1.8;">
+                            <strong>Attacker Accuracy = A</strong><br>
+                            <strong>Target Evasion = E</strong><br>
+                        <br>
+                        <strong>Difference (D) = E - A</strong><br>
+                        <br>
+                        <strong>Dodge Chance (Clamped 0.0–0.9) = ((D × 0.1) + 0.4)</strong><br>
+                        <br>
+                        <strong>Successful Hit = Random(0.0, 1.0) > Dodge Chance</strong>
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Example Scenarios</div>
+                        <div class="learning-text">
+                            <strong>Scenario 1: Attacker Accuracy 5, Target Evasion 2</strong><br>
+                            D = 2 - 5 = -3<br>
+                            Dodge Chance = ((-3 × 0.1) + 0.4) = 0.1 (10%)<br>
+                            Result: 90% hit chance (favors attacker)<br>
+                            <br>
+                            <strong>Scenario 2: Attacker Accuracy 3, Target Evasion 7</strong><br>
+                            D = 7 - 3 = 4<br>
+                            Dodge Chance = ((4 × 0.1) + 0.4) = 0.8 (80%)<br>
+                            Result: 20% hit chance (favors evader)<br>
+                            <br>
+                            <strong>Scenario 3: Equal Stats</strong><br>
+                            Attacker Accuracy 5, Target Evasion 5<br>
+                            D = 5 - 5 = 0<br>
+                            Dodge Chance = ((0 × 0.1) + 0.4) = 0.4 (40%)<br>
+                            Result: 60% hit chance (balanced)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ PLAYER VS ENEMY ATTRIBUTES ⚡</div>
+                    <div class="section-title">🎮 ATTRIBUTE ALLOCATION</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Player Attributes: Player Controlled</div>
+                        <div class="learning-text">
+                            The player character's attributes are in player control where they can invest skill points in one of four direct attributes (Damage, Speed, Accuracy, Evasion). Vitality automatically scales with player level and cannot be directly invested in. Every skill point spent is a strategic choice that shapes playstyle.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Enemy Attributes: Pre-Set</div>
+                        <div class="learning-text">
+                            Enemy characters have pre-set attributes designed to allow uniquely crafted experiences and a smoother difficulty curve. Each enemy's attributes are carefully balanced by designers to create specific combat challenges. Enemies do not gain skill points-their stats are fixed at creation to maintain encounter integrity.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: LEVELING SYSTEM -->
+            <div id="leveling" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ LEVELING & XP PROGRESSION ⚡</div>
+                    <div class="section-title">📈 HOW TO GROW STRONGER</div>
+                    <div class="content-block">
+                        Leveling is earned through combat. Defeat enemies, gain XP. Accumulate enough XP, level up. Each level gives you Stat Points to customize your character.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>XP Progression Formula:</strong> Level 2 requires 100 XP. Level 3 requires 200 XP total. Level 4 requires 300 XP total. Each new level costs 100 more XP than the previous threshold.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">📊 LEVELING TABLE</div>
+                    
+                    <table class="level-table">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>XP Required (Total)</th>
+                                <th>XP to Next Level</th>
+                                <th>Health</th>
+                                <th>Stat Points</th>
+                                <th>Cumulative Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td class="xp-required">0</td>
+                                <td class="xp-required">100</td>
+                                <td class="hp-gain">10</td>
+                                <td class="point-gain">-</td>
+                                <td class="point-gain">0</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td class="xp-required">100</td>
+                                <td class="xp-required">200</td>
+                                <td class="hp-gain">20</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">1</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td class="xp-required">300</td>
+                                <td class="xp-required">300</td>
+                                <td class="hp-gain">30</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">2</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td class="xp-required">600</td>
+                                <td class="xp-required">400</td>
+                                <td class="hp-gain">40</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">3</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td class="xp-required">1000</td>
+                                <td class="xp-required">500</td>
+                                <td class="hp-gain">50</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">4</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td class="xp-required">4500</td>
+                                <td class="xp-required">900</td>
+                                <td class="hp-gain">100</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">9</td>
+                            </tr>
+                            <tr>
+                                <td>15</td>
+                                <td class="xp-required">10500</td>
+                                <td class="xp-required">1400</td>
+                                <td class="hp-gain">150</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">14</td>
+                            </tr>
+                            <tr>
+                                <td>20</td>
+                                <td class="xp-required">19000</td>
+                                <td class="xp-required">1900</td>
+                                <td class="hp-gain">200</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">19</td>
+                            </tr>
+                            <tr>
+                                <td>25</td>
+                                <td class="xp-required">30500</td>
+                                <td class="xp-required">2400</td>
+                                <td class="hp-gain">250</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">24</td>
+                            </tr>
+                            <tr>
+                                <td>30</td>
+                                <td class="xp-required">45000</td>
+                                <td class="xp-required">2900</td>
+                                <td class="hp-gain">300</td>
+                                <td class="point-gain">1</td>
+                                <td class="point-gain">29</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="content-block">
+                        <strong>Key Observations:</strong><br>
+                        • Health scales linearly: Level × 10<br>
+                        • Stat Points are earned 1 per level (starting from Level 2)<br>
+                        • By Level 30, you've earned 29 Stat Points to customize your build<br>
+                        • Late-game requires significant time investment (45,000 XP to reach max level)
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: SKILL ALLOCATION -->
+            <div id="skill-allocation" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ ALLOCATING YOUR POINTS ⚡</div>
+                    <div class="section-title">🎯 BUILDING YOUR CHARACTER</div>
+                    <div class="content-block">
+                        Every level grants 1 Stat Point (after Level 1). You decide where it goes: Damage, Speed, Accuracy, or Evasion. Health grows automatically. This is where character customization happens.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">📊 BUILD COMPARISON: THREE STRATEGIES</div>
+
+                    <div class="skill-allocation">
+                        <div class="allocation-title">⚔️ AGGRESSIVE BUILD (Level 2)</div>
+                        <div class="content-block">
+                            High Damage Playstyle with a motto of hit hard and kill enemies before they kill you.
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Damage</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 100%; background: var(--stat-damage);">3 pts</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Speed</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-speed);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Accuracy</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-accuracy);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Evasion</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-evasion);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class = gif-card style="max-width: 600px; margin: 0 auto;">
+                            <img src="./projects/project-pixel-attributes/High_Damage.gif" alt="High Damage"> </div>
+                        <div class="content-block">
+                            Notice that the player goes second but deals high damage.
+                        </div>
+                    </div>
+
+                    <div class="skill-allocation">
+                        <div class="allocation-title">⚡ SPEEDSTER BUILD (Level 2)</div>
+                        <div class="content-block">
+                            High Speed Playstyle that commands turn order. Act first, always. Outlast opponents.
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Damage</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-damage);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Speed</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 100%; background: var(--stat-speed);">3 pts</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Accuracy</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-accuracy);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Evasion</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-evasion);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class = gif-card style="max-width: 600px; margin: 0 auto;">
+                            <img src="./projects/project-pixel-attributes/High_Speed.gif" alt="High Speed"> </div>
+                        <div class="content-block">
+                            Notice that the player goes twice and first but deals less damage.
+                        </div>
+                    </div>
+
+                    <div class="skill-allocation">
+                        <div class="allocation-title">🛡️ BALANCED BUILD (Level 2)</div>
+                        <div class="content-block">
+                            Even Spread Playstyle that no specialty, no weakness. Adaptable to any strategy.
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Damage</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 66%; background: var(--stat-damage);">2 pts</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Speed</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 66%; background: var(--stat-speed);">2 pts</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Accuracy</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 33%; background: var(--stat-accuracy);">1 pt (Default)</div>
+                            </div>
+                        </div>
+                        <div class="allocation-row">
+                            <div class="allocation-stat">Evasion</div>
+                            <div class="allocation-bar">
+                                <div class="allocation-fill" style="width: 66%; background: var(--stat-evasion);">2 pts</div>
+                            </div>
+                        </div>
+                        <div class = gif-card style="max-width: 600px; margin: 0 auto;">
+                            <img src="./projects/project-pixel-attributes/Balanced.gif" alt="Balanced"> </div>
+                        <div class="content-block">
+                            Notice that the player goes first and deals medium damage.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: BUILD STRATEGIES -->
+            <div id="builds" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ CHARACTER BUILD STRATEGIES ⚡</div>
+                    <div class="section-title">🎮 PLAYSTYLE PATHS</div>
+                    <div class="content-block">
+                        There's no "optimal" build. Every stat distribution creates a different playstyle with strengths and weaknesses. Master one, or keep trying new combinations.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="learning-card">
+                        <div class="learning-title">Build 1: The One-Shot Specialist</div>
+                        <div class="learning-text">
+                            Max Damage. Minimum everything else. Deal absurd damage, but you're vulnerable. Playstyle: Kill before being killed. One good hit ends fights. Weak defense requires precision and timing.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Build 2: The Speedrunner</div>
+                        <div class="learning-text">
+                            Max Speed, Medium Damage. You always go first. Control the pace entirely. Playstyle: Tempo control. Set the rhythm, force opponents to react to you. Less damage, but constant pressure.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Build 3: The Sniper</div>
+                        <div class="learning-text">
+                            Max Accuracy, High Damage, Low Evasion. Never miss. Playstyle: Guaranteed hits. No missed attacks means reliable damage scaling. Risk: low defense, high reliance on offense.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Build 4: The Evasionist</div>
+                        <div class="learning-text">
+                            Max Evasion, Medium Damage/Speed. Dodge everything. Playstyle: Defense first. Outlast opponents by taking minimal damage. Counterattack while enemies miss. Slow pace, high survival.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Build 5: The Generalist</div>
+                        <div class="learning-text">
+                            Equal spread: Speed 3, Damage 3, Accuracy 4, Evasion 4 (roughly). Playstyle: Adaptability. Competent in all situations. No weakness, no specialty. Counter anything, master nothing.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ BUILD COMPARISONS ⚡</div>
+                    <div class="section-title">🎬 DIFFERENT BUILDS IN ACTION</div>
+                    
+                    <div class="gif-grid">
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/oneshot-build-combat.gif" alt="One-Shot">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">One-Shot Build</div>
+                                <div class="gif-card-desc">Maximize Damage. One hit ends fights. Risky but explosive.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/evasion-build-combat.gif" alt="Evasion">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Evasion Build</div>
+                                <div class="gif-card-desc">Maximize Evasion. Dodge attacks. Outlast through survival.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/balanced-combat.gif" alt="Balanced">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Balanced Build</div>
+                                <div class="gif-card-desc">Equal spread. Versatile. Competent everywhere.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: LEARNINGS -->
+            <div id="learnings" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DESIGN LEARNINGS ⚡</div>
+                    <div class="section-title">💡 KEY INSIGHTS FROM BUILDING ATTRIBUTES & SKILLS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 1: Automatic Health Scales, Manual Stats Build Character</div>
+                        <div class="learning-text">
+                            Separating Health (automatic) from the four skill-point stats (manual) creates two progression systems. Auto-progression rewards just playing. Manual progression rewards smart choices. This dual system keeps both casual and strategic players engaged.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 2: 1 Point Per Level is Tight Enough to Matter</div>
+                        <div class="learning-text">
+                            If you gave 5 points per level, everything would be maxed fast. If you gave 0.5 points per level, grinding would feel endless. 1 point per level creates scarcity-every point is a real choice. By Level 30, you have 29 points. You can't max everything.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 3: Escalating XP Creates Pacing</div>
+                        <div class="learning-text">
+                            100 XP to Level 2 feels quick. 500 XP to Level 5 is moderate. 2900 XP to Level 30 is serious commitment. This escalation creates natural game pacing: early leveling is accessible, late leveling is for dedicated players. It prevents early-game burnout while rewarding endgame commitment.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 4: Two-Stat Synergies Create Build Depth</div>
+                        <div class="learning-text">
+                            Damage + Speed = Fast Damage. Speed + Evasion = Untouchable. Accuracy + Damage = Reliable Burst. The synergies between stats create emergent builds. No single "best" build exists because the system rewards specialization differently in different situations.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 5: 4 Stat Points is the Skill Point Space Sweet Spot</div>
+                        <div class="learning-text">
+                            Too few stat types (3) and you lose customization. Too many (6+) and decisions paralyze. Four stats creates interesting choices without overwhelming complexity. By Level 15, you've committed 14 points and your build identity is clear.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 6: Leveling is Earned, Not Gifted</div>
+                        <div class="learning-text">
+                            Stat Points come from leveling, which comes from combat. This creates a feedback loop: play more → level up → customize → play with new capabilities. Every progression system is tied to player engagement, not time gates or paywalls.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 7: Health Scales Linearly, Stats Scale Through Choice</div>
+                        <div class="learning-text">
+                            Health (Level × 10) is predictable. It grows at a known rate. But Damage, Speed, Accuracy, Evasion are chaotic-they scale based on how you've allocated 29+ points. One player's Level 15 is completely different from another's. This is where personality emerges.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="design-journal-footer">
+        <div style="font-size: 0.9em; margin-top: 1rem;">✦ Sidhvi's Design Journal ✦</div>
+        <div style="font-size: 0.8em; color: var(--cyan-dim); margin-top: 0.5rem;">Project Pixel: Attributes & Skills System Design</div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top of content
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>

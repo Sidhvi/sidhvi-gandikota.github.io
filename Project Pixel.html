@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Pixel - Sidhvi's Design Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00e5ff;
+            --cyan-dim: #0099bb;
+            --cyan-pale: #80f4ff;
+            --cyber: #0a1420;
+            --cyber-light: #1a2235;
+            --neon: #00d4ff;
+            --green: #00ff44;
+            --purple: #c400ff;
+            --bg: #050a12;
+            --accent-thermal: #ff6b35;
+            --accent-cryo: #00e5ff;
+            --border: rgba(0, 149, 187, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(0, 100, 150, 0.06) 0%, transparent 55%);
+            font-family: 'Space Mono', monospace;
+            color: var(--cyan);
+            min-height: 100vh;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.92) 100%);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            padding: 0 2.5rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--cyan-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--cyan); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            color: var(--cyan);
+            text-transform: uppercase;
+        }
+
+        /* ─── HEADER ─── */
+        .project-header {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem;
+            position: relative;
+        }
+
+        .breadcrumb {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--cyan-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--cyan-dim);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: var(--cyan); }
+
+        .project-title-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .project-name {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            color: var(--cyan);
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            text-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+        }
+
+        .project-badge {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-thermal);
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            padding: 3px 10px;
+            margin-bottom: 0.4rem;
+        }
+
+        .project-lore {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--cyan-pale);
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .header-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .header-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--cyan-dim), transparent);
+        }
+
+        .header-divider-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--cyan-dim);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ─── SYSTEM GRID ─── */
+        .systems-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .section-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            color: var(--cyan-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.75rem;
+            text-align: center;
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        /* ─── SYSTEM CARD ─── */
+        .system-card {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            background: linear-gradient(135deg, rgba(26, 34, 53, 0.5), rgba(10, 20, 32, 0.8));
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .system-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.2), 0 0 60px rgba(0, 229, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .system-card-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-thermal);
+        }
+
+        .system-card-accent.accent-combat { background: var(--purple); }
+        .system-card-accent.accent-quest { background: var(--accent-thermal); }
+        .system-card-accent.accent-elements { background: var(--accent-cryo); }
+        .system-card-accent.accent-progression { background: var(--green); }
+
+        .system-card-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            padding: 1.75rem;
+            flex: 1;
+        }
+
+        .system-type-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .system-type {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border: 1px solid;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
+        .st-combat { color: var(--purple); border-color: rgba(196, 0, 255, 0.6); }
+        .st-quest { color: var(--accent-thermal); border-color: rgba(255, 107, 53, 0.6); }
+        .st-elements { color: var(--accent-cryo); border-color: rgba(0, 229, 255, 0.6); }
+        .st-progression { color: var(--green); border-color: rgba(0, 255, 68, 0.6); }
+
+        .system-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            font-weight: 700;
+            color: var(--cyan);
+            letter-spacing: 0.04em;
+            line-height: 1.3;
+        }
+
+        .system-desc {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--cyan-pale);
+            flex: 1;
+        }
+
+        .system-media {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: rgba(10, 20, 32, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .system-media-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--cyan-dim);
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .system-media:hover .system-media-placeholder {
+            opacity: 0.2;
+        }
+
+        .system-gif {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .system-media:hover .system-gif {
+            opacity: 1;
+        }
+
+        .system-media-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .system-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .system-tag {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.1em;
+            color: var(--cyan-dim);
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .system-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 149, 187, 0.2);
+        }
+
+        .system-wisdom {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--cyan-pale);
+            line-height: 1.5;
+        }
+
+        .system-cta {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--accent-thermal);
+            text-transform: uppercase;
+            align-self: flex-end;
+            transition: color 0.2s;
+        }
+
+        .system-card:hover .system-cta {
+            color: var(--cyan);
+        }
+
+        .system-static-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        /* ─── SKILLS SECTION ─── */
+        .skills-aside {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .skills-parchment {
+            background: linear-gradient(135deg, rgba(26, 34, 53, 0.6), rgba(10, 20, 32, 0.8));
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2rem;
+        }
+
+        .skills-header {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--cyan-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.75rem;
+        }
+
+        .skills-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill-pin {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid;
+            transition: all 0.3s;
+        }
+
+        .sp-cyan { color: var(--cyan); border-color: var(--cyan); }
+        .sp-thermal { color: var(--accent-thermal); border-color: var(--accent-thermal); }
+        .sp-cryo { color: var(--accent-cryo); border-color: var(--accent-cryo); }
+        .sp-neon { color: var(--neon); border-color: var(--neon); }
+        .sp-magenta { color: #ff00ff; border-color: #ff00ff; }
+
+        .skill-pin:hover {
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .footer-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--cyan-dim);
+            text-transform: uppercase;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .systems-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-header {
+                padding: 3rem 1.5rem 1.5rem;
+            }
+
+            nav {
+                padding: 0 1.5rem;
+            }
+
+            .systems-section,
+            .skills-aside {
+                padding: 0 1.5rem 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-left">
+            <a class="nav-back" href="index.html">← Board</a>
+            <div class="nav-sep"></div>
+            <div class="nav-title">Project Pixel</div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="project-header">
+        <div class="breadcrumb">
+            <a href="index.html">Design Journal</a>
+            <span>›</span>
+            <span>Project Pixel</span>
+        </div>
+
+        <div class="project-title-row">
+            <h1 class="project-name">Project Pixel</h1>
+            <span class="project-badge">Turn Based - JRPG</span>
+        </div>
+
+        <p class="project-lore">A HD-2D Style Turn-based JRPG built in Unreal Engine 5 - a narrative asventure where each turn requires strategy and anticipation for elemental attacks and reactions.<br>
+            <br>
+            <strong>NOTE</strong>: The characters sprites are taking from various websites. The only 2D Sprite I made was the amazing combat dummy</p>
+
+        <div class="header-divider">
+            <div class="header-divider-line"></div>
+            <span class="header-divider-text">⚡ Core Systems ⚡</span>
+            <div class="header-divider-line" style="background: linear-gradient(90deg, transparent, var(--cyan-dim)); transform: scaleX(-1);"></div>
+        </div>
+    </header>
+
+    <!-- SYSTEMS GRID -->
+    <section class="systems-section">
+        <p class="section-label">⚡ Core Systems · 4 Modules ⚡</p>
+        <div class="systems-grid">
+
+            <!-- TURN-BASED COMBAT -->
+            <a class="system-card" href="Project Pixel's Turn Based Combat.html">
+                <div class="system-card-accent accent-combat"></div>
+                <div class="system-card-inner">
+                    <div class="system-type-row">
+                        <span class="system-type st-combat">Combat Design</span>
+                        <span class="system-type st-combat">Encounter Design</span>
+                    </div>
+                    <div class="system-title">Turn-Based Combat</div>
+                    <div class="system-desc">Original Final Fantasy-inspired turn order driven by Speed attribute. Player enters combat level, faces dynamic enemies, and leverages Accuracy, Evasion, and Damage investments to triumph.</div>
+                    <div class="system-media">
+                        <div class="system-media-placeholder">
+                            <img class="system-static-img"
+                                 src="./projects/project-pixel/TBC_Preview.png"
+                                 alt="A Foul Call preview"
+                                 loading="lazy">
+                        </div>
+                        <img class="system-gif"
+                             src="./projects/project-pixel-turn-combat/Player_Speed.gif"
+                             alt="Turn-Based Combat preview"
+                             loading="lazy">
+                    </div>
+                    <div class="system-tags">
+                        <span class="system-tag">Turn Order</span>
+                        <span class="system-tag">Speed Stat</span>
+                        <span class="system-tag">Combat Level</span>
+                        <span class="system-tag">Dynamic Enemies</span>
+                    </div>
+                    <div class="system-footer">
+                        <span class="system-wisdom">"Every turn is a choice; every stat a strategy."</span>
+                        <span class="system-cta">Load Combat</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ELEMENTAL SYSTEMS -->
+            <a class="system-card" href="Project Pixel's Elemental Systems.html">
+                <div class="system-card-accent accent-elements"></div>
+                <div class="system-card-inner">
+                    <div class="system-type-row">
+                        <span class="system-type st-elements">Elemental Design</span>
+                    </div>
+                    <div class="system-title">Elemental Combat</div>
+                    <div class="system-desc">Nine Elemental types each with their own strengths and weaknesses. Harness them all as you progress through the adventure and play them to your strengths.</div>
+                    <div class="system-media">
+                        <div class="system-media-placeholder">
+                            <img class="system-static-img"
+                                 src="./projects/project-pixel/EC_Preview.png"
+                                 alt="A Foul Call preview"
+                                 loading="lazy">
+                        </div>
+                        <img class="system-gif"
+                             src="./projects/project-pixel-elementals/Cryo.gif"
+                             alt="Turn-Based Combat preview"
+                             loading="lazy">
+                    </div>
+                    <div class="system-tags">
+                        <span class="system-tag">Gameplay Ability System</span>
+                        <span class="system-tag">Elemental Effects</span>
+                        <span class="system-tag">9 Elements</span>
+                    </div>
+                    <div class="system-footer">
+                        <span class="system-wisdom">"Elements as tools; tactics as expressions of will."</span>
+                        <span class="system-cta">Load Elements</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- PROGRESSION SYSTEM -->
+            <a class="system-card" href="Project Pixel's Attribute Skills.html">
+                <div class="system-card-accent accent-progression"></div>
+                <div class="system-card-inner">
+                    <div class="system-type-row">
+                        <span class="system-type st-progression">Progression Design</span>
+                    </div>
+                    <div class="system-title">Attribute & Skill Points</div>
+                    <div class="system-desc">Invest skill points into Speed, Accuracy, Evasion, and Damage. Health scales with player level. Every point spent becomes a declaration of playstyle-whether you favor precision strikes, nimble dodging, or overwhelming force.</div>
+                    <div class="system-media">
+                        <div class="system-media-placeholder">
+                            <img class="system-static-img"
+                                 src="./projects/project-pixel/Attributes_Preview.png"
+                                 alt="A Foul Call preview"
+                                 loading="lazy">
+                        </div>
+                        <img class="system-gif"
+                             src="./projects/project-pixel-attributes/Balanced.gif"
+                             alt="Turn-Based Combat preview"
+                             loading="lazy">
+                    </div>
+                    <div class="system-tags">
+                        <span class="system-tag">Accuracy</span>
+                        <span class="system-tag">Speed</span>
+                        <span class="system-tag">Evasion</span>
+                        <span class="system-tag">Damage</span>
+                        <span class="system-tag">Skill Points</span>
+                    </div>
+                    <div class="system-footer">
+                        <span class="system-wisdom">"Progression as identity-become the fighter you choose to be."</span>
+                        <span class="system-cta">Load Progression</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- QUEST & NPC SYSTEM -->
+            <a class="system-card" href="Project Pixel's Quest and NPC Systems.html">
+                <div class="system-card-accent accent-quest"></div>
+                <div class="system-card-inner">
+                    <div class="system-type-row">
+                        <span class="system-type st-quest">Quest Architecture</span>
+                    </div>
+                    <div class="system-title">Dynamic Quest & NPC System</div>
+                    <div class="system-desc">Quests spawn and reposition NPCs across the world. Ambient NPCs trigger contextual dialogues tied to active and completed quests. The world responds to your progress.</div>
+                        <div class="system-media">
+                            <div class="system-media-placeholder">
+                                <img class="system-static-img"
+                                     src="./projects/project-pixel/QNPCs_Preview.png"
+                                     alt="A Foul Call preview"
+                                     loading="lazy">
+                            </div>
+                            <img class="system-gif"
+                                 src="./projects/project-pixel-quest-npc/NPC01_A.gif"
+                                 alt="Turn-Based Combat preview"
+                                 loading="lazy">
+                        </div>
+                    <div class="system-tags">
+                        <span class="system-tag">NPC Spawning</span>
+                        <span class="system-tag">Dynamic Positioning</span>
+                        <span class="system-tag">Dialogue Triggers</span>
+                        <span class="system-tag">Dialogue Trees</span>
+                    </div>
+                    <div class="system-footer">
+                        <span class="system-wisdom">"Quests as living systems; NPCs as witnesses to your journey."</span>
+                        <span class="system-cta">Load Quests</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- SKILLS USED -->
+    <section class="skills-aside">
+        <div class="skills-parchment">
+            <div class="skills-header">Known Disciplines</div>
+            <div class="skills-cloud">
+                <span class="skill-pin sp-cyan">Turn-Based Combat</span>
+                <span class="skill-pin sp-thermal">Combat Systems</span>
+                <span class="skill-pin sp-cryo">Elemental Design</span>
+                <span class="skill-pin sp-neon">Status Effects</span>
+                <span class="skill-pin sp-cyan">Progression Design</span>
+                <span class="skill-pin sp-thermal">Attribute Systems</span>
+                <span class="skill-pin sp-cryo">Skill Trees</span>
+                <span class="skill-pin sp-neon">Quest Architecture</span>
+                <span class="skill-pin sp-magenta">NPC Systems</span>
+                <span class="skill-pin sp-cyan">Unreal Engine 5</span>
+                <span class="skill-pin sp-thermal">Dynamic Spawning</span>
+                <span class="skill-pin sp-cryo">Dialogue Systems</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-text">✦ Sidhvi's Design Journal ✦</div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidhvi's Design Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-dim: #8b6914;
+            --gold-pale: #f0d060;
+            --parchment: #2a2420;
+            --parchment-light: #3a3430;
+            --ink: #b8860b;
+            --bg: #0d0b08;
+            --green-accent: #7ab87a;
+            --border: rgba(139, 105, 20, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(139,105,20,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(139,105,20,0.05) 0%, transparent 60%);
+            font-family: 'Crimson Text', Georgia, serif;
+            color: var(--gold);
+            min-height: 100vh;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, #0d0b08 0%, rgba(13,11,8,0.92) 100%);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            padding: 0 2.5rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--gold); }
+
+        /* ─── HERO ─── */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            position: relative;
+        }
+
+        .hero-ornament {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            display: block;
+        }
+
+        .hero-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.08em;
+            line-height: 1.15;
+            text-shadow: 0 0 60px rgba(212,175,55,0.25);
+            margin-bottom: 1rem;
+        }
+
+        .hero-sub {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--ink);
+            max-width: 480px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+        }
+
+        .divider-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--gold-dim);
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        /* ─── NOTICE BOARD ─── */
+        .board-section {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+        }
+
+        .board-label {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+
+        .board {
+            background:
+                linear-gradient(135deg, #1e1a14 0%, #2a2318 50%, #1e1a14 100%);
+            border: 2px solid var(--gold-dim);
+            border-radius: 2px;
+            padding: 3rem 3rem 3.5rem;
+            position: relative;
+            box-shadow:
+                inset 0 0 60px rgba(0,0,0,0.5),
+                0 0 40px rgba(0,0,0,0.8),
+                0 0 1px var(--gold-dim);
+        }
+
+        /* wood-grain texture lines */
+        .board::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                92deg,
+                transparent,
+                transparent 40px,
+                rgba(0,0,0,0.04) 40px,
+                rgba(0,0,0,0.04) 41px
+            );
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        /* corner screws */
+        .board::after {
+            content: '';
+            position: absolute;
+            top: 14px; left: 14px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #a07830, #4a3010);
+            box-shadow:
+                calc(100% + (960px - 60px) * 0.87) 0 0 0 #4a3010,
+                0 calc(100% + (600px)) 0 0 #4a3010;
+        }
+
+        .screw {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #a07830, #4a3010);
+            border: 1px solid rgba(0,0,0,0.4);
+        }
+
+        .screw-tl { top: 14px; left: 14px; }
+        .screw-tr { top: 14px; right: 14px; }
+        .screw-bl { bottom: 14px; left: 14px; }
+        .screw-br { bottom: 14px; right: 14px; }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        /* ─── PROJECT CARD ─── */
+        .project-card {
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* thumbtack */
+        .tack {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            width: 16px;
+            height: 16px;
+        }
+
+        .tack-head {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%, #c0392b, #7b1a10);
+            border: 1px solid rgba(0,0,0,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 0 8px rgba(192,57,43,0.3);
+            margin: 0 auto;
+        }
+
+        .tack-pin {
+            width: 2px;
+            height: 6px;
+            background: #888;
+            margin: 0 auto;
+        }
+
+        .card-inner {
+            background: linear-gradient(160deg, #f5ead0 0%, #e8d5a8 40%, #dcc88a 100%);
+            border: 1px solid rgba(180, 140, 60, 0.6);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            box-shadow: 3px 6px 20px rgba(0,0,0,0.7), 1px 2px 4px rgba(0,0,0,0.4);
+        }
+
+        /* slight random tilt per card */
+        .project-card:nth-child(1) .card-inner { transform: rotate(-1.2deg); }
+        .project-card:nth-child(2) .card-inner { transform: rotate(0.8deg); }
+
+        .project-card:hover .card-inner {
+            transform: rotate(0deg) translateY(-6px) !important;
+            box-shadow: 4px 12px 32px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.15);
+        }
+
+        /* parchment texture lines */
+        .card-inner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                180deg,
+                transparent,
+                transparent 22px,
+                rgba(160, 120, 40, 0.08) 22px,
+                rgba(160, 120, 40, 0.08) 23px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* GIF reveal overlay */
+        .card-media {
+            position: relative;
+            height: 160px;
+            overflow: hidden;
+            background: #1a140e;
+            border-bottom: 1px solid rgba(180, 140, 60, 0.3);
+        }
+
+        .card-media-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: opacity 0.4s ease;
+        }
+
+        .card-media-placeholder svg {
+            opacity: 0.25;
+        }
+
+        .placeholder-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        .card-gif {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .project-card:hover .card-gif { opacity: 1; }
+        .project-card:hover .card-media-placeholder { opacity: 0; }
+
+        .card-body {
+            padding: 1.25rem 1.5rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-chapter {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.25em;
+            color: #8b6030;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #3a2808;
+            line-height: 1.2;
+            margin-bottom: 0.6rem;
+        }
+
+        .card-desc {
+            font-family: 'Crimson Text', serif;
+            font-size: 0.95rem;
+            color: #5a4020;
+            line-height: 1.55;
+            margin-bottom: 1rem;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.1em;
+            color: #6a4818;
+            border: 1px solid rgba(120, 80, 20, 0.35);
+            padding: 2px 8px;
+            text-transform: uppercase;
+            background: rgba(120, 80, 20, 0.08);
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(140, 100, 30, 0.25);
+        }
+
+        .card-sub-count {
+            font-family: 'Crimson Text', serif;
+            font-size: 0.8rem;
+            color: #7a5828;
+            font-style: italic;
+        }
+
+        .card-cta {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: #5a3a10;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .card-cta::after {
+            content: '→';
+            transition: transform 0.2s;
+        }
+
+        .project-card:hover .card-cta::after { transform: translateX(3px); }
+
+        /* wax seal on pixel card */
+        .wax-seal {
+            position: absolute;
+            bottom: 1rem;
+            right: 1.25rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%, #8b0000, #4a0000);
+            border: 1px solid rgba(255,100,80,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            font-size: 0.55rem;
+            color: rgba(255,200,180,0.7);
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,100,80,0.2);
+        }
+
+        /* ─── CONTACT / FOOTER ─── */
+        .contact-section {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+            text-align: center;
+        }
+
+        .contact-ornament {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .contact-ornament::before,
+        .contact-ornament::after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim));
+        }
+
+        .contact-ornament::after {
+            background: linear-gradient(90deg, var(--gold-dim), transparent);
+        }
+
+        .contact-text {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 1.05rem;
+            color: var(--ink);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .raven-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--gold-dim);
+            padding: 0.75rem 2rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .raven-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold-dim);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .raven-btn:hover::before { opacity: 0.15; }
+        .raven-btn:hover { box-shadow: 0 0 20px rgba(139,105,20,0.4); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 640px) {
+            .cards-row { grid-template-columns: 1fr; }
+            .board { padding: 2rem 1.5rem 2.5rem; }
+            nav { padding: 0 1rem; }
+            .nav-links { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-title">Sidhvi's Design Journal</div>
+        <div class="nav-links">
+            <a href="#board">Projects</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1 class="hero-title">Sidhvi Gandikota</h1>
+        <p class="hero-sub">Game Designer — Systems, Narrative & AI Design</p>
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">⚔ Notice Board ⚔</span>
+            <div class="divider-line"></div>
+        </div>
+    </section>
+
+    <!-- NOTICE BOARD -->
+    <section class="board-section" id="board">
+        <p class="board-label">⚔ Active Projects ⚔</p>
+        <div class="board">
+            <div class="screw screw-tl"></div>
+            <div class="screw screw-tr"></div>
+            <div class="screw screw-bl"></div>
+            <div class="screw screw-br"></div>
+
+            <div class="cards-row">
+
+                <!-- PROJECT WHIMSICAL -->
+                <a class="project-card" href="Project Whimsical.html">
+                    <div class="tack"><div class="tack-head"></div><div class="tack-pin"></div></div>
+                    <div class="card-inner">
+                        <div class="card-media">
+                            <div class="card-media-placeholder">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <circle cx="24" cy="24" r="20" stroke="#8b6914" stroke-width="1"/>
+                                    <path d="M24 14v10l6 4" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round"/>
+                                    <circle cx="24" cy="24" r="2" fill="#8b6914"/>
+                                </svg>
+                                <span class="placeholder-label">Hover to preview</span>
+                            </div>
+                            <img class="card-gif"
+                                 src="./images/whimsical-preview.gif"
+                                 alt="Project Whimsical preview"
+                                 loading="lazy">
+                        </div>
+                        <div class="card-body">
+                            <div class="card-chapter">Project I</div>
+                            <div class="card-title">Project Whimsical</div>
+                            <div class="card-desc">An Unreal Engine project exploring AI behaviour, quest design, combat systems, and player progression.</div>
+                            <div class="card-tags">
+                                <span class="card-tag">Quest Design</span>
+                                <span class="card-tag">AI Systems</span>
+                                <span class="card-tag">Combat</span>
+                                <span class="card-tag">Unreal Engine</span>
+                            </div>
+                            <div class="card-footer">
+                                <span class="card-sub-count">4 sub-projects</span>
+                                <span class="card-cta">Open Codex</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- PROJECT PIXEL -->
+                <a class="project-card" href="project-pixel.html">
+                    <div class="tack"><div class="tack-head"></div><div class="tack-pin"></div></div>
+                    <div class="card-inner">
+                        <div class="card-media">
+                            <div class="card-media-placeholder">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect x="8" y="8" width="32" height="32" rx="4" stroke="#8b6914" stroke-width="1"/>
+                                    <rect x="14" y="14" width="8" height="8" rx="1" stroke="#8b6914" stroke-width="1"/>
+                                    <rect x="26" y="14" width="8" height="8" rx="1" stroke="#8b6914" stroke-width="1"/>
+                                    <rect x="14" y="26" width="8" height="8" rx="1" stroke="#8b6914" stroke-width="1"/>
+                                    <rect x="26" y="26" width="8" height="8" rx="1" stroke="#8b6914" stroke-width="1" stroke-dasharray="2 1.5"/>
+                                </svg>
+                                <span class="placeholder-label">Hover to preview</span>
+                            </div>
+                            <img class="card-gif"
+                                 src="./images/pixel-preview.gif"
+                                 alt="Project Pixel preview"
+                                 loading="lazy">
+                        </div>
+                        <div class="card-body">
+                            <div class="card-chapter">Project II</div>
+                            <div class="card-title">Project Pixel</div>
+                            <div class="card-desc">Another chapter in the journal - sub-projects are being forged. Check back as this world takes shape.</div>
+                            <div class="card-tags">
+                                <span class="card-tag">Coming Soon</span>
+                            </div>
+                            <div class="card-footer">
+                                <span class="card-sub-count" style="font-style:normal; opacity:0.5;">In development</span>
+                                <span class="card-cta" style="opacity:0.5;">Open Codex</span>
+                            </div>
+                        </div>
+                        <div class="wax-seal">SEAL</div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact-section" id="contact">
+        <div class="contact-ornament">Seek an Ally</div>
+        <p class="contact-text">I am seeking collaborators who share the passion for crafting immersive worlds where systems, narrative, and gameplay intertwine.</p>
+        <a href="mailto:sidhvigandikota@gmail.com" class="raven-btn">
+            ✉ Send Raven Message
+        </a>
+    </section>
+
+    <footer>
+        <div class="footer-text">✦ Sidhvi's Design Journal ✦</div>
+    </footer>
+
+</body>
+</html>

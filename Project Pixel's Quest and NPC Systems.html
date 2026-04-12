@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Pixel: Quest System & Ambient NPCs Design">
+    <title>Project Pixel: Quest System & Ambient NPCs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00e5ff;
+            --cyan-dim: #0099bb;
+            --cyan-pale: #80f4ff;
+            --green: #00d418;
+            --cyber: #0a1420;
+            --cyber-light: #1a2235;
+            --neon: #00d4ff;
+            --bg: #050a12;
+            --thermal: #ff6b35;
+            --cryo: #00e5ff;
+            --border: rgba(0, 149, 187, 0.5);
+            --active-quest: #10b981;
+            --completed-quest: #8b5cf6;
+            --npc-dialogue: #fbbf24;
+        }
+
+        * { font-family: 'Space Mono', monospace; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(0, 100, 150, 0.06) 0%, transparent 55%);
+            background-attachment: fixed;
+            color: var(--cyan);
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 50%, #0f1820 100%);
+            border: 3px solid var(--cyan-dim);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.2);
+            position: relative;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--cyan-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--cyan); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan);
+            font-size: xx-large;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .project-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.6em, 3vw, 2.4em);
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px var(--cyan-dim), 0 0 20px rgba(0, 100, 150, 0.5); }
+            50% { text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px rgba(0, 100, 150, 0.8); }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            color: var(--cyan);
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 1px solid var(--cyan-dim);
+            color: var(--cyan-pale);
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #1a2235 0%, #2a3450 100%);
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--neon));
+            color: #000;
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: var(--cyan);
+            border-bottom: 2px solid var(--cyan-dim);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: var(--cyan-pale);
+            line-height: 1.8;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        /* Video Chrome Styles - Cyan Sci-Fi */
+        .video-chrome {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            margin: 1.5rem auto;
+            max-width: 600px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.15);
+            overflow: hidden;
+        }
+
+        .video-chrome-bar {
+            background: linear-gradient(180deg, #1a2235 0%, #0f1820 100%);
+            border-bottom: 1px solid var(--cyan-dim);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-chrome-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cyan-dim);
+            flex-shrink: 0;
+        }
+
+        .video-chrome-label {
+            color: var(--cyan-pale);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-left: 0.75rem;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .video-chrome-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-chrome-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* QUEST CARD */
+        .quest-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .quest-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .quest-card.active {
+            border-left: 5px solid var(--active-quest);
+        }
+
+        .quest-card.completed {
+            border-left: 5px solid var(--completed-quest);
+            opacity: 0.8;
+        }
+
+        .quest-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .quest-status {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+        }
+
+        .quest-status.active {
+            background: var(--active-quest);
+            color: #000;
+        }
+
+        .quest-status.completed {
+            background: var(--completed-quest);
+            color: #fff;
+        }
+
+        .quest-desc {
+            color: var(--cyan-pale);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 1.0rem;
+        }
+
+        .quest-objectives {
+            background: rgba(0, 100, 150, 0.1);
+            border-left: 3px solid var(--thermal);
+            font-size: 1.0rem;
+            padding: 1rem;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .quest-objective {
+            color: var(--cyan-pale);
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .quest-objective::before {
+            content: "▸ ";
+            color: var(--neon);
+            font-weight: bold;
+            margin-left: -1rem;
+            margin-right: 0.5rem;
+        }
+
+        .quest-reward {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid var(--active-quest);
+            padding: 0.75rem;
+            border-radius: 2px;
+            color: var(--active-quest);
+        }
+
+        /* NPC CARD */
+        .npc-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .npc-card:hover {
+            border-color: var(--npc-dialogue);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+            transform: scale(1.25);
+            z-index: 9999;
+        }
+
+        .npc-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--npc-dialogue);
+        }
+
+        .npc-role {
+            font-size: 0.85rem;
+            color: var(--cyan-dim);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .npc-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .npc-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid var(--cyan-dim);
+        }
+
+        .dialogue-condition {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid var(--npc-dialogue);
+            padding: 0.75rem;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .dialogue-condition-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--npc-dialogue);
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .dialogue-condition-text {
+            color: var(--cyan-pale);
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .dialogue-text {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border-radius: 2px;
+            color: var(--cyan-pale);
+            font-style: italic;
+            font-size: 0.8rem;
+            border-left: 3px solid var(--neon);
+            margin: 0.75rem 0;
+        }
+
+        .learning-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .learning-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .learning-text {
+            color: var(--cyan-pale);
+            line-height: 1.7;
+            font-size: 0.8rem;
+        }
+
+        .info-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .info-card-title {
+            color: var(--cyan);
+            font-weight: bold;
+            align-content: center;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+
+        .gif-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+            border-color: var(--cyan);
+            box-shadow: 0 20px 50px rgba(0, 229, 255, 0.4);
+        }
+
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid var(--cyan-dim);
+        }
+
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gif-card-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .gif-card-desc {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--cyan-dim);
+        }
+
+        /* Quest Flow Diagram */
+        .flow-box {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .flow-box strong {
+            color: var(--cyan);
+            font-size: 1.0rem;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: var(--neon);
+            font-size: 1.2em;
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .max-w {
+                padding: 0 20px;
+            }
+
+            .gif-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="design-journal-nav">
+    <div class="nav-content">
+        <div class="nav-left">
+            <a href="Project Pixel.html" class="nav-back">← Project Pixel</a>
+        </div>
+
+        <span class="nav-title">Turn-Based Combat</span>
+        <div class="nav-left">
+            <a href="index.html" class="nav-back">Design Journal</a>
+        </div>
+    </div>
+</nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w container-section parchment">
+        <h1 class="project-title">⚡ PROJECT PIXEL's: Quest System & Ambient NPCs ⚡</h1>
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #ffffff;">CATEGORY:</span>
+                <span>Narrative Design - System Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">TYPE:</span>
+                <span>Quest System</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">FOCUS:</span>
+                <span>Spawns and Conversations</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-button" onclick="switchTab('quest-system')">Quest System</button>
+                <button class="tab-button" onclick="switchTab('ambient-npcs')">Ambient NPCs</button>
+                <button class="tab-button" onclick="switchTab('quest-npcs')">Quest NPCs</button>
+                <!-- <button class="tab-button" onclick="switchTab('dialogue-system')">Dialogue System</button> -->
+                <button class="tab-button" onclick="switchTab('learnings')">Learnings</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ WORLD SYSTEMS OVERVIEW ⚡</div>
+                    <div class="section-title">🌍 A LIVING, RESPONSIVE WORLD</div>
+                    <div class="content-block">
+                        Project Pixel's world isn't static. Quests spawn enemies dynamically. 
+                        NPCs reposition based on active quests. Ambient NPCs trigger contextual dialogue tied to quest states. 
+                        Every system works together to make the world feel alive - like things are happening whether you're watching or not.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>Two Core Systems:</strong><br>
+                        1. <strong style="color: var(--green)">Quest System</strong> - Spawns objectives, enemies, rewards. Tracks progress and completion.<br>
+                        2. <strong style="color: var(--green)">NPC System</strong> - NPCs positioned dynamically. Dialogue triggered by quest state, not interaction.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ COMPLETE WALKTHROUGH ⚡</div>
+                    <div class="content-block">
+                        Watch the complete walkthrough of the quest system and ambient NPC interactions in action that spans across two quests. <br>
+                        See how quests spawn enemies, how NPCs react to quest states, and how the world feels alive with dynamic content.
+                    </div>
+                    <div class="video-chrome">
+                        <div class="video-chrome-bar">
+                            <div class="video-chrome-dot"></div>
+                            <div class="video-chrome-dot"></div>
+                            <div class="video-chrome-dot"></div>
+                            <div class="video-chrome-label">▶ COMBAT ATTRIBUTES - FULL SYSTEM</div>
+                        </div>
+                        <div class="video-chrome-frame">
+                            <iframe
+                                    src="https://www.youtube.com/embed/VIDEO_ID?rel=0"
+                                    title="Complete Combat System Demo"
+                                    frameborder="0"
+                                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ HOW SYSTEMS INTERACT ⚡</div>
+                    <div class="section-title">🔄 QUEST → NPC → DIALOGUE FLOW</div>
+
+                    <div class="flow-box">
+                        <strong>Quest Started</strong>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <strong>Quest Specifies NPC Positions</strong><br>
+                        <span style="color: var(--cyan-pale); font-size: 0.8rem;"> Nepto spawns near the crossroad the market waiting for player to interact. </span>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <strong>Ambient NPCs Check Active Quests</strong><br>
+                        <span style="color: var(--cyan-pale); font-size: 0.8rem;">NPCs read quest state, play contextual dialogue</span>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <strong>Player Sees Floating Dialogues</strong><br>
+                        <span style="color: var(--cyan-pale); font-size: 0.8rem;">World acknowledges quest. NPCs react to progress.</span>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <strong>Quest Completed</strong><br>
+                        <span style="color: var(--cyan-pale); font-size: 0.8rem;">NPCs reposition. Dialogue changes. World reflects victory.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: QUEST SYSTEM -->
+            <div id="quest-system" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ THE QUEST SYSTEM ⚡</div>
+                    <div class="section-title">📋 HOW QUESTS WORK</div>
+                    <div class="content-block">
+                        Quests are dynamic objectives that spawn enemies, define NPC positions, and offer rewards. They're the glue holding the world together.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🎯 QUEST 1: PRACTICE MAKETH PERFECT</div>
+
+                    <div class="quest-card active">
+                        <div class="quest-title">
+                            PRACTICE MAKETH PERFECT
+                        </div>
+                        <div class="quest-desc">
+                            The quest starts in a nomad clan camp located in a desert on a festival day celebrating a solar eclipse. The protagonist needs to go to the training range to practice combat.
+                        </div>
+
+                        <strong style="color: var(--cyan); margin: 2rem 0 1rem 0; display: block; font-size: 1.1em;">QUEST TRIGGER REQUIREMENTS:</strong>
+                        <div class="content-block">
+                            Fresh save is required. The quest is automatically added on load.
+                        </div>
+
+                        <strong style="color: var(--cyan-pale); margin: 1rem 0 0.5rem 0; display: block;">GENERAL GAMEPLAY:</strong>
+                        <div class="quest-objectives">
+                            <div class="quest-objective">Reach the training grounds</div>
+                            <div class="quest-objective">Practice with combat dummy</div>
+                        </div>
+
+                        <strong style="color: var(--cyan-pale); margin: 1rem 0 0.5rem 0; display: block;">COMBAT MECHANICS:</strong>
+                        <div class="content-block" style="background: rgba(0, 100, 150, 0.1); padding: 1rem; border-radius: 2px; margin: 0.5rem 0;">
+                            The combat dummy performs basic moves with 0 damage output to the player, allowing safe training practice.
+                        </div>
+
+                        <div class="quest-reward">
+                            <strong>Rewards:</strong> 50 XP (Dummy Victory) + 100 XP (Quest Completion) + SHIELD Move + HEAL Move
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="gif-card-body">
+                                    <div class="info-card-title">COMBAT DUMMY MOVES</div>
+                                    <div class="gif-card-desc">
+                                        • Dumb Looks<br>
+                                        • Squeaky Arm<br>
+                                        • Blank Stare</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <strong style="color: var(--cyan); margin: 2rem 0 1rem 0; display: block; font-size: 1.1em;">SPAWNS & NPC INTERACTIONS:</strong>
+                        <div class="content-block">
+                            After quest completion, Nepto (Son of the clan's chief) is spawned and his conversation triggers Quest 2.
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🎯 QUEST 2: NUISANCE OF FIRE & ICE</div>
+
+                    <div class="quest-card completed">
+                        <div class="quest-title">
+                            NUISANCE OF FIRE & ICE
+                        </div>
+                        <div class="quest-desc">
+                            After training with the dummy, speak to Nepto, Son of the clan's chief, who tasks the player with solving an extortion racquet troubling the camp's merchants.
+                        </div>
+
+                        <strong style="color: var(--cyan); margin: 2rem 0 1rem 0; display: block; font-size: 1.1em;">QUEST TRIGGER REQUIREMENTS:</strong>
+                        <div class="content-block">
+                            Finish Quest 1. Finish Nepto's dialogue.
+                        </div>
+                        
+                        <strong style="color: var(--cyan-pale); margin: 1rem 0 0.5rem 0; display: block;">OBJECTIVES:</strong>
+                        <div class="quest-objectives">
+                            <div class="quest-objective">Speak to Nepto (Quest Trigger)</div>
+                            <div class="quest-objective">Teach bullies a lesson (0/2)</div>
+                            <div class="quest-objective">Speak to Nepto again after defeating bullies</div>
+                            <div class="quest-objective">Defeat the Extortion Racquet Leaders</div>
+                        </div>
+
+                        <strong style="color: var(--cyan-pale); margin: 1rem 0 0.5rem 0; display: block;">GAMEPLAY PHASES:</strong>
+                        <div class="content-block" style="background: rgba(0, 100, 150, 0.1); padding: 1rem; border-radius: 2px;">
+                            <strong>Phase 1 - Bullies:</strong> Two bullies/extorters spawn near merchants. Defeat them in combat (basic punch moves only). They despawn after victory.<br><br>
+                            <strong>Phase 2 - Leaders:</strong> Two elemental leaders (Fire Guy uses Thermal attacks, Freeze Girl uses Cryo attacks) await at the animal shed. Defeat them to end the racquet.
+                        </div>
+
+                        <div class="quest-reward">
+                            <strong>Total Rewards:</strong> 75 XP (Bully 1) + 75 XP (Bully 2) + 150 XP (Boss Victory) + 100 XP (Quest Completion) = 400 XP
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="gif-card-body">
+                                    <div class="info-card-title">BULLIES MOVES</div>
+                                    <div class="gif-card-desc">
+                                        • Punch </div>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="gif-card-body">
+                                    <div class="info-card-title">FIRE GUY MOVES</div>
+                                    <div class="gif-card-desc">
+                                        • Punch<br>
+                                        • Thermal Kick<br>
+                                        • Fire Blast (Ranged) 
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="gif-card-body">
+                                    <div class="info-card-title">FREEZE GIRL MOVES</div>
+                                    <div class="gif-card-desc">
+                                        • Punch<br>
+                                        • Cryo Punch<br>
+                                        • Freeze Wave (Ranged)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div><strong style="color: var(--cyan); margin: 2rem 0 1rem 0; display: block; font-size: 1.1em;">SPAWNS & NPC INTERACTIONS:</strong>
+                    <div class="content-block">
+                        After speaking to Nepto, 2 Bullies are spawned near Ambient NPCs in level.
+                    </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🔧 QUEST MECHANICS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Sequential Difficulty Progression</div>
+                        <div class="learning-text">
+                            Quest 1 teaches basics with a harmless dummy. <br>
+                            Quest 2 eases players into combat with simple bullies, then escalates to elemental bosses. Each phase builds on learned mechanics.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Objective Tracking & NPC Gating</div>
+                        <div class="learning-text">
+                            Quest progression requires speaking to NPCs at key moments. Nepto triggers the quest, provides information, and gates access to the final boss encounter.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Enemy Spawning & Despawning</div>
+                        <div class="learning-text">
+                            Bullies spawn near merchants during phase 1 and despawn upon defeat. Leaders occupy the animal shed until defeated. Each combat victory advances the quest state.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Elemental Combat Introduction</div>
+                        <div class="learning-text">
+                            Fire Guy and Freeze Girl introduce elemental attacks (Thermal, Cryo). Players experience different damage types and status effects, expanding combat depth beyond basic melee.
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: AMBIENT NPCs -->
+            <div id="ambient-npcs" class="tab-content">
+            <!--    <div class = "section-container">
+                    <div class="chapter-divider">⚡ NPC TYPES ⚡</div>
+                    <div class="content-block">
+                    Project Pixel has two types of NPCs each serving to immerse players with direct and indirect stories.<br>
+                    Two NPC Types:<br>
+                    1. <strong style="color: var(--green)">Interactable NPCs</strong> - NPCs that progress quests, merchants that help players with inventory, etc. <br>
+                    2. <strong style="color: var(--green)">Ambient NPCs</strong> - NPCs positioned dynamically. Dialogue triggered by quest state, not interaction.
+                    </div>
+                </div> -->
+                
+                
+                <div class="section-container">
+                    <div class="chapter-divider">💬 NPCs THAT FEEL ALIVE 💬</div>
+                    <div class="content-block">
+                        Ambient NPCs aren't quest-givers. They're world inhabitants. They're positioned dynamically based on active quests. Their dialogue changes based on quest state. They're the world's voice-contextual, reactive, alive.
+                    </div>
+                </div>
+
+                <div class="section-container" style="place-items: center">
+                    <div class="npc-name">MERCHANT 01</div>
+                    <div class="npc-role">AMBIENT NPC</div>
+                    <div class="npc-grid">
+                        <div class="npc-card">                            
+                            <div class="dialogue-condition">
+                            <div class="dialogue-condition-title">When Quest: PRACTICE MAKETH PERFECT (ACTIVE)</div>
+                            <div class="dialogue-condition-text">
+                                Merchant 01 NPC is happy to give his children toys for festival </div>
+                            </div>
+                            <div class="dialogue-text">
+                                Hello Player! <br>
+                                I’m closing my shop early<br>
+                                My children are waiting for their toys.
+                            </div>
+                            
+                            <img src="./projects/project-pixel-quest-npc/NPC01_A.gif" alt="NPC 01 A">
+                        </div>
+
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Quest: NUISANCE OF FIRE & ICE (ACTIVE)</div>
+                                <div class="dialogue-condition-text">
+                                    Merchant 01 NPC explains extorter that he does not have any money </div>
+                            </div>
+                            <div class="dialogue-text">
+                                I can’t pay you money <br>
+                                Leave Me Alone
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/NPC01_B.gif" alt="NPC 01 B">
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container" style="place-items: center">
+                    <div class="npc-name">MERCHANT 02</div>
+                    <div class="npc-role">AMBIENT NPC</div>
+                    <div class="npc-grid">
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Quest: PRACTICE MAKETH PERFECT (ACTIVE)</div>
+                                <div class="dialogue-condition-text">
+                                    Merchant 02 NPC is happy to get some break because of festival. </div>
+                            </div>
+                            <div class="dialogue-text">
+                                Oh hello! <br>
+                                I’m closing the shop now<br>
+                                I need to get to home before the festival begins.
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/NPC02_A.gif" alt="NPC 02 A">
+                        </div>
+
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Quest: NUISANCE OF FIRE & ICE (ACTIVE)</div>
+                                <div class="dialogue-condition-text">
+                                    Merchant 02 NPC pleads with extorter that it's festival so she can't pay. </div>
+                            </div>
+                            <div class="dialogue-text">
+                                I don't have money <br>
+                                It's festival today.
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/NPC02_B.gif" alt="NPC 02 B">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🗺️ NPCs as world lore</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Ambient Lore</div>
+                        <div class="learning-text">
+                            Ambient NPCs always have something to teach. For example in Quest 01, NPCs comment about festival that introduces clan's importance of solar eclipse.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Proximity Dialogue</div>
+                        <div class="learning-text">
+                            When you approach an Ambient NPC with an active quest, they play contextual dialogue. You don't click to talk: you walk near them and see them react. This makes the world feel alive, not static.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">State-Dependent Behavior</div>
+                        <div class="learning-text">
+                            Each NPC has dialogue for different quest states: Initial encounter, in-progress, completion. Merchants express distress when bullies are active but show relief when the racquet is dismantled. NPCs are witnesses to your journey.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Ambient Context</div>
+                        <div class="learning-text">
+                            Merchant NPCs (Daly, Martia) aren't quest givers, but they're victims. Their distressed dialogue provides context for why the quest matters. The world tells its own story through their voices.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: QUEST NPCs -->
+            <div id="quest-npcs" class="tab-content">
+                <!--    <div class = "section-container">
+                        <div class="chapter-divider">⚡ NPC TYPES ⚡</div>
+                        <div class="content-block">
+                        Project Pixel has two types of NPCs each serving to immerse players with direct and indirect stories.<br>
+                        Two NPC Types:<br>
+                        1. <strong style="color: var(--green)">Interactable NPCs</strong> - NPCs that progress quests, merchants that help players with inventory, etc. <br>
+                        2. <strong style="color: var(--green)">Ambient NPCs</strong> - NPCs positioned dynamically. Dialogue triggered by quest state, not interaction.
+                        </div>
+                    </div> -->
+
+
+                <div class="section-container">
+                    <div class="chapter-divider">💬 NPCs THAT PROGRESS YOUR STORY 💬</div>
+                    <div class="content-block">
+                        Interactable NPCs are positioned dynamically based on active quests. They are specific NPCs that serve the purpose to progress quests while building Narrative.
+                    </div>
+                </div>
+
+                <div class="section-container" style="place-items: center">
+                    <div class="npc-name">NEPTO</div>
+                    <div class="npc-role">Quest 02 Giver</div>
+                    <div class="npc-grid">
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Quest: PRACTICE MAKETH PERFECT (FINISHED)</div>
+                                <div class="dialogue-condition-text">
+                                    Nepto is spawned.<br>Interacting with him will trigger a dialogue that gives Quest 02 to players.</div>
+                            </div>
+                            <div class="dialogue-text">
+                                Hello Player... <br>
+                                Nice moves you got there with that combat dummy. Shame to waste them to it.<br>
+                                Being the only son of clan chief comes with it's perks. I heard about an extortion racquet.<br>
+                                I would've taken care of them myself if not for this festival prep. Will you take care of those bully in my stead?
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/Nepto_A.gif" alt="Nepto A">
+                        </div>
+
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Player defeats to Bullies</div>
+                                <div class="dialogue-condition-text">
+                                    Nepto sees a bully running into cattle shed. Asks to finish this racquet once and for all. </div>
+                            </div>
+                            <div class="dialogue-text">
+                                I saw some bully running away<br>
+                                That cause of you?<br>
+                                Anyways... I'm thinking to end this once and for all<br>
+                                That bully ran towards cattle shed. I bet their leaders are there too!<br>
+                                Defeat them and show them who's the boss around here!
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/Nepto_B.gif" alt="Nepto B">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container" style="place-items: center">
+                    <div class="npc-name">BULLIES/EXTORTERs</div>
+                    <div class="npc-role">Quest 02 Enemies</div>
+                    <div class="npc-grid">
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Quest: NUISANCE OF FIRE & ICE (ACTIVE)</div>
+                                <div class="dialogue-condition-text">
+                                    Bully 01 is spawned in proximity of Merchant 01 NPC.<br>Interacting with them will trigger a dialogue that takes into their combat level.</div>
+                            </div>
+                            <div class="dialogue-text">
+                                Your money is due, Daly <br>
+                                Do you want our protection? Or want a trashing?<br>
+                                GARHHH! Who are you? <br>
+                                Do you need a beating too?
+                            </div>
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">Player can respond with TRY ME or BACK</div>
+                                <div class="dialogue-condition-text">
+                                    Selecting TRY ME will take to combat level. <br>
+                                    BACK will bring players back to gameplay where they prepare for combat and interact with enemy again to continue combat
+                                </div>
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/Bully_1.gif" alt="Bully 1">
+                        </div>
+
+                        <div class="npc-card">
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">When Quest: NUISANCE OF FIRE & ICE (ACTIVE)</div>
+                                <div class="dialogue-condition-text">
+                                    Bully 02 is spawned in proximity of Merchant 02 NPC.<br>Interacting with them will trigger a dialogue that takes into their combat level.</div>
+                            </div>
+                            <div class="dialogue-text">
+                                Pay up, Martia <br>
+                                I don't care if it's festival today<br>
+                                My bosses said they need money.<br>
+                                Mind your own business, Kid!
+                            </div>
+                            <div class="dialogue-condition">
+                                <div class="dialogue-condition-title">Player can respond with I'LL MIND YOURS or BACK</div>
+                                <div class="dialogue-condition-text">
+                                    Selecting I'LL MIND YOURS will take to combat level. <br>
+                                    BACK will bring players back to gameplay where they prepare for combat and interact with enemy again to continue combat
+                                </div>
+                            </div>
+
+                            <img src="./projects/project-pixel-quest-npc/Bully_2.gif" alt="Bully 2">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container" style="place-items: center">
+                    <div class="npc-name">FIRE GUY and FREEZE GIRL</div>
+                    <div class="npc-role">ENEMY NPC (BOSS)</div>
+                    <div class="npc-card" style="width: 50%;">
+                        <div class="dialogue-condition">
+                            <div class="dialogue-condition-title">AFTER<br> Quest: NUISANCE OF FIRE & ICE (ACTIVE) <br> DEFEATED BULLIES and SPOKE TO NEPTO</div>
+                            <div class="dialogue-condition-text">
+                                The Fire Guy and Freeze Girl are culmination of Quest 02 and will only spawn after defeating Bullies in market and speaking to Nepto</div>
+                        </div>
+                        <div class="dialogue-text">
+                            Fire Guy: So you are the one who kick Dusty's arse, eh? <br>
+                            Freeze Girl: Looking at the way she walked into our base..!<br>
+                            Both: SHE IS THE ONE!!!<br>
+                            Both: We will teach you a lesson!
+                        </div>
+                        <img src="./projects/project-pixel-quest-npc/Boss.gif" alt="Boss">
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🗺️ NPC POSITIONING</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Dynamic Spawning</div>
+                        <div class="learning-text">
+                            Combat Dummy spawns at the training grounds. Bullies appear near merchants in the market. Fire Guy and Freeze Girl are positioned at the animal shed. Each location is determined by quest activation.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Narrative Progress</div>
+                        <div class="learning-text">
+                            When you approach a Quest NPC with an active quest, You can start conversation in a dialogue box that demands your reading attention.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Quest Dependent Behavior</div>
+                        <div class="learning-text">
+                            Each Quest NPC are spawned/despawned based on the active quest and active objective. For Example in Quest 02, Bullies and Boss disappear after getting defeated.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: DYNAMIC WORLD
+            <div id="dynamic-world" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DYNAMIC WORLD SYSTEMS ⚡</div>
+                    <div class="section-title">🌍 HOW THE WORLD RESPONDS</div>
+                    <div class="content-block">
+                        The world isn't hand-authored for every scenario. Instead, it's a system that responds to quests. Activate a quest, the world reorganises. NPCs reposition, dialogue changes, enemies spawn. The same map becomes different based on active quests.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🔄 WORLD STATE CHANGES</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Enemy Spawning</div>
+                        <div class="learning-text">
+                            Quests define which enemies spawn and where. "Spawn 3 Gate Sentries at Gate, 2 Scouts at Watchtower." These enemies only exist during active quests. No quest = no enemies. This creates dynamic combat scenarios.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">NPC Repositioning</div>
+                        <div class="learning-text">
+                            Different quests place NPCs in different locations. Quest A puts Dr. Nexus at the Archive. Quest B puts her at the Lab. The map's social geography changes based on active objectives.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Dialogue Cascades</div>
+                        <div class="learning-text">
+                            When you complete an objective, all NPCs aware of it update their dialogue. You defeat enemies → NPCs notice. You retrieve the item → NPCs celebrate. Dialogue isn't static-it cascades through the world.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Resource & Reward Updates</div>
+                        <div class="learning-text">
+                            As you progress, available rewards change. Enemies drop different loot. NPCs offer different trades. The world's economy responds to your actions, creating emergent progression paths.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DYNAMIC WORLD EXAMPLES ⚡</div>
+                    <div class="section-title">🎬 WORLD RESPONDING IN REAL-TIME</div>
+                    
+                    <div class="gif-grid">
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/world-reaction-quest.gif" alt="World Reacts">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">World Reacts</div>
+                                <div class="gif-card-desc">Complete objective. NPCs acknowledge. Environment updates. World knows.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/enemy-despawn.gif" alt="Enemy Despawn">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Enemies Vanish</div>
+                                <div class="gif-card-desc">Defeat all quest enemies. They despawn. Only then is quest complete.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/dialogue-cascade.gif" alt="Dialogue Cascade">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Dialogue Cascade</div>
+                                <div class="gif-card-desc">You progress. NPCs everywhere acknowledge your advancement.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  -->
+
+            <!-- TAB 5: DIALOGUE SYSTEM -->
+            <!--
+            <div id="dialogue-system" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ CONTEXTUAL DIALOGUE ⚡</div>
+                    <div class="section-title">💬 DIALOGUE TIED TO STATE</div>
+                    <div class="content-block">
+                        Dialogue isn't a quest-giver mechanic. It's ambient narration. As you walk through the world with active quests, NPCs comment on the situation. They acknowledge your progress, react to obstacles, celebrate victories. Dialogue makes the world feel aware.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-title">🗣️ DIALOGUE CONDITIONS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Quest Active</div>
+                        <div class="learning-text">
+                            The quest is listed in your journal but no objectives are complete. NPCs reference the overall goal, express need or urgency, provide context.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Objectives In Progress</div>
+                        <div class="learning-text">
+                            You've completed some objectives but not all. NPCs acknowledge your progress specifically. "Good work defeating the sentries. Just need to destroy the barricade now."
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Quest Completed</div>
+                        <div class="learning-text">
+                            All objectives are done. NPCs celebrate, express gratitude, reflect on what changed. The world acknowledges your victory.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">No Active Quest</div>
+                        <div class="learning-text">
+                            The quest isn't active. NPCs either don't appear, or if they do, they play default/ambient dialogue-not quest-specific conversation.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DIALOGUE IN ACTION ⚡</div>
+                    <div class="section-title">🎬 REAL EXAMPLES</div>
+                    
+                    <div class="gif-grid">
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/urgency-dialogue.gif" alt="Urgency Dialogue">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Urgency Dialogue</div>
+                                <div class="gif-card-desc">Quest active, no progress. NPC expresses need and pressure.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/progress-dialogue.gif" alt="Progress Dialogue">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Progress Dialogue</div>
+                                <div class="gif-card-desc">Objectives updating. NPCs notice and acknowledge your advancement.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/celebration-dialogue.gif" alt="Celebration Dialogue">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Celebration Dialogue</div>
+                                <div class="gif-card-desc">Quest complete. NPCs celebrate with genuine reaction.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- TAB 6: LEARNINGS -->
+            <div id="learnings" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DESIGN LEARNINGS ⚡</div>
+                    <div class="section-title">💡 KEY INSIGHTS FROM BUILDING QUEST & NPC SYSTEMS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 1: Dynamic Spawning > Static Placement</div>
+                        <div class="learning-text">
+                            Hardcoding NPC positions is rigid. Letting quests define positions creates flexibility. Different quests, different NPC locations. The map becomes dynamic, not static. One area serves infinite quest configurations.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 2: Proximity Dialogue > Click-to-Talk</div>
+                        <div class="learning-text">
+                            Walking near an NPC and hearing them speak feels more natural than clicking to trigger interaction. It makes the world feel conversational and present, not transactional. Dialogue should happen to you, not be requested by you.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 3: State-Dependent Dialogue Creates Immersion</div>
+                        <div class="learning-text">
+                            When NPCs have dialogue for each quest state (active, in-progress, completed), the world feels aware of your actions. NPCs don't just dispense quests-they react to you. This is the difference between quest-givers and a living world.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 4: Enemies Spawn From Quests, Not The World</div>
+                        <div class="learning-text">
+                            Enemies should only exist when quests activate them. This prevents the world from feeling overpopulated or arbitrary. Every enemy has a reason-they're part of a quest. This creates narrative cohesion.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 5: NPC Dialogue Can Be Ambient Without Being Optional</div>
+                        <div class="learning-text">
+                            Ambient dialogue doesn't mean it's ignorable. It's essential world narration. Players overhear it. It provides context. It makes the world feel like it's talking to itself, not just at the player. This is where personality emerges.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 6: Quest Objectives Are The World's Pacing</div>
+                        <div class="learning-text">
+                            Objectives aren't obstacles-they're story beats. Defeat 3 sentries. Destroy the barricade. Report back. Each step updates the world state. NPCs react to each completion. Pacing is driven by the quest system's awareness of progress.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 7: The World Reorganises Around Active Quests</div>
+                        <div class="learning-text">
+                            This is the key insight: don't author a static world. Author quest configurations. Each quest is a temporary world state. When activated, it shapes NPC positions, enemy spawns, available dialogue. Multiple quests create multiple worlds from the same map.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="design-journal-footer">
+        <div style="font-size: 0.9em; margin-top: 1rem;">✦ Sidhvi's Design Journal ✦</div>
+        <div style="font-size: 0.8em; color: var(--cyan-dim); margin-top: 0.5rem;">Project Pixel: Quest System & Ambient NPCs Design</div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top of content
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Pixel: Turn-Based Combat System Design">
+    <title>Project Pixel: Turn-Based Combat System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00e5ff;
+            --cyan-dim: #0099bb;
+            --cyan-pale: #80f4ff;
+            --cyber: #0a1420;
+            --cyber-light: #1a2235;
+            --neon: #00d4ff;
+            --bg: #050a12;
+            --thermal: #ff6b35;
+            --cryo: #00e5ff;
+            --border: rgba(0, 149, 187, 0.5);
+        }
+
+        * { font-family: 'Space Mono', monospace; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(0, 100, 150, 0.06) 0%, transparent 55%);
+            background-attachment: fixed;
+            color: var(--cyan);
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 50%, #0f1820 100%);
+            border: 3px solid var(--cyan-dim);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.2);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--cyan-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--cyan); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan);
+            font-size: xx-large;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .project-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.6em, 3vw, 2.4em);
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px var(--cyan-dim), 0 0 20px rgba(0, 100, 150, 0.5); }
+            50% { text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px rgba(0, 100, 150, 0.8); }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            color: var(--cyan);
+        }
+
+        /* Video Chrome Styles - Cyan Sci-Fi */
+        .video-chrome {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            margin: 1.5rem auto;
+            max-width: 600px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.15);
+            overflow: hidden;
+        }
+
+        .video-chrome-bar {
+            background: linear-gradient(180deg, #1a2235 0%, #0f1820 100%);
+            border-bottom: 1px solid var(--cyan-dim);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-chrome-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cyan-dim);
+            flex-shrink: 0;
+        }
+
+        .video-chrome-label {
+            color: var(--cyan-pale);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-left: 0.75rem;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .video-chrome-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-chrome-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 1px solid var(--cyan-dim);
+            color: var(--cyan-pale);
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #1a2235 0%, #2a3450 100%);
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--neon));
+            color: #000;
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: var(--cyan);
+            border-bottom: 2px solid var(--cyan-dim);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        .pillar-box {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border-left: 5px solid var(--cyan);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .pillar-number {
+            color: var(--cyan);
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-desc {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.7;
+        }
+
+        .system-diagram {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .system-flow {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 0.8em;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0, 100, 150, 0.2);
+            border-radius: 3px;
+        }
+
+        .arrow {
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            margin: 0.5rem 0;
+        }
+
+        .learning-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .learning-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .learning-text {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.7;
+        }
+
+        /* GIF CARD */
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+
+        .gif-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+            border-color: var(--cyan);
+            box-shadow: 0 20px 50px rgba(0, 229, 255, 0.4);
+        }
+
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid var(--cyan-dim);
+        }
+
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gif-card-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .gif-card-desc {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--cyan-dim);
+        }
+
+        @media (max-width: 768px) {
+            .max-w {
+                padding: 0 20px;
+            }
+
+            .gif-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="design-journal-nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="Project Pixel.html" class="nav-back">← Project Pixel</a>
+            </div>
+
+            <span class="nav-title">Turn-Based Combat</span>
+            <div class="nav-left">
+                <a href="index.html" class="nav-back">Design Journal</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w container-section parchment">
+        <h1 class="project-title">⚡ PROJECT PIXEL's: Turn-Based Combat System ⚡</h1>
+
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #ffffff;">CATEGORY:</span>
+                <span>Combat Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">TYPE:</span>
+                <span>Turn Based Combat</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">USP:</span>
+                <span>Charge System</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-button" onclick="switchTab('camera-system')">Camera System</button>
+                <button class="tab-button" onclick="switchTab('turn-order')">Turn Order & Speed</button>
+                <button class="tab-button" onclick="switchTab('enemy-ai')">Enemy AI & Moves</button>
+                <button class="tab-button" onclick="switchTab('design-pillars')">Design Pillars</button>
+                <button class="tab-button" onclick="switchTab('learnings')">Learnings</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                        <div class="content-block">
+                            Watch the complete combat of Boss Fight where the player faces two Enemies. <br>
+                            This video demonstrates the full turn-based system in action, showcasing turn order, charge management, and tactical decision-making in a real combat scenario.
+                        </div>
+                        <div class="video-chrome">
+                            <div class="video-chrome-bar">
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-dot"></div>
+                                <div class="video-chrome-label">▶ COMBAT ATTRIBUTES - FULL SYSTEM</div>
+                            </div>
+                            <div class="video-chrome-frame">
+                                <iframe
+                                        src="https://www.youtube.com/embed/VIDEO_ID?rel=0"
+                                        title="Complete Combat System Demo"
+                                        frameborder="0"
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    <div class="section-title">🎮 THE FOUNDATION</div>
+                    <div class="content-block">
+                        Turn-Based Combat in Project Pixel draws inspiration from original Final Fantasy games, combining classic turn-order mechanics with modern dynamic systems. 
+                        When players encounter enemies, they enter a Combat Level: an isolated level where turn order, charge management, and tactical decision-making determine victory.
+                    </div>
+
+                    <div class="content-block">
+                        Every combatant - player and enemy operates on the same fundamental rule: GAIN 10% CHARGE PER TURN, SPEND CHARGE TO EXECUTE MOVES. <br>
+                        The higher the charge cost, the powerful the action.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>The Core Loop:</strong> Watch turn order, manage charge, choose moves, execute, advance to next turn. Simple rules, infinite tactical depth.
+                    </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ KEY FEATURES ⚡</div>
+                    <div class="section-title">🔑 WHAT MAKES IT TICK</div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">Speed-Based Turn Order</div>
+                        <div class="pillar-desc">
+                            Turn order is not randomised. It's determined by each combatant's Speed attribute, a base stat that players invest in via skill points. High Speed = early turns. Low Speed = waiting longer. This means character building directly impacts combat flow.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">Universal Charge Mechanic</div>
+                        <div class="pillar-desc">
+                            Every turn, every combatant gains 10% charge. No exceptions. This creates predictability. You always know when you can afford that 30% Powerful attack.<br> But it also creates tension: "Can I survive until I reach 50% Charge that I can use to wipe out enemies?".
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">Resource-Driven Decision Making</div>
+                        <div class="pillar-desc">
+                            Limited charge means limited options. You can't spam one powerful attack always. You have to choose: take a cheap move now, or wait for enough charge to unleash a powerful move? Every turn is a mini-decision tree.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-title">Elemental Depth</div>
+                        <div class="pillar-desc">
+                            Thermal applies damage over time. Cryo freezes enemies, skipping their turns but reducing their damage intake. These aren't just damage numbers-they're strategic tools that change how enemies behave.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DEDICATED PAGES -->
+            <div id="camera-system" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ MULTI-CAMERA SYSTEM ⚡</div>
+                    <div class="section-title">🎥 DYNAMIC CAMERA PERSPECTIVES</div>
+                    <div class="content-block">
+                        Combat is inspired by classic JRPG turn-based systems with a modern twist enabled by HD-2D graphics and a dynamic multi-camera approach. The combat arena features three cameras behind the player, while each enemy has their own focus camera, creating dynamic perspective shifts that guide attention and build tension.
+                    </div>
+                </div>
+
+                    <div class="gif-grid" style="grid-template-columns: repeat(2, 1fr)">
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-turn-combat/Extra-Wide.png" alt="Extra Wide Shot">
+                            <div class="gif-card-body">
+                                <div style="padding: 1.5rem;">
+                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--cyan); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">BATTLEFIELD MOOD</div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                        <strong>Triggered:</strong> Player performs an attack or browses Main Combat Menus
+                                    </div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--cyan-pale); padding-left: 1rem;">
+                                        Sets the scene, emphasizes scale and environmental atmosphere. Shows the full battlefield scope.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-turn-combat/Wide.png" alt="Wide Shot">
+                            <div class="gif-card-body">
+                                <div style="padding: 1.5rem;">
+                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--cyan); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">PLAYER POSITIONING</div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                        <strong>Triggered:</strong> Player browses Moves menu
+                                    </div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--cyan-pale); padding-left: 1rem;">
+                                        Enables players to strategize with full view of their positioning and available tactics.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-turn-combat/Player-Target.png" alt="Extra Wide Shot">
+                            <div class="gif-card-body">
+                                <div style="padding: 1.5rem;">
+                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--neon); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">PLAYER ATTACK</div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                        <strong>Triggered:</strong> Player selects target for attack move
+                                    </div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--neon); padding-left: 1rem;">
+                                        Focuses attention on the chosen target, building commitment and impact visualization.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-turn-combat/Enemy-Attack.png" alt="Extra Wide Shot">
+                            <div class="gif-card-body">
+                                <div style="padding: 1.5rem;">
+                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--thermal); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">ENEMY TURN</div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                        <strong>Triggered:</strong> Player is being attacked
+                                    </div>
+                                    <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--thermal); padding-left: 1rem;">
+                                        Shows impact and consequence, emphasizes enemy threat and incoming damage.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ CAMERA PHILOSOPHY ⚡</div>
+                    <div class="section-title">💡 WHY DYNAMIC CAMERA MATTERS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Camera as Narrative Tool</div>
+                        <div class="learning-text">
+                            The camera doesn't show the fight neutrally. It emphasizes where the player should look and feel. Each perspective shift reinforces the narrative moment-your action, the enemy's threat, or the environmental context.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Perspective Equality</div>
+                        <div class="learning-text">
+                            By giving different camera angles for attack and defense, the fight feels less "you vs. puppet" and more "you vs. opponent." Both sides are equally powerful narratively, reinforced through camera treatment.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Tension Through Motion</div>
+                        <div class="learning-text">
+                            Turn-based combat can feel static. Dynamic camera constantly moves-zooming, panning, focusing. This motion keeps energy high and prevents the turn-by-turn nature from becoming tedious.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: TURN ORDER & SPEED -->
+            <div id="turn-order" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ SPEED DETERMINES WHO ACTS FIRST ⚡</div>
+                    <div class="section-title">📊 TURN ORDER MECHANICS</div>
+                    <div class="content-block">
+                        Turn order is <strong>not random</strong>. It's determined entirely by Speed attribute. This is a core design principle: character progression directly affects combat flow, not just damage numbers.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>How It Works:</strong> At the start of combat, the system calculates turn order based on each combatant's Speed stat. Higher Speed = earlier in the rotation. This order persists throughout combat-you'll know exactly when your next turn is coming.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>Example Turn Order:</strong><br>
+                        1. Player (Speed: 25) - Your action first<br>
+                        2. Enemy A (Speed: 20) - Second action<br>
+                        3. Enemy B (Speed: 15) - Third action
+                    </div>
+
+                    <div class="content-block">
+                        In this example, you have Speed 25. Enemy A has 20. Enemy B has 15. You always go first, Enemy A goes second, Enemy B goes third. This repeats until combat ends. No surprises, just pure stat advantage through character building choices.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ TURN ORDER IN PRACTICE ⚡</div>
+                    <div class="section-title">🎬 VISUAL EXAMPLES</div>
+                    <div class="gif-grid" style="grid-template-columns: repeat(2, 1fr)">
+                        <div class="gif-card" style="max-width: 600px; margin: 0 auto;">
+                            <img src="./projects/project-pixel-turn-combat/Extra_High_Speed.gif" alt="Extra Speed Player">
+                            <div class="gif-card-body">
+                                <div style="padding: 1.5rem;">
+                                <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--cryo); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
+                                    Player goes twice</div>
+                                <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong>Requirements:</strong> Player Speed > 2 X Enemy Speed
+                                </div>
+                                <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--thermal); padding-left: 1rem;">
+                                    Shows that player gets two turns before enemies get their first turn.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gif-card" style="max-width: 600px; margin: 0 auto;">
+                        <img src="./projects/project-pixel-turn-combat/Player_Speed.gif" alt="Speed Player">
+                        <div class="gif-card-body">
+                            <div style="padding: 1.5rem;">
+                                <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--cryo); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
+                                    Player goes first</div>
+                                <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong>Requirements:</strong> Player Speed > Enemy Speed
+                                </div>
+                                <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--thermal); padding-left: 1rem;">
+                                    Shows that player gets their turn first before enemies get their first turn.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gif-card" style="max-width: 600px; margin: 0 auto;">
+                        <img src="./projects/project-pixel-turn-combat/1_Enemy_Speed.gif" alt="Faster Enemy">
+                        <div class="gif-card-body">
+                            <div style="padding: 1.5rem;">
+                                <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--cryo); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
+                                    High Speed Enemy goes first</div>
+                                <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong>Requirements:</strong> Fire Guy Speed > Player Speed > Freeze Girl Speed
+                                </div>
+                                <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--thermal); padding-left: 1rem;">
+                                    Shows that player gets their turn after Fire Guy but before Freeze Girl.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gif-card" style="max-width: 600px; margin: 0 auto;">
+                        <img src="./projects/project-pixel-turn-combat/1_Enemy_Speed.gif" alt="Faster Enemies">
+                        <div class="gif-card-body">
+                            <div style="padding: 1.5rem;">
+                                <div style="font-family: 'Orbitron', monospace; font-size: 0.85em; color: var(--cryo); margin-bottom: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
+                                    Both Enemies Goes First</div>
+                                <div style="color: var(--cyan-pale); font-size: 0.85em; line-height: 1.6; margin-bottom: 1rem;">
+                                    <strong>Requirements:</strong> Fire Guy Speed > Freeze Girl Speed > Player Speed
+                                </div>
+                                <div style="color: var(--cyan-pale); font-size: 0.8em; line-height: 1.5; border-left: 3px solid var(--thermal); padding-left: 1rem;">
+                                    Shows that player gets their turn after Fire Guy and Freeze Girl.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ TURN ORDER PHILOSOPHY ⚡</div>
+                    <div class="section-title">💡 KEY INSIGHTS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Predictability Enables Strategy</div>
+                        <div class="learning-text">
+                            You know when your turn is coming. You know when the enemy acts. This predictability lets you plan: "Next turn I can Cryo, and they won't get a turn until after that." Turns become a resource you can navigate.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Speed Matters as Much as Damage</div>
+                        <div class="learning-text">
+                            High Speed characters control the tempo. Going first every turn is a massive advantage. This incentivizes diverse character builds instead of min-maxing one stat. Speed is a legitimate build path.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Multiple Enemies = Tactical Rhythm</div>
+                        <div class="learning-text">
+                            With three combatants in the turn order, you're constantly managing "when do I act vs. when do they act?" If you're first, you set the tone. If you're last, you react. The turn order becomes a silent tactical layer.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <p style="color: var(--cyan-pale); padding: 1.5rem; background: linear-gradient(135deg, rgba(10, 20, 32, 0.6), rgba(26, 34, 53, 0.4)); border-left: 4px solid var(--cryo); border-radius: 2px; font-size:0.8em">
+                        <strong>Note:</strong> Turn order is discussed in depth in the <strong>Attributes & Skills</strong> page, where you'll learn which base stats influence Speed, and how to optimize your build for early turns or reactive play.
+                    </p>
+                </div>
+            </div>
+
+            <!-- TAB: ENEMY AI & MOVE SELECTION -->
+            <div id="enemy-ai" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ ENEMY AI & MOVE SELECTION ⚡</div>
+                    <div class="section-title">🤖 HOW ENEMIES CHOOSE THEIR MOVES</div>
+                    <div class="content-block">
+                        Enemies don't pick moves randomly. They use an intelligent scoring system that evaluates every available move based on current combat state. This creates challenging, unpredictable AI that adapts to player choices while remaining fair and balanced.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>The Core Philosophy:</strong> Enemy AI evaluates moves based on Base Score, adjusted for charge availability and player status effects. The move with the highest score gets executed. This means enemies prioritize survival, tactical advantage, and strategic move selection-mimicking a skilled player.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ AVAILABLE MOVES ⚡</div>
+                    <div class="section-title">📋 MOVE CATALOG</div>
+                    <div class="content-block">
+                        Every character (player or enemy) has access to a catalog of moves. Each move has defined properties: charge cost, damage output, type (Physical, Cryo, Thermal), and base scoring value.
+                    </div>
+
+                    <div style="overflow-x: auto; margin: 1.5rem 0;">
+                        <table class="level-table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                            <tr style="background: rgba(0, 149, 187, 0.2);">
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Name</th>
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Moveset</th>
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Type</th>
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Charge</th>
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Damage</th>
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Req. Level</th>
+                                <th style="border: 1px solid var(--border); padding: 0.75rem; text-align: left; color: var(--cyan); font-family: 'Orbitron', monospace;">Base Score</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Shield</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Action</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Physical</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">10</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">–</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">10</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Heal</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Action</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Physical</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">10</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">–</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">10</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Punch</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Attack</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Physical</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">5</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">15</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Cryo Punch</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Attack</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Cryo</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">15</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">0.75</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">15</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Freeze Wave</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Attack - Ranged</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Cryo</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">20</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">20</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Thermal Kick</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Attack</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Thermal</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">15</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">0.5</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">15</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Fire Blast</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Attack - Ranged</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">Thermal</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">15</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">0.75</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">1</td>
+                                <td style="border: 1px solid var(--border); padding: 0.75rem; color: var(--cyan-pale);">20</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ MOVE SELECTION SCORING ⚡</div>
+                    <div class="section-title">🎲 HOW ENEMIES DECIDE WHAT TO DO</div>
+                    <div class="content-block">
+                        When an enemy's turn comes, they evaluate every available move. Each move receives a score based on multiple factors. The enemy selects the move with the highest score, creating intelligent, adaptive behavior.
+                    </div>
+                    
+                    <div class="gif-grid" style="grid-template-columns: repeat(2,1fr)">
+
+                    <div class="learning-card">
+                        <div class="learning-title">Base Score</div>
+                        <div class="learning-text">
+                            Every move has a predetermined <strong>Base Score</strong> that represents its general effectiveness. This value is set by designers and serves as the foundation for the move's tactical value. Higher Base Score = more valued move.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Charge Requirement Gate</div>
+                        <div class="learning-text">
+                            If an enemy doesn't have enough Charge to execute a move, that move's score is automatically set to <strong>0</strong>. This prevents enemies from selecting impossible moves. Enemies can only choose moves they can actually perform.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Health-Based Scoring</div>
+                        <div class="learning-text">
+                            <strong>Enemy Low on Health?</strong> Healing moves (Shield, Heal) increase in score priority, making survival-oriented choices more attractive.<br>
+                            <strong>Player Low on Health?</strong> Aggressive attack moves increase in score, making finishing moves more attractive.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Status Effect Balancing</div>
+                        <div class="learning-text">
+                            The AI adjusts move scores based on player status effects to maintain fairness:<br>
+                            <br>
+                            <strong>Same Type Moves (Cryo on Frozen Enemy):</strong> Score is reduced by 50%. Why use Freeze Wave on a frozen enemy? It's a waste of charge.<br>
+                            <br>
+                            <strong>Opposite Type Moves (Thermal on Frozen Enemy):</strong> Score is increased by 50%. Fire Blast on a frozen enemy exploits weakness-smart tactical play.
+                        </div>
+                    </div>
+                </div>
+                </div>
+                
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ SCORING IN PRACTICE ⚡</div>
+                    <div class="section-title">📊 EXAMPLE AI DECISION</div>
+                    <div class="gif-grid" style="grid-template-columns: repeat(2, 1fr)">
+
+                    <div class="learning-card">
+                        <div class="learning-title">Scenario 1: Enemy Turn with Multiple Options</div>
+                        <div class="learning-text" style="font-family: 'Courier Prime', monospace; background: rgba(0,0,0,0.3); padding: 1rem; line-height: 1.8;">
+                            <strong>Current State:</strong><br>
+                            Enemy Health: 30/100 (Low)<br>
+                            Player Health: 80/100<br>
+                            Player Status: None<br>
+                            Enemy Charge: 15<br>
+                            <br>
+                            <strong>Available Moves & Scoring:</strong><br>
+                            <br>
+                            1. Punch (Charge: 5, Base Score: 15)<br>
+                            → Charge Available: YES<br>
+                            → Status Adjustment: None<br>
+                            → Final Score: 15<br>
+                            <br>
+                            2. Heal (Charge: 10, Base Score: 10)<br>
+                            → Charge Available: YES<br>
+                            → Health Adjustment: +50 (Low health)<br>
+                            → Final Score: 60 ← SELECTED<br>
+                            <br>
+                            3. Freeze Wave (Charge: 20, Base Score: 20)<br>
+                            → Charge Available: NO<br>
+                            → Status Adjustment: None<br>
+                            → Final Score: 0<br>
+                            <br>
+                            <strong>Decision: Heal is chosen (Score: 60)</strong><br>
+                            Why? Enemy is low on health, so survival is prioritised.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Scenario 2: Status Effect Balancing</div>
+                        <div class="learning-text" style="font-family: 'Courier Prime', monospace; background: rgba(0,0,0,0.3); padding: 1rem; line-height: 1.8;">
+                            <strong>Current State:</strong><br>
+                            Enemy Health: 75/100<br>
+                            Player Health: 50/100<br>
+                            Player Status: Cryo (Frozen)<br>
+                            Enemy Charge: 30<br>
+                            <br>
+                            <strong>Available Moves & Scoring:</strong><br>
+                            <br>
+                            1. Freeze Wave (Charge: 20, Base Score: 20)<br>
+                            → Charge Available: YES<br>
+                            → Status Adjustment: -50% (Player already frozen)<br>
+                            → Final Score: 10<br>
+                            <br>
+                            2. Fire Blast (Charge: 15, Base Score: 20)<br>
+                            → Charge Available: YES<br>
+                            → Status Adjustment: -50% (Thermal cancels Freeze on PLAYER)<br>
+                            → Final Score: 10 <br>
+                            <br>
+                            <br>
+                            2. Punch (Charge: 5, Base Score: 15)<br>
+                            → Charge Available: YES<br>
+                            → Status Adjustment: NONE<br>
+                            → Final Score: 15 ← SELECTED<br>
+                            <br>
+                            <strong>Decision: Punch is chosen (Score: 15)</strong><br>
+                            Why? Enemy thinks it's better to Punch than removing Freeze from Player.
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ AI DESIGN PHILOSOPHY ⚡</div>
+                    <div class="section-title">💡 KEY INSIGHTS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Fairness Through Transparency</div>
+                        <div class="learning-text">
+                            Enemies use the same move system as players. They don't have secret advantages or hidden stats. Players can predict enemy behavior by understanding how scoring works. This creates fair, learnable encounters.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Adaptive Without Being Unfair</div>
+                        <div class="learning-text">
+                            AI adapts to player health, status effects, and tactical situations. But it does so within established rules. Enemies won't make impossible moves, and their scoring is transparent. Adaptation feels smart, not cheap.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Base Score: Designer Control</div>
+                        <div class="learning-text">
+                            By adjusting Base Score, designers fine-tune enemy behavior. A higher Base Score for Shield makes enemies more defensive. A higher Base Score for Punch makes them aggressive. This is how encounter difficulty is tuned.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Status Effects Create Strategic Depth</div>
+                        <div class="learning-text">
+                            Players don't just attack blindly-they choose move types strategically. Freeze enemies make them vulnerable to Thermal. Burn enemies might become threats if healed. This creates dynamic, tactical combat where every status matters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- TAB 5: DESIGN PILLARS -->
+            <div id="design-pillars" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ FOUR PILLARS OF COMBAT DESIGN ⚡</div>
+                    <div class="section-title">🏛️ FOUNDATIONAL PRINCIPLES</div>
+                    <div class="content-block">
+                        These four pillars guided every decision in the Turn-Based Combat system. They are the foundation of the combat philosophy.
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">1</div>
+                        <div class="pillar-title">Clarity Over Complexity</div>
+                        <div class="pillar-desc">
+                            Combat rules are simple: +10% charge per turn, spend charge on moves, turn order based on Speed. A new player understands the fundamentals in 30 seconds. But depth emerges from resource management and tactical timing. The complexity is earned, not forced.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">2</div>
+                        <div class="pillar-title">Agency Over Automation</div>
+                        <div class="pillar-desc">
+                            Every turn, the player decides. No auto-attacks, no passive damage, no invisible calculations. You choose Punch or Defend or wait for Cryo. You feel the weight of each decision. Combat is never something that happens to you-it's something you do.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">3</div>
+                        <div class="pillar-title">Tension Over Dominance</div>
+                        <div class="pillar-desc">
+                            Even when you're ahead, the next enemy turn is coming. Even when you're behind, you have charge building. There's always tension-a sense that things could flip. This prevents blowouts from being boring and comebacks from being unfair.
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div class="pillar-number">4</div>
+                        <div class="pillar-title">Story Through Systems</div>
+                        <div class="pillar-desc">
+                            Combat isn't separate from narrative. Status effects (Thermal's burn, Cryo's freeze) tell a story about the elements. Turn order tells a story about your character's training. Charge management tells a story about caution vs. aggression. Systems are narrative.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ SYSTEMIC CONNECTIONS ⚡</div>
+                    <div class="section-title">🔗 HOW SYSTEMS INTERACT</div>
+                    <div class="content-block">
+                        Turn-Based Combat isn't isolated. It connects to Progression (Speed investments), Elementals (Thermal/Cryo mechanics), and Quests (combat rewards). Everything reinforces everything else.
+                    </div>
+
+                    <div class="system-diagram">
+                        <div style="color: var(--cyan); font-weight: bold; font-size: 1em; margin-bottom: 1rem;">SKILL POINT INVESTMENT</div>
+                        <div style="color: var(--cyan-pale);">(Speed, Accuracy, Evasion, Damage)</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Shapes Your Turn Order Position</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Determines When You Act Relative to Enemies</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Influences Combat Tactics & Strategy</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Elemental Moves Interact With Status Effects</div>
+                        <div class="arrow">↓</div>
+                        <div class="system-flow">Victory Unlocks Quest Rewards & Story Progression</div>
+                        <div style="color: var(--cyan); font-weight: bold; margin-top: 1rem;">(New quests become available, NPCs respond to your combat success)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: LEARNINGS -->
+            <div id="learnings" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DESIGN LEARNINGS ⚡</div>
+                    <div class="section-title">💡 KEY INSIGHTS FROM BUILDING TURN-BASED COMBAT</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 1: Charge Predictability Beats Randomness</div>
+                        <div class="learning-text">
+                            Early iterations used random charge gain. It was chaotic and frustrating. Switching to +10% every turn eliminated that chaos. Players could now plan. "Next turn I'll have 15% for Cryo" became possible. Predictability transformed combat from luck-based to strategy-based.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 2: Speed Must Matter as Much as Damage</div>
+                        <div class="learning-text">
+                            If Speed was just a bonus to turn order, nobody would invest in it. But when turn order determines who controls the tempo, Speed becomes essential. This created diverse builds: speedsters, tanks, balanced fighters-all viable.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 3: Camera Movement Adds Tension Without Complexity</div>
+                        <div class="learning-text">
+                            Turn-based combat can feel static. Dynamic camera-zooming on impacts, pulling back for overview-added visual excitement without changing core mechanics. The camera became a co-narrator, emphasizing moments, building tension.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 4: Status Effects Need Tactical Weight</div>
+                        <div class="learning-text">
+                            Thermal and Cryo aren't just damage numbers. They're tactical tools. Cryo skips turns. Thermal spreads damage. These effects create new tactical decisions: "Should I Cryo to control turns, or Thermal for damage?" Status effects are as important as raw stats.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 5: Cheap Moves Prevent Downtime</div>
+                        <div class="learning-text">
+                            A 5% Punch feels small, but it's crucial. Even when you can't afford your power move, you always have an option. This prevents frustration and keeps the player engaged. There's always something to do, even if it's not optimal.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 6: Turn Order Persistence Creates Tactics</div>
+                        <div class="learning-text">
+                            Turn order never changes mid-combat. This sounds limiting, but it's actually liberating. You know the exact sequence of who acts when. This lets you plan ahead: "I go, Enemy A goes, Enemy B goes" repeats forever. Plan within that structure.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 7: Simple Rules, Complex Tactics</div>
+                        <div class="learning-text">
+                            The core loop is dead simple: gain charge, spend charge, advance. But the decision tree is enormous. Do I Defend? Attack? Save charge? Build to a big move? Cryo to freeze? Thermal to damage? Simple rules created emergent complexity.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="design-journal-footer">
+        <div style="font-size: 0.9em; margin-top: 1rem;">✦ Sidhvi's Design Journal ✦</div>
+        <div style="font-size: 0.8em; color: var(--cyan-dim); margin-top: 0.5rem;">Project Pixel: Turn-Based Combat System Design</div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top of content
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>

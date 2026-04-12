@@ -146,6 +146,14 @@
             line-height: 1.65;
             margin-bottom: 2rem;
         }
+        .project-description {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--gold);
+            max-width: 800px;
+            line-height: 1.65;
+            margin-bottom: 2rem;
+        }
 
         .header-divider {
             display: flex;
@@ -254,6 +262,8 @@
             padding: 1.5rem 1.5rem 1.5rem 1.75rem;
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .quest-type-row {
@@ -300,7 +310,7 @@
 
         /* GIF thumbnail strip */
         .quest-media {
-            height: 110px;
+            aspect-ratio: 16/9;
             background: rgba(0,0,0,0.4);
             border: 1px solid rgba(139,105,20,0.2);
             margin-bottom: 1.1rem;
@@ -309,6 +319,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            flex: 1;
+        }
+        .quest-static-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
         }
 
         .quest-media-placeholder {
@@ -337,14 +356,15 @@
             inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center;
+            display: block;
             opacity: 0;
             transition: opacity 0.5s;
         }
 
-        .quest-card:hover .quest-gif { opacity: 1; }
-        .quest-card:hover .quest-media-placeholder { opacity: 0; }
-
+        .quest-card:hover .quest-gif { opacity: 1; z-index: 2}
+        .quest-card:hover .quest-media-placeholder { opacity: 0; z-index: 1}
         .quest-tags {
             display: flex;
             flex-wrap: wrap;
@@ -356,7 +376,7 @@
             font-family: 'Cinzel', serif;
             font-size: 0.55rem;
             letter-spacing: 0.08em;
-            color: var(--gold-dim);
+            color: var(--green-accent);
             border: 1px solid rgba(139,105,20,0.3);
             padding: 2px 8px;
             text-transform: uppercase;
@@ -503,19 +523,24 @@
         </div>
         <div class="project-title-row">
             <h1 class="project-name">Project Whimsical</h1>
-            <span class="project-badge">Unreal Engine · Active</span>
+            <span class="project-badge">Open World - Action RPG</span>
         </div>
         <p class="project-lore">A third-person action-adventure built in Unreal Engine 5 - a sandbox for designing and testing interconnected game systems: AI behaviour, quest design, combat, and player progression.</p>
         <div class="header-divider">
             <div class="header-divider-line"></div>
-            <span class="header-divider-text">⚔ Select a Quest ⚔</span>
+            <span class="header-divider-text">⚔ ABOUT THIS QUEST ⚔</span>
             <div class="header-divider-line" style="background: linear-gradient(90deg, transparent, var(--gold-dim)); transform: scaleX(-1);"></div>
         </div>
+        <p class="project-description" style="max-width: 800px;" >
+            Inspired by various Action RPG videogames such as THE WITCHER 3, FABLE, FALLOUT this project is set in a mythical fantasy land and follows a bounty hunter - KLIFF. <br>
+        In this overview, I will showcase you a quest walkthrough set in a small hamlet called STONE-UPON-FLEEN. <br>
+        You can go over the Quest, Boss Fight, Player Attribute System in addition to BASIC AI and REACTIVE NPCs by clicking on the tiles below. <br>
+        Hover on the image to get a small glimpse of what's to come when you click on the tile.</p>
     </header>
 
     <!-- QUEST GRID -->
     <section class="quests-section">
-        <p class="section-label">⚔ Sub-Projects · 4 Quests ⚔</p>
+        <p class="section-label">⚔ 4 SUB-QUESTS ⚔</p>
         <div class="quests-grid">
 
             <!-- A FOUL CALL -->
@@ -529,14 +554,13 @@
                     <div class="quest-desc">Same quest, unique conversations depending on your playstyle. Multiple paths including but not limited to Investigative, Onslaught, Stealth - all valid. Every choice remembered.</div>
                     <div class="quest-media">
                         <div class="quest-media-placeholder">
-                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                                <path d="M6 12h24M6 18h18M6 24h12" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quest-media-label">Hover to preview</span>
+                            <img class="quest-static-img"
+                                 src="./projects/project-a-foul-call/images/TheFoulPlay_Preview.png"
+                                 alt="A Foul Call preview"
+                                 loading="lazy">
                         </div>
                         <img class="quest-gif"
-                             src="./images/a-foul-call-preview.gif"
+                             src="./projects/project-a-foul-call/images/Playstyle-Flexibility.gif"
                              alt="A Foul Call preview"
                              loading="lazy">
                     </div>
@@ -564,15 +588,13 @@
                     <div class="quest-desc">A five-state enemy AI - Patrol, Halt, Alert, Combat, Investigate - with a two-stage detection meter, spline-based patrol, and dual player engagement paths.</div>
                     <div class="quest-media">
                         <div class="quest-media-placeholder">
-                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                                <circle cx="18" cy="18" r="12" stroke="#8b6914" stroke-width="1"/>
-                                <circle cx="18" cy="18" r="3" fill="#8b6914" opacity="0.5"/>
-                                <path d="M18 6v4M18 26v4M6 18h4M26 18h4" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quest-media-label">Hover to preview</span>
+                            <img class="quest-static-img"
+                                 src="./projects/project-basic-ai/images/BasicAI_Preview.png"
+                                 alt="Basic AI System preview"
+                                 loading="lazy">
                         </div>
                         <img class="quest-gif"
-                             src="./images/ai-system-preview.gif"
+                             src="./projects/project-basic-ai/images/ai-combat-kill.gif"
                              alt="Basic AI System preview"
                              loading="lazy">
                     </div>
@@ -600,15 +622,14 @@
                     <div class="quest-desc">What is a good satisfactory end to a quest? A good boss fight that is build around player mastery.</div>
                     <div class="quest-media">
                         <div class="quest-media-placeholder">
-                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                                <path d="M8 28L28 8M24 8h4v4" stroke="#8b6914" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="10" cy="26" r="3" stroke="#8b6914" stroke-width="1"/>
-                            </svg>
-                            <span class="quest-media-label">Hover to preview</span>
+                            <img class="quest-static-img"
+                                 src="./projects/project-pumpkin-boss/images/PumpkinSpirit_Preview.png"
+                                 alt="Pumpkin Spirit preview"
+                                 loading="lazy">
                         </div>
                         <img class="quest-gif"
-                             src="./images/combat-preview.gif"
-                             alt="Combat System preview"
+                             src="./projects/project-pumpkin-boss/images/pumpkin-boss-intro.gif"
+                             alt="Pumpkin Spirit preview"
                              loading="lazy">
                     </div>
                     <div class="quest-tags">
@@ -635,17 +656,14 @@
                     <div class="quest-desc">Four core attributes - BODY, HAND, MIND, EYES - shaping what playstyle paths and dialogue options become available across every quest in the project.</div>
                     <div class="quest-media">
                         <div class="quest-media-placeholder">
-                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                                <rect x="6" y="6" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1"/>
-                                <rect x="20" y="6" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1"/>
-                                <rect x="6" y="20" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1"/>
-                                <rect x="20" y="20" width="10" height="10" rx="2" stroke="#8b6914" stroke-width="1" stroke-dasharray="2 1.5"/>
-                            </svg>
-                            <span class="quest-media-label">Hover to preview</span>
+                            <img class="quest-static-img"
+                                 src="./projects/project-whimsical-attributes/images/PAS_Preview.png"
+                                 alt="Player Attributes System preview"
+                                 loading="lazy">
                         </div>
                         <img class="quest-gif"
-                             src="./images/attribute-system-preview.gif"
-                             alt="Attribute System preview"
+                             src="./projects/project-whimsical-attributes/images/discovery-vines.gif"
+                             alt="Player Attributes System preview"
                              loading="lazy">
                     </div>
                     <div class="quest-tags">

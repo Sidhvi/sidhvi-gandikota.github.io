@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project Pixel: Elemental Systems Design">
+    <title>Project Pixel: Elemental Systems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00e5ff;
+            --cyan-dim: #0099bb;
+            --cyan-pale: #80f4ff;
+            --cyber: #0a1420;
+            --cyber-light: #1a2235;
+            --neon: #00d4ff;
+            --bg: #050a12;
+            --thermal: #ff6b35;
+            --cryo: #00e5ff;
+            --border: rgba(0, 149, 187, 0.5);
+            --super-effective: #4ade80;
+            --not-effective: #ef4444;
+            --neutral: #666;
+        }
+
+        * { font-family: 'Space Mono', monospace; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 15% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(0, 100, 150, 0.06) 0%, transparent 55%);
+            background-attachment: fixed;
+            color: var(--cyan);
+        }
+
+        .parchment {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 50%, #0f1820 100%);
+            border: 3px solid var(--cyan-dim);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.2);
+            position: relative;
+        }
+
+        .header-ornament {
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .design-journal-nav {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2.5rem;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-content {
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-back {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--cyan-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--cyan); }
+
+        .nav-sep {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+        }
+
+        .nav-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan);
+            font-size: xx-large;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .project-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.6em, 3vw, 2.4em);
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+            animation: glow-flicker 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-flicker {
+            0%, 100% { text-shadow: 0 0 10px var(--cyan-dim), 0 0 20px rgba(0, 100, 150, 0.5); }
+            50% { text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px rgba(0, 100, 150, 0.8); }
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            color: var(--cyan);
+        }
+
+        /* TAB STYLES */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 1px solid var(--cyan-dim);
+            color: var(--cyan-pale);
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #1a2235 0%, #2a3450 100%);
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--neon));
+            color: #000;
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: var(--cyan);
+            border-bottom: 2px solid var(--cyan-dim);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .content-block {
+            color: var(--cyan-pale);
+            line-height: 1.8;
+            font-size: 0.8em;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-divider {
+            text-align: center;
+            color: var(--cyan-dim);
+            font-size: 1.5em;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+            vertical-align: middle;
+            margin: 0 1rem;
+        }
+
+        .element-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .element-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .element-name {
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .element-desc {
+            color: var(--cyan-pale);
+            line-height: 1.7;
+            font-size: 0.8em;
+            margin-bottom: 0.75rem;
+        }
+
+        .element-effect {
+            background: rgba(0, 100, 150, 0.2);
+            color: var(--cyan);
+            padding: 0.75rem;
+            border-left: 3px solid var(--thermal);
+            border-radius: 2px;
+            font-size: 0.9rem;
+        }
+
+        .element-icon   { font-size: 2.5em; margin-bottom: 0.75rem; flex-shrink: 0; }
+
+        /* ── CARDS ── */
+        .path-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .path-card {
+            background: linear-gradient(135deg, #2a2420 0%, #3a3430 100%);
+            border: 2px solid #8b6914;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .path-card:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(139,105,20,0.4);
+        }
+
+        .path-icon   { font-size: 2.5em; margin-bottom: 0.75rem; flex-shrink: 0; }
+        .path-title  { color: #d4af37; font-weight: bold; font-size: 1.1em; margin-bottom: 0.75rem; flex-shrink: 0; }
+        .path-desc   { color: #b8860b; font-size: 0.9em; line-height: 1.6; flex: 1; }
+        
+
+        /* INTERACTION TABLE */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border: 2px solid var(--cyan-dim);
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            font-family: 'Orbitron', monospace;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--neon));
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        td {
+            color: var(--cyan-pale);
+        }
+
+        /* First column styling */
+        th:first-child, td:first-child {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            color: var(--cyan);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* Super Effective */
+        .super-effective {
+            background-color: rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        /* Not Effective */
+        .not-effective {
+            background-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* Neutral */
+        .neutral {
+            background-color: rgba(102, 102, 102, 0.2);
+            color: var(--cyan-pale);
+        }
+
+        .learning-card {
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .learning-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .learning-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .learning-text {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.7;
+        }
+
+        .gif-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: visible;
+            isolation: isolate;
+        }
+
+        .gif-card:hover {
+            transform: scale(1.25);
+            z-index: 9999;
+            border-color: var(--cyan);
+            box-shadow: 0 20px 50px rgba(0, 229, 255, 0.4);
+        }
+
+        .gif-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-bottom: 2px solid var(--cyan-dim);
+        }
+
+        .gif-card-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gif-card-title {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .gif-card-desc {
+            color: var(--cyan-pale);
+            font-size: 0.8em;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .max-w {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 150px;
+        }
+
+        .container-section {
+            margin: 3rem auto;
+        }
+
+        .design-journal-footer {
+            background: linear-gradient(180deg, #050a12 0%, rgba(5,10,18,0.95) 100%);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--cyan-dim);
+        }
+
+        .legend {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%);
+            border: 2px solid var(--cyan-dim);
+            border-radius: 5px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 3px;
+            border: 2px solid;
+        }
+
+        .legend-box.se {
+            background-color: rgba(74, 222, 128, 0.3);
+            border-color: #4ade80;
+        }
+
+        .legend-box.ne {
+            background-color: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        .legend-box.neutral {
+            background-color: rgba(102, 102, 102, 0.2);
+            border-color: #666;
+        }
+
+        .legend-text {
+            color: var(--cyan-pale);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .max-w {
+                padding: 0 20px;
+            }
+
+            .gif-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                text-align: left;
+            }
+
+            .table-wrapper {
+                font-size: 0.75rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="design-journal-nav">
+    <div class="nav-content">
+        <div class="nav-left">
+            <a href="Project Pixel.html" class="nav-back">← Project Pixel</a>
+        </div>
+
+        <span class="nav-title">ELEMENTAL SYSTEMS</span>
+        <div class="nav-left">
+            <a href="index.html" class="nav-back">Design Journal</a>
+        </div>
+    </div>
+    </div>
+</nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w container-section parchment">
+
+        <h1 class="project-title">⚡PROJECT PIXEL's: Elemental Systems⚡</h1>
+
+        <div class="project-meta">
+            <div class="meta-item">
+                <span style="color: #ffffff;">CATEGORY:</span>
+                <span>System Design</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">TYPE:</span>
+                <span>Element Interactions</span>
+            </div>
+            <div class="meta-item">
+                <span style="color: #ffffff;">ELEMENTS:</span>
+                <span>9</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-button" onclick="switchTab('elements')">9 Elements</button>
+                <button class="tab-button" onclick="switchTab('interactions')">Type Interactions</button>
+                <button class="tab-button" onclick="switchTab('status-effects')">Status Effects</button>
+                <button class="tab-button" onclick="switchTab('strategy')">Strategic Use</button>
+                <button class="tab-button" onclick="switchTab('learnings')">Learnings</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="overview" class="tab-content active">
+                <div class="section-container">
+                    <div class="section-title">⚡ THE FOUNDATION OF TACTICAL COMBAT ⚡</div>
+                    <div class="content-block">
+                        In Project Pixel, every attack carries an elemental type. Physical strikes, Thermal burns, Cryo freezes-each element has strengths, weaknesses, and interactions with others. Elementals aren't just damage numbers; they're a tactical language that shapes how you approach every fight.
+                    </div>
+
+                    <div class="content-block">
+                        <strong>Two Core Concepts:</strong><br>
+                        1. <strong>MOVE TYPE</strong> - The element of the attack you use (Thermal Kick, Cryo Blast, etc.)<br>
+                        2. <strong>ENEMY TYPE</strong> - The elemental affiliation of the enemy itself
+                    </div>
+
+                    <div class="content-block">
+                        When you use an elemental move, the target gets an <strong>Active Status</strong> corresponding to that element. Thermal moves apply Burn. Cryo moves apply Freeze. These statuses create tactical opportunities and restrictions.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ VISUAL EXAMPLES ⚡</div>
+                    <div class="section-title">🎬 ELEMENTALS IN ACTION</div>
+
+                    <div class="gif-grid">
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-elementals/Thermal.gif" alt="Thermal Attack">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Thermal Attack</div>
+                                <div class="gif-card-desc">Using Thermal Kick applies Burn status. Enemy takes damage over time next turn.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-elementals/Cryo.gif" alt="Cryo Attack">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Cryo Attack</div>
+                                <div class="gif-card-desc">Using Cryo Blast applies Freeze status. Enemy skips their next turn.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel-elementals/Cancellation.gif" alt="Status Cancellation">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Status Cancellation</div>
+                                <div class="gif-card-desc">Freeze cancels Thermal. No elemental applied, but status is removed.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ CORE MECHANIC ⚡</div>
+                    <div class="section-title">🔄 STATUS INTERACTION RULES</div>
+                    
+                    <div class="learning-card">
+                        <div class="learning-title">Rule 1: Using Elemental Move Applies Status</div>
+                        <div class="learning-text">
+                            Use Thermal Kick → Enemy gets Burn status<br>
+                            Use Cryo Blast → Enemy gets Freeze status<br>
+                            These statuses persist and affect enemy behavior next turn.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Rule 2: Opposite Elements Cancel Out</div>
+                        <div class="learning-text">
+                            If enemy has Freeze status and you use Thermal attack → Thermal cancels Freeze<br>
+                            <strong>Important:</strong> No damage is applied when canceling. The damage is completely negated in exchange for removing the opposing status.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Rule 3: Same-Type Matchups Follow the Table</div>
+                        <div class="learning-text">
+                            If enemy has NO active status, damage follows the Elemental Interaction Table.<br>
+                            Thermal attack on Cryo enemy = 0.5x damage (not very effective)<br>
+                            Photon attack on Void enemy = 2x damage (super effective)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ EXAMPLE COMBAT FLOW ⚡</div>
+                    <div class="section-title">📖 HOW STATUS INTERACTIONS PLAY OUT</div>
+
+                    <div class="element-card">
+                        <div class="element-name">Turn 1: Player Uses Thermal Kick on Cryo Enemy</div>
+                        <div class="element-desc">
+                            The Cryo enemy has no active status. You use Thermal Kick (Move Type: Thermal). According to the table, Thermal vs Cryo = 0.5x damage. Enemy takes reduced damage and gets Burn status.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Turn 2: Enemy Has Burn Status, You Use Cryo Blast</div>
+                        <div class="element-desc">
+                            Enemy has active Burn status. You use Cryo Blast (Move Type: Cryo). Cryo cancels Burn-no damage is applied. The Burn status is removed, and the enemy avoids the Cryo attack's damage entirely.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Turn 3: No Status Remains, You Use Physical Punch</div>
+                        <div class="element-desc">
+                            Enemy has no active status now. You use Physical Punch. No special interactions-damage follows normal Physical vs Cryo matchup from the table (Physical vs Cryo = 1x, neutral).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: 9 ELEMENTS -->
+            <div id="elements" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ THE NINE ELEMENTS ⚡</div>
+                    <div class="section-title">🌍 ELEMENTAL TYPES & PROPERTIES</div>
+                    <div class="content-block">
+                        Every attack in Project Pixel falls into one of nine elemental categories. Each has unique properties, strengths against certain enemies, and weaknesses against others. Understanding all nine is key to mastering combat.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="element-card">
+                        <div class="element-name">Physical (PHY)</div>
+                        <div class="element-desc">
+                            The most fundamental attack type. Punches, kicks, and melee strikes fall into this category. No special status effects-pure, straightforward damage.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> None (no active status applied)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Thermal (THR) 🔥</div>
+                        <div class="element-desc">
+                            Fire and heat-based attacks. Applies Burn status, causing damage over time and affecting enemy behavior. Thermal attacks are powerful against organic and cold-natured enemies.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Burn (applies per-turn damage, cancels Cryo)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Cryo (CRY) ❄️</div>
+                        <div class="element-desc">
+                            Ice and cold-based attacks. Applies Freeze status, immobilizing the enemy and reducing their damage output. Cryo is Thermal's opposite-using it cancels Burn status.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Freeze (enemy skips turn, takes reduced damage, cancels Thermal)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Photon (PHT) 💡</div>
+                        <div class="element-desc">
+                            Light and radiation-based attacks. Pure energy in its most direct form. Photon is particularly effective against Void entities and shadows.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Illuminate (reveals hidden info, cancels Shadow)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Void (VOD) 🌑</div>
+                        <div class="element-desc">
+                            Absence and darkness. Attacks that consume energy and negate. Void is Photon's opposite-they cancel each other out. Void is devastating against light-aligned enemies.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Shadow (reduces outgoing damage, cancels Photon)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Static (STC) ⚡</div>
+                        <div class="element-desc">
+                            Electrical and magnetic attacks. Disrupts enemy coordination and control. Static builds up tension and can chain between targets.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Stun (reduces accuracy, can chain, cancels Kinetic)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Kinetic (KNT) 💨</div>
+                        <div class="element-desc">
+                            Motion and momentum-based attacks. High-speed strikes that create openings. Kinetic is Static's opposite and is effective against stationary, heavy enemies.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Momentum (increases next action speed, cancels Static)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Biological (BIO) 🧬</div>
+                        <div class="element-desc">
+                            Life force and organic attacks. Poison, disease, and corruption. Highly effective against living creatures but less so against synthetic or inorganic enemies.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Poison (persistent damage each turn, cancels Synthetic)
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Synthetic (SYN) 🤖</div>
+                        <div class="element-desc">
+                            Technology and artificial power. Programming, viruses, hacking. Synthetic is Biological's opposite and is devastating to mechanical or digital enemies.
+                        </div>
+                        <div class="element-effect">
+                            <strong>Status Effect:</strong> Corruption (disrupts enemy systems, cancels Biological)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ ELEMENTAL PAIRS ⚡</div>
+                    <div class="section-title">🔗 OPPOSITE ELEMENTS THAT CANCEL</div>
+                    <div class="content-block">
+                        Four pairs of opposite elements cancel each other's active status:
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Thermal ↔ Cryo (Fire ↔ Ice)</div>
+                        <div class="element-desc">Heat and cold are natural opposites. Thermal cancels Freeze. Cryo cancels Burn.</div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Photon ↔ Void (Light ↔ Shadow)</div>
+                        <div class="element-desc">Light dispels darkness. Photon cancels Shadow. Void cancels Illuminate.</div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Static ↔ Kinetic (Electricity ↔ Motion)</div>
+                        <div class="element-desc">Movement disrupts electricity. Static cancels Momentum. Kinetic cancels Stun.</div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Biological ↔ Synthetic (Life ↔ Technology)</div>
+                        <div class="element-desc">Organic and artificial are fundamentally opposed. Bio cancels Corruption. Synthetic cancels Poison.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: TYPE INTERACTIONS -->
+            <div id="interactions" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ ELEMENTAL INTERACTION TABLE ⚡</div>
+                    <div class="section-title">📊 MOVE TYPE vs ENEMY TYPE DAMAGE</div>
+                    <div class="content-block">
+                        This table shows damage multipliers when your <strong>Move Type</strong> (vertical axis) hits an enemy of a specific <strong>Enemy Type</strong> (horizontal axis). Use this to plan your attacks:
+                    </div>
+
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-box se"></div>
+                            <div class="legend-text"><strong>2x = Super Effective</strong> (high damage)</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box neutral"></div>
+                            <div class="legend-text"><strong>1x = Neutral</strong> (normal damage)</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box ne"></div>
+                            <div class="legend-text"><strong>0.5x = Not Effective</strong> (reduced damage)</div>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>DEFENSE →<br>ATTACK ↓</th>
+                                    <th>PHY</th>
+                                    <th>THR</th>
+                                    <th>CRY</th>
+                                    <th>PHT</th>
+                                    <th>VOD</th>
+                                    <th>STC</th>
+                                    <th>KNT</th>
+                                    <th>BIO</th>
+                                    <th>SYN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PHY</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="not-effective">0.5</td>
+                                </tr>
+                                <tr>
+                                    <td>THR</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="not-effective">0.5</td>
+                                </tr>
+                                <tr>
+                                    <td>CRY</td>
+                                    <td class="neutral">1</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="super-effective">2</td>
+                                </tr>
+                                <tr>
+                                    <td>PHT</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="super-effective">2</td>
+                                </tr>
+                                <tr>
+                                    <td>VOD</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                </tr>
+                                <tr>
+                                    <td>STC</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="super-effective">2</td>
+                                </tr>
+                                <tr>
+                                    <td>KNT</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="super-effective">2</td>
+                                </tr>
+                                <tr>
+                                    <td>BIO</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                </tr>
+                                <tr>
+                                    <td>SYN</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="super-effective">2</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                    <td class="neutral">1</td>
+                                    <td class="neutral">1</td>
+                                    <td class="not-effective">0.5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="content-block">
+                        <strong>How to Read:</strong> Find your Move Type on the left (vertical), trace right to the Enemy Type column. The value shown is your damage multiplier. For example: Thermal move on Cryo enemy = 2x damage (super effective). Thermal move on Thermal enemy = 0.5x (not effective).
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ MATCHUP FLOWCHART ⚡</div>
+                    <div class="section-title">🔄 HOW TO DETERMINE EFFECTIVENESS</div>
+                    
+                    <svg viewBox="0 0 800 600" style="width: 100%; margin: 2rem 0; border: 2px solid var(--cyan-dim); border-radius: 5px; background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%); padding: 1rem;">
+                        <!-- Start -->
+                        <rect x="300" y="20" width="200" height="60" fill="var(--thermal)" rx="5" stroke="var(--cyan)" stroke-width="2"/>
+                        <text x="400" y="55" text-anchor="middle" fill="#000" font-weight="bold" font-size="16" font-family="Orbitron">SELECT MOVE TYPE</text>
+                        
+                        <!-- Arrow down -->
+                        <path d="M 400 80 L 400 120" stroke="var(--cyan)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Check Status -->
+                        <rect x="300" y="120" width="200" height="80" fill="var(--cyan-dim)" rx="5" stroke="var(--cyan)" stroke-width="2"/>
+                        <text x="400" y="155" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14" font-family="Orbitron">DOES ENEMY HAVE</text>
+                        <text x="400" y="175" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14" font-family="Orbitron">OPPOSITE STATUS?</text>
+                        
+                        <!-- YES path -->
+                        <path d="M 300 160 L 180 160 L 180 250" stroke="var(--super-effective)" stroke-width="2" fill="none" marker-end="url(#arrowhead-green)"/>
+                        <text x="240" y="155" fill="var(--super-effective)" font-weight="bold" font-size="12">YES</text>
+                        
+                        <!-- NO path -->
+                        <path d="M 500 160 L 620 160 L 620 250" stroke="var(--not-effective)" stroke-width="2" fill="none" marker-end="url(#arrowhead-red)"/>
+                        <text x="560" y="155" fill="var(--not-effective)" font-weight="bold" font-size="12">NO</text>
+                        
+                        <!-- YES Result: Cancel Status -->
+                        <rect x="80" y="250" width="200" height="80" fill="rgba(74, 222, 128, 0.3)" rx="5" stroke="#4ade80" stroke-width="2"/>
+                        <text x="180" y="275" text-anchor="middle" fill="#4ade80" font-weight="bold" font-size="13" font-family="Orbitron">STATUS CANCELED</text>
+                        <text x="180" y="295" text-anchor="middle" fill="#4ade80" font-size="12" font-family="Orbitron">Zero Damage Applied</text>
+                        <text x="180" y="315" text-anchor="middle" fill="#4ade80" font-size="12" font-family="Orbitron">Opposing Status Removed</text>
+                        
+                        <!-- NO Result: Check Table -->
+                        <rect x="520" y="250" width="200" height="80" fill="rgba(239, 68, 68, 0.3)" rx="5" stroke="#ef4444" stroke-width="2"/>
+                        <text x="620" y="275" text-anchor="middle" fill="#ef4444" font-weight="bold" font-size="13" font-family="Orbitron">CHECK TABLE</text>
+                        <text x="620" y="295" text-anchor="middle" fill="#ef4444" font-size="12" font-family="Orbitron">Apply Damage Based On</text>
+                        <text x="620" y="315" text-anchor="middle" fill="#ef4444" font-size="12" font-family="Orbitron">Move Type vs Enemy Type</text>
+                        
+                        <!-- Arrow down from both -->
+                        <path d="M 180 330 L 180 370" stroke="var(--cyan)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                        <path d="M 620 330 L 620 370" stroke="var(--cyan)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Final: Apply Status -->
+                        <rect x="50" y="370" width="700" height="80" fill="var(--neon)" rx="5" stroke="var(--cyan)" stroke-width="2"/>
+                        <text x="400" y="395" text-anchor="middle" fill="#000" font-weight="bold" font-size="14" font-family="Orbitron">APPLY NEW STATUS FROM MOVE</text>
+                        <text x="400" y="415" text-anchor="middle" fill="#000" font-size="12" font-family="Space Mono">(If move has elemental status effect)</text>
+                        <text x="400" y="435" text-anchor="middle" fill="#000" font-size="12" font-family="Space Mono">Burn, Freeze, Illuminate, Shadow, etc.</text>
+                        
+                        <!-- Arrow markers -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="var(--cyan)"/>
+                            </marker>
+                            <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#4ade80"/>
+                            </marker>
+                            <marker id="arrowhead-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#ef4444"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- TAB 4: STATUS EFFECTS -->
+            <div id="status-effects" class="tab-content">
+                <div class="section-container">
+
+                    <div class="section-container">
+                        <div class="chapter-divider">⚡ STATUS EFFECT TIMELINE ⚡</div>
+                        <div class="section-title">📊 WHEN STATUSES APPLY & RESOLVE</div>
+
+                        <svg viewBox="0 0 900 250" style="width: 100%; margin: 2rem 0; border: 2px solid var(--cyan-dim); border-radius: 5px; background: linear-gradient(135deg, #0f1820 0%, #1a2235 100%); padding: 1rem;">
+                            <!-- Legend box  -->
+                            <rect x="700" y="30" width="180" height="130" fill="rgba(0, 149, 187, 0.1)" stroke="var(--cyan-dim)" stroke-width="1" rx="3"/>
+                            <text x="790" y="50" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">STATUS TIMELINE</text>
+                            <text x="710" y="70" fill="var(--thermal)" font-size="9">Red = Active Damage</text>
+                            <text x="710" y="85" fill="var(--cyan-pale)" font-size="9">Blue = Crowd Control</text>
+                            <text x="710" y="100" fill="#888" font-size="9">Gray = No Effect</text>
+                            <text x="710" y="120" fill="var(--cyan-pale)" font-size="9">Status persists until:</text>
+                            <text x="710" y="135" fill="var(--cyan-pale)" font-size="9">- Opposite element used</text>
+                            <text x="710" y="150" fill="var(--cyan-pale)" font-size="9">- Duration expires</text>
+                            <!-- Timeline -->
+                            <line x1="50" y1="120" x2="650" y2="120" stroke="var(--cyan)" stroke-width="2"/>
+
+                            <!-- Turn 1 -->
+                            <circle cx="100" cy="120" r="8" fill="var(--thermal)"/>
+                            <text x="100" y="155" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">Turn 1</text>
+                            <text x="100" y="170" text-anchor="middle" fill="var(--cyan-pale)" font-size="7.5">Player uses Thermal</text>
+                            <text x="100" y="183" text-anchor="middle" fill="var(--thermal)" font-size="7.5" font-weight="bold">Burn Applied</text>
+
+                            <!-- Arrow -->
+                            <path d="M 140 120 L 160 120" stroke="var(--cyan-dim)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                            <!-- Turn 2 -->
+                            <circle cx="210" cy="120" r="8" fill="var(--thermal)"/>
+                            <text x="210" y="155" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">Turn 2</text>
+                            <text x="210" y="170" text-anchor="middle" fill="var(--cyan-pale)" font-size="7.5">Enemy Has Burn</text>
+                            <text x="210" y="183" text-anchor="middle" fill="var(--thermal)" font-size="7.5" font-weight="bold">Takes DoT</text>
+
+                            <!-- Arrow -->
+                            <path d="M 250 120 L 270 120" stroke="var(--cyan-dim)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                            <!-- Turn 3 -->
+                            <circle cx="320" cy="120" r="8" fill="var(--super-effective)"/>
+                            <text x="320" y="155" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">Turn 3</text>
+                            <text x="320" y="170" text-anchor="middle" fill="var(--cyan-pale)" font-size="7.5">Player Uses Cryo</text>
+                            <text x="320" y="183" text-anchor="middle" fill="var(--super-effective)" font-size="7.5" font-weight="bold">Burn Cancelled</text>
+
+                            <!-- Arrow -->
+                            <path d="M 360 120 L 380 120" stroke="var(--cyan-dim)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                            <!-- Turn 4 -->
+                            <circle cx="430" cy="120" r="8" fill="var(--cryo)"/>
+                            <text x="430" y="155" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">Turn 4</text>
+                            <text x="430" y="170" text-anchor="middle" fill="var(--cyan-pale)" font-size="7.5">Cryo Applied</text>
+                            <text x="430" y="183" text-anchor="middle" fill="var(--cryo)" font-size="7.5" font-weight="bold">Freeze Active</text>
+
+                            <!-- Arrow -->
+                            <path d="M 470 120 L 490 120" stroke="var(--cyan-dim)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                            <!-- Turn 5 -->
+                            <circle cx="540" cy="120" r="8" fill="var(--cryo)"/>
+                            <text x="540" y="155" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">Turn 5</text>
+                            <text x="540" y="170" text-anchor="middle" fill="var(--cyan-pale)" font-size="7.5">Enemy Skips Turn</text>
+                            <text x="540" y="183" text-anchor="middle" fill="var(--cryo)" font-size="7.5" font-weight="bold">Freeze Persists</text>
+
+                            <!-- Arrow -->
+                            <path d="M 580 120 L 600 120" stroke="var(--cyan-dim)" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                            <!-- Turn 6 -->
+                            <circle cx="650" cy="120" r="8" fill="#888"/>
+                            <text x="650" y="155" text-anchor="middle" fill="var(--cyan)" font-weight="bold" font-size="9">Turn 6</text>
+                            <text x="650" y="170" text-anchor="middle" fill="var(--cyan-pale)" font-size="7.5">Freeze Ends</text>
+                            <text x="650" y="183" text-anchor="middle" fill="#888" font-size="7.5" font-weight="bold">No Status</text>
+
+
+                            <!-- Arrow markers -->
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="var(--cyan-dim)"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    
+                    <div class="chapter-divider">⚡ STATUS EFFECTS IN DEPTH ⚡</div>
+                    <div class="section-title">🎯 ACTIVE STATUSES & HOW THEY WORK</div>
+                    <div class="content-block">
+                        When you use an elemental move, the target gains an Active Status. These statuses persist, affecting the target's next actions and creating tactical windows.
+                    </div>
+                </div>
+
+                <div class="path-container">
+                    <div class="element-card">
+                        <div class="element-icon">🔥</div>
+                            <div class="element-name">Burn (From Thermal)</div>
+                        <div class="element-desc">
+                            The enemy is on fire. Takes damage each turn. Affects their combat effectiveness and creates urgency. Canceled by Cryo attacks-if hit with a Cryo move, Burn is removed and no damage is applied.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">❄️</div>
+                        <div class="element-name">Freeze (From Cryo)</div>
+                        <div class="element-desc">
+                            The enemy is frozen solid. Skips their next turn and takes reduced damage while frozen. A powerful crowd-control effect. Canceled by Thermal attacks-if hit with Thermal, Freeze is removed and no damage is applied.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">💡</div>
+                        <div class="element-name">Illuminate (From Photon)</div>
+                        <div class="element-desc">
+                            Light reveals what was hidden. Reveals enemy stats, abilities, and strategies. Canceled by Void attacks which shroud everything in darkness.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">🌑</div>
+                        <div class="element-name">Shadow (From Void)</div>
+                        <div class="element-desc">
+                            The enemy is cloaked in darkness. Reduces their outgoing damage and accuracy. Canceled by Photon attacks which pierce the shadows.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">⚡</div>
+                        <div class="element-name">Stun (From Static)</div>
+                        <div class="element-desc">
+                            Electrical shock disrupts the enemy's nervous system. Reduces their accuracy and action effectiveness. Can chain between targets. Canceled by Kinetic momentum which breaks the static hold.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">💨</div>
+                        <div class="element-name">Momentum (From Kinetic)</div>
+                        <div class="element-desc">
+                            Pure motion and speed. Increases the enemy's next action speed and damage. Aggressive but short-lived. Canceled by Static which grounds the momentum.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">🧬</div>
+                        <div class="element-name">Poison (From Biological)</div>
+                        <div class="element-desc">
+                            Toxin spreads through the enemy's body. Takes damage each turn, persists longer than Burn. Highly effective against living creatures. Canceled by Synthetic corruption overwriting the biological poison.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-icon">🤖</div>
+                        <div class="element-name">Corruption (From Synthetic)</div>
+                        <div class="element-desc">
+                            Code and data degradation. Enemy systems malfunction, reducing their effectiveness. Particularly devastating to synthetic enemies. Canceled by Biological organisms which purge the corruption.
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ STATUS EFFECTS IN ACTION ⚡</div>
+                    <div class="section-title">🎬 VISUAL DEMONSTRATIONS</div>
+                    
+                    <div class="gif-grid">
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/burn-status-effect.gif" alt="Burn Status">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Burn Status</div>
+                                <div class="gif-card-desc">Enemy takes damage over time. Flames spread across their body. Canceled by Cryo.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/freeze-status-effect.gif" alt="Freeze Status">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Freeze Status</div>
+                                <div class="gif-card-desc">Enemy immobilized in ice. Skips next turn. Takes reduced damage while frozen.</div>
+                            </div>
+                        </div>
+
+                        <div class="gif-card">
+                            <img src="./projects/project-pixel/images/opposite-cancellation.gif" alt="Status Cancellation">
+                            <div class="gif-card-body">
+                                <div class="gif-card-title">Opposite Cancellation</div>
+                                <div class="gif-card-desc">Thermal cancels Freeze. The ice shatters. Zero damage but status is removed.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-title">🔄 WHEN OPPOSITES MEET</div>
+                    <div class="content-block">
+                        <strong>CRITICAL MECHANIC:</strong> When you use an elemental move against a target with an opposing status, the status is canceled and no damage is applied.
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Example: Enemy Has Burn (From Your Previous Thermal Attack)</div>
+                        <div class="learning-text">
+                            You decide to use Cryo Blast on your next turn. Cryo is opposite to Thermal (which caused Burn). When Cryo hits, it cancels the Burn status completely. The enemy takes zero damage from the Cryo attack, but the Burn is gone.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Example: Enemy Has Freeze (From Your Previous Cryo Attack)</div>
+                        <div class="learning-text">
+                            You use Thermal Kick next turn. Thermal is opposite to Cryo. Thermal hits, cancels Freeze, applies zero damage. The enemy is now unfrozen but took no hit from the Thermal attack.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Strategic Implication</div>
+                        <div class="learning-text">
+                            This creates interesting tactical dilemmas. Do you cancel the enemy's status to remove their advantage, or do you use a different element to deal damage while they're still afflicted? Status cancellation trades damage for control.
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+
+            <!-- TAB 5: STRATEGIC USE -->
+            <div id="strategy" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ STRATEGIC ELEMENTAL COMBAT ⚡</div>
+                    <div class="section-title">🎮 HOW TO MASTER THE SYSTEM</div>
+                    <div class="content-block">
+                        Understanding elementals isn't just about knowing the table. It's about making tactical decisions: do you stack status effects, cancel your opponent's advantages, or exploit type matchups? Every elemental choice shapes your combat flow.
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="learning-card">
+                        <div class="learning-title">Strategy 1: Exploit Type Matchups</div>
+                        <div class="learning-text">
+                            Identify the enemy type and use moves that are super effective (2x damage). A Cryo enemy takes 2x damage from Thermal-always a priority target. Stack super-effective moves for explosive damage bursts.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Strategy 2: Control With Status Effects</div>
+                        <div class="learning-text">
+                            Use statuses to restrict enemy actions. Freeze skips turns. Burn deals ongoing damage. Poison persists. These aren't just damage-they're crowd control. Stack them before a boss fight to lock down threats.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Strategy 3: Status Cancellation Trade-offs</div>
+                        <div class="learning-text">
+                            When an enemy gets a harmful status, you can cancel it with an opposite element-but you deal zero damage. Decide: is removing their advantage worth sacrificing a turn's damage? Sometimes yes, sometimes no.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Strategy 4: Build Elemental Synergy</div>
+                        <div class="learning-text">
+                            Some elements combo better than others. Thermal+Cryo creates dynamic cancellation. Biological+Synthetic create a natural opposition. Learn combinations that synergize with your playstyle.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Strategy 5: Multi-Enemy Elemental Chaos</div>
+                        <div class="learning-text">
+                            Facing multiple enemies means juggling multiple elemental matchups. Do you focus on one strong matchup, or spread status effects across all threats? Positioning and targeting become elemental puzzles.
+                        </div>
+                    </div>
+                </div>
+                
+                    <div class="section-title">📖 REAL SCENARIOS</div>
+
+                    <div class="element-card">
+                        <div class="element-name">Scenario: Fighting a Thermal Enemy</div>
+                        <div class="element-desc">
+                            The enemy is fire-aligned (Thermal type). Cryo attacks deal 2x damage-always your priority. If you use Thermal attack on them (0.5x), they take reduced damage AND get Burn status. Should you still do it? Only if you're stack-building or buying time.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Scenario: Enemy Has Freeze Status</div>
+                        <div class="element-desc">
+                            You froze the enemy last turn. They skip this turn. But you could use Thermal to cancel Freeze, removing their disadvantage but dealing zero damage. If there are other threats, canceling might not be worth it. Let them stay frozen and focus elsewhere.
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <div class="element-name">Scenario: Building Toward a Finisher</div>
+                        <div class="element-desc">
+                            Enemy is a Void type. Photon is super effective (2x). But if you're low on charge, you might use Physical first (1x neutral), then Photon next turn when you have more charge for a bigger hit. Or use Photon now and accept the smaller damage. Strategic resource management.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: LEARNINGS -->
+            <div id="learnings" class="tab-content">
+                <div class="section-container">
+                    <div class="chapter-divider">⚡ DESIGN LEARNINGS ⚡</div>
+                    <div class="section-title">💡 KEY INSIGHTS FROM BUILDING ELEMENTAL SYSTEMS</div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 1: 9 Elements Provides Depth Without Overwhelming</div>
+                        <div class="learning-text">
+                            Nine feels like the sweet spot. Enough variety for interesting matchups and combos. Not so many that players get lost. Five elements would be too simple. Fifteen would be chaos. Nine creates a rich tactical space.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 2: Opposite Pairs Create Narrative Harmony</div>
+                        <div class="learning-text">
+                            Four pairs of opposites (Thermal↔Cryo, Photon↔Void, Static↔Kinetic, Bio↔Synthetic) feel natural and memorable. They tell stories: fire vs ice, light vs dark, electricity vs momentum, life vs technology. Players remember these intuitively.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 3: Status Cancellation > Damage on Status</div>
+                        <div class="learning-text">
+                            Early design had opposite elements still deal damage when canceling. It was too forgiving. Making cancellation deal zero damage creates tactical tension: "Do I remove their advantage or stay aggressive?" This is where depth emerges.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 4: Asymmetrical Matchups Create Mastery</div>
+                        <div class="learning-text">
+                            Not every element beats every other in the same pattern. Some matchups are 2x, others 1x, others 0.5x in non-obvious ways. This asymmetry rewards player learning and prevents "optimal" play from being obvious. Expertise emerges from pattern recognition.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 5: Move Type ≠ Character Type Separation Matters</div>
+                        <div class="learning-text">
+                            Having both Move Type (attack element) and Enemy Type (affiliation element) allows players to use cross-element strategies. A Thermal character can still use Cryo moves. This flexibility creates build diversity and prevents rigid rock-paper-scissors gameplay.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 6: Active Status Forces Turn-by-Turn Decisions</div>
+                        <div class="learning-text">
+                            Status effects persist across turns. This creates a planning layer: "The enemy will have Burn next turn. Do I cancel it or let it ride?" Every turn becomes a mini-chess match between status management and damage output.
+                        </div>
+                    </div>
+
+                    <div class="learning-card">
+                        <div class="learning-title">Learning 7: The Table is Readable, Not Memorizable</div>
+                        <div class="learning-text">
+                            Players shouldn't memorize 81 matchups. But with four opposite pairs and logical patterns (e.g., Kinetic is high-damage physical), the table feels navigable. Good design makes players feel smart when they deduce the system, not dumb for not memorizing.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="design-journal-footer">
+        <div style="font-size: 0.9em; margin-top: 1rem;">✦ Sidhvi's Design Journal ✦</div>
+        <div style="font-size: 0.8em; color: var(--cyan-dim); margin-top: 0.5rem;">Project Pixel: Elemental Combat & Interactions</div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top of content
+            document.querySelector('.tabs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>
